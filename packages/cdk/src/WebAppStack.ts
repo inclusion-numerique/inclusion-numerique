@@ -43,8 +43,6 @@ export const webAppStackSensitiveVariables = [
   'SCW_ACCESS_KEY',
   'SCW_SECRET_KEY',
   'DATABASE_PASSWORD',
-  'INCLUSION_CONNECT_PREVIEW_CLIENT_SECRET',
-  'INCLUSION_CONNECT_MAIN_CLIENT_SECRET',
 ] as const
 
 /**
@@ -190,11 +188,6 @@ export class WebAppStack extends TerraformStack {
       },
       secretEnvironmentVariables: {
         DATABASE_URL: databaseUrl,
-        INCLUSION_CONNECT_CLIENT_SECRET: isMain
-          ? sensitiveEnvironmentVariables.INCLUSION_CONNECT_MAIN_CLIENT_SECRET
-              .value
-          : sensitiveEnvironmentVariables
-              .INCLUSION_CONNECT_PREVIEW_CLIENT_SECRET.value,
       },
       name: containerName,
       minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,
