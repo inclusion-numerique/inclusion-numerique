@@ -28,7 +28,6 @@ import { DataScalewayContainerNamespace } from '@app/scaleway/data-scaleway-cont
 import { DataScalewayDomainZone } from '@app/scaleway/data-scaleway-domain-zone'
 import { DataScalewayRdbInstance } from '@app/scaleway/data-scaleway-rdb-instance'
 import { DomainRecord, DomainRecordConfig } from '@app/scaleway/domain-record'
-import { ObjectBucket } from '@app/scaleway/object-bucket'
 import { ScalewayProvider } from '@app/scaleway/provider'
 import { RdbDatabase } from '@app/scaleway/rdb-database'
 import { RdbPrivilege } from '@app/scaleway/rdb-privilege'
@@ -126,21 +125,21 @@ export class WebAppStack extends TerraformStack {
       dependsOn: [database, rdbDatabaseUser],
     })
 
-    const uploadsBucket = new ObjectBucket(this, 'uploads', {
-      name: namespaced(`${projectSlug}-uploads`),
-      corsRule: [
-        {
-          allowedHeaders: ['*'],
-          allowedMethods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
-          maxAgeSeconds: 3000,
-          exposeHeaders: ['Etag'],
-          allowedOrigins: [`https://${hostname}`],
-        },
-      ],
-    })
+    // const uploadsBucket = new ObjectBucket(this, 'uploads', {
+    //   name: namespaced(`${projectSlug}-uploads`),
+    //   corsRule: [
+    //     {
+    //       allowedHeaders: ['*'],
+    //       allowedMethods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
+    //       maxAgeSeconds: 3000,
+    //       exposeHeaders: ['Etag'],
+    //       allowedOrigins: [`https://${hostname}`],
+    //     },
+    //   ],
+    // })
 
-    output('uploadsBucketName', uploadsBucket.name)
-    output('uploadsBucketEndpoint', uploadsBucket.endpoint)
+    // output('uploadsBucketName', uploadsBucket.name)
+    // output('uploadsBucketEndpoint', uploadsBucket.endpoint)
 
     const containerNamespace = new DataScalewayContainerNamespace(
       this,
@@ -179,7 +178,6 @@ export class WebAppStack extends TerraformStack {
         EMAIL_FROM_ADDRESS: emailFromAddress,
         EMAIL_FROM_NAME: emailFromName,
         STACK_WEB_IMAGE: environmentVariables.WEB_CONTAINER_IMAGE.value,
-        UPLOADS_BUCKET: uploadsBucket.name,
         BASE_URL: hostname,
         BRANCH: branch,
         NAMESPACE: namespace,
