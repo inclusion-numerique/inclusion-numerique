@@ -1,18 +1,32 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import maplibregl, { GeoJSONFeature, Map as MapType } from 'maplibre-gl'
+import classNames from 'classnames'
+import maplibregl, {
+  GeoJSONFeature,
+  Map as MapType,
+  StyleSpecification,
+} from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { ardennesBounds } from '@app/web/utils/map/geom'
 import IndiceNumerique from './IndiceNumerique'
-import { addHoverState, communesLayer } from './MapUtils'
+import {
+  addHoverState,
+  communesFilledLayer,
+  communesLayer,
+  epciMaxZoom,
+  epcisFilledLayer,
+  epcisLayer,
+} from './MapUtils'
 import MapPopup from './MapPopup'
 import styles from './Map.module.css'
+import { mapStyle } from './mapStyle'
 
 const Map = () => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<MapType>()
   const [viewIndiceFN, setViewIndiceFN] = useState(true)
+  const [division, setDivision] = useState('EPCI')
   const [clicked, setClicked] = useState<GeoJSONFeature['properties'] | null>()
 
   useEffect(() => {
@@ -21,11 +35,13 @@ const Map = () => {
     }
 
     map.current = new maplibregl.Map({
+      attributionControl: false,
       container: mapContainer.current,
-      style:
-        'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json',
+      style: mapStyle as StyleSpecification,
       center: [5.4101, 50.0289],
       zoom: 6,
+      minZoom: 3,
+      maxZoom: 12.9,
     })
 
     map.current.on('load', () => {
@@ -39,24 +55,24 @@ const Map = () => {
           'https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif/{z}/{x}/{y}.pbf',
         ],
       })
+      map.current.addLayer(communesFilledLayer)
       map.current.addLayer(communesLayer)
-      map.current.addLayer({
-        id: 'epcis',
-        type: 'line',
-        source: 'decoupage',
-        'source-layer': 'epcis',
-        paint: {
-          'line-color': 'blue',
-        },
-      })
+      map.current.addLayer(epcisFilledLayer)
+      map.current.addLayer(epcisLayer)
 
-      map.current.on('click', 'communes', (event) => {
+      map.current.on('click', 'communesFilled', (event) => {
         if (event.features && event.features.length > 0) {
-          setClicked(event.features[0].properties)
+          setClicked({ type: 'commune', ...event.features[0].properties })
+        }
+      })
+      map.current.on('click', 'epcisFilled', (event) => {
+        if (event.features && event.features.length > 0) {
+          setClicked({ type: 'epci', ...event.features[0].properties })
         }
       })
 
-      addHoverState(map.current, 'communes')
+      addHoverState(map.current, 'communesFilled', 'communes')
+      addHoverState(map.current, 'epcisFilled', 'epcis')
 
       map.current.fitBounds(ardennesBounds, {
         animate: false,
@@ -74,22 +90,32 @@ const Map = () => {
         unit: 'metric',
       })
       map.current.addControl(scaleControl, 'bottom-left')
+
+      map.current.on('zoom', () => {
+        if (!map.current) {
+          return
+        }
+
+        setDivision(map.current.getZoom() < epciMaxZoom ? 'EPCI' : 'Commune')
+      })
     })
   }, [])
 
-  useEffect(() => {
-    if (map.current && map.current.getLayer('communes')) {
-      map.current.setLayoutProperty(
-        'communes',
-        'visibility',
-        viewIndiceFN ? 'visible' : 'none',
-      )
-    }
-  }, [viewIndiceFN])
-
   return (
     <div className={styles.mapContainer}>
-      <div ref={mapContainer} className={styles.map} />
+      <div ref={mapContainer} className={styles.map}>
+        <div className="maplibregl-ctrl-bottom-right maplibregl-ctrl">
+          <div
+            className={classNames(
+              styles.division,
+              'maplibregl-ctrl',
+              'maplibregl-ctrl-scale',
+            )}
+          >
+            Découpage : {division}
+          </div>
+        </div>
+      </div>
       {clicked && (
         <MapPopup properties={clicked} close={() => setClicked(null)} />
       )}

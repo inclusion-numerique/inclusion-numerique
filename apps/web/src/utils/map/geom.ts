@@ -9,5 +9,7 @@ export const ardennesBounds =
     new LngLatBounds([
       ardennes.features[0].geometry.coordinates[0][0][0],
       ardennes.features[0].geometry.coordinates[0][0][1],
+      ardennes.features[0].geometry.coordinates[0][1][0],
+      ardennes.features[0].geometry.coordinates[0][1][1],
     ]),
   )
