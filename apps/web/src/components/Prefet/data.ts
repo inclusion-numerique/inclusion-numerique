@@ -1,7 +1,8 @@
-type Statistic = {
+export type Statistic = {
   id: string
   label: string
   value: number
+  collapsable?: boolean
   statistics?: Statistic[]
 }
 
@@ -58,6 +59,13 @@ export const data: Boxs[] = [
                 id: 'public',
                 label: 'Public',
                 value: 43,
+                collapsable: true,
+                statistics: [
+                  { id: 'Commune', label: 'Commune', value: 12 },
+                  { id: 'EPCI', label: 'EPCI', value: 10 },
+                  { id: 'Departement', label: 'Departement', value: 2 },
+                  { id: 'Autre', label: 'Autre', value: 11 },
+                ],
               },
               {
                 id: 'Associations',
