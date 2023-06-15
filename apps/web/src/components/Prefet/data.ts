@@ -73,7 +73,7 @@ export const data: Boxs[] = [
                 value: 87,
               },
               {
-                id: 'Associations',
+                id: 'Autres acteurs privés',
                 label: 'Autres acteurs privés',
                 value: 24,
               },

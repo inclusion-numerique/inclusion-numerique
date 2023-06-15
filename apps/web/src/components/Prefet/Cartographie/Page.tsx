@@ -1,15 +1,22 @@
 import React from 'react'
+import { LngLatBoundsLike } from 'maplibre-gl'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import styles from './Page.module.css'
 import Legend from './Legend'
 import Map from './Map'
 
-const Cartographie = ({ user }: { user: SessionUser }) => {
+const Cartographie = ({
+  user,
+  bounds,
+}: {
+  user: SessionUser
+  bounds: LngLatBoundsLike
+}) => {
   console.log(user)
   return (
     <div className={styles.container}>
       <Legend />
-      <Map />
+      <Map bounds={bounds} />
     </div>
   )
 }

@@ -1,12 +1,19 @@
 import React from 'react'
 import Link from 'next/link'
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { DepartmentGeoJSON } from '@app/web/utils/map/geom'
 import styles from './Page.module.css'
 import Box from './Box/Box'
 import DepartmentMap from './DepartmentMap'
 import { data } from './data'
 
-const PrefetPage = ({ user }: { user: SessionUser }) => {
+const PrefetPage = ({
+  user,
+  geoJSON,
+}: {
+  user: SessionUser
+  geoJSON: DepartmentGeoJSON
+}) => {
   console.log(user)
   return (
     <>
@@ -27,7 +34,7 @@ const PrefetPage = ({ user }: { user: SessionUser }) => {
           ))}
         </div>
         <div className="fr-col-7">
-          <DepartmentMap />
+          <DepartmentMap geoJSON={geoJSON} />
         </div>
       </div>
       {data.slice(1).map((values) => (

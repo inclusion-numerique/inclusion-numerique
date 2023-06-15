@@ -5,12 +5,11 @@ import Link from 'next/link'
 import classNames from 'classnames'
 import maplibregl, { Map, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { ardennesBounds } from '@app/web/utils/map/geom'
-import ardennes from '@app/web/utils/map/departements/ardennes.json'
-import empty from '@app/web/utils/map/departements/empty.json'
+import empty from '@app/web/utils/map/empty.json'
+import { DepartmentGeoJSON } from '@app/web/utils/map/geom'
 import styles from './DepartmentMap.module.css'
 
-const DepartmentMap = () => {
+const DepartmentMap = ({ geoJSON }: { geoJSON: DepartmentGeoJSON }) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<Map>()
 
@@ -33,12 +32,12 @@ const DepartmentMap = () => {
       if (!map.current) {
         return
       }
-      map.current.fitBounds(ardennesBounds, {
+      map.current.fitBounds(geoJSON.bounds, {
         padding: { top: 50, right: 50, left: 50, bottom: 250 },
         animate: false,
       })
 
-      map.current.addSource('departement', { type: 'geojson', data: ardennes })
+      map.current.addSource('departement', geoJSON.source)
       map.current.addLayer({
         id: 'departement-fill',
         type: 'fill',

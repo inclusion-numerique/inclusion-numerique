@@ -4,11 +4,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import maplibregl, {
   GeoJSONFeature,
+  LngLatBoundsLike,
   Map as MapType,
   StyleSpecification,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { ardennesBounds } from '@app/web/utils/map/geom'
 import IndiceNumerique from './IndiceNumerique'
 import {
   addHoverState,
@@ -22,7 +22,7 @@ import MapPopup from './MapPopup'
 import styles from './Map.module.css'
 import { mapStyle } from './mapStyle'
 
-const Map = () => {
+const Map = ({ bounds }: { bounds: LngLatBoundsLike }) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<MapType>()
   const [viewIndiceFN, setViewIndiceFN] = useState(true)
@@ -38,8 +38,8 @@ const Map = () => {
       attributionControl: false,
       container: mapContainer.current,
       style: mapStyle as StyleSpecification,
-      center: [5.4101, 50.0289],
-      zoom: 6,
+      bounds,
+      zoom: 8,
       minZoom: 8,
       maxZoom: 12.9,
     })
@@ -73,11 +73,6 @@ const Map = () => {
 
       addHoverState(map.current, 'communesFilled', 'communes')
       addHoverState(map.current, 'epcisFilled', 'epcis')
-
-      map.current.fitBounds(ardennesBounds, {
-        animate: false,
-        zoom: 8,
-      })
 
       const navControl = new maplibregl.NavigationControl({
         showZoom: true,
