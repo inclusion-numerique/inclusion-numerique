@@ -40,7 +40,7 @@ const Map = () => {
       style: mapStyle as StyleSpecification,
       center: [5.4101, 50.0289],
       zoom: 6,
-      minZoom: 3,
+      minZoom: 8,
       maxZoom: 12.9,
     })
 
@@ -66,8 +66,8 @@ const Map = () => {
         }
       })
       map.current.on('click', 'epcisFilled', (event) => {
-        if (event.features && event.features.length > 0) {
-          setClicked({ type: 'epci', ...event.features[0].properties })
+        if (map.current) {
+          map.current.flyTo({ zoom: epciMaxZoom + 1, center: event.lngLat })
         }
       })
 

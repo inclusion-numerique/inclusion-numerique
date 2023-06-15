@@ -7,6 +7,25 @@ import {
 
 export const epciMaxZoom = 9
 
+const communes: Omit<
+  LineLayerSpecification | FillLayerSpecification,
+  'paint' | 'type' | 'id'
+> = {
+  source: 'decoupage',
+  'source-layer': 'communes',
+  minzoom: epciMaxZoom,
+  filter: ['==', ['get', 'departement'], '08'],
+}
+
+const epcis: Omit<
+  LineLayerSpecification | FillLayerSpecification,
+  'paint' | 'type' | 'id'
+> = {
+  source: 'decoupage',
+  'source-layer': 'epcis',
+  maxzoom: epciMaxZoom,
+}
+
 const lineLayer: LineLayerSpecification['paint'] = {
   'line-color': '#161616',
   'line-opacity': [
@@ -28,39 +47,31 @@ const fillLayer: FillLayerSpecification['paint'] = {
 }
 
 export const epcisLayer: LayerSpecification = {
+  ...epcis,
   id: 'epcis',
   type: 'line',
-  source: 'decoupage',
-  'source-layer': 'epcis',
   paint: lineLayer,
-  maxzoom: epciMaxZoom,
 }
 
 export const epcisFilledLayer: LayerSpecification = {
+  ...epcis,
   id: 'epcisFilled',
   type: 'fill',
-  source: 'decoupage',
-  'source-layer': 'epcis',
   paint: fillLayer,
-  maxzoom: epciMaxZoom,
 }
 
 export const communesLayer: LayerSpecification = {
+  ...communes,
   id: 'communes',
   type: 'line',
-  source: 'decoupage',
-  'source-layer': 'communes',
   paint: lineLayer,
-  minzoom: epciMaxZoom,
 }
 
 export const communesFilledLayer: LayerSpecification = {
+  ...communes,
   id: 'communesFilled',
   type: 'fill',
-  source: 'decoupage',
-  'source-layer': 'communes',
   paint: fillLayer,
-  minzoom: epciMaxZoom,
 }
 
 export const communesWithIndexLayer: LayerSpecification = {
