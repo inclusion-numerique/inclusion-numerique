@@ -34,7 +34,7 @@ export const getDepartmentGeoJSON = (): null | DepartmentGeoJSON => {
   )
 
   return {
-    bounds: [bounds.getNorthEast(), bounds.getSouthWest()],
+    bounds: [bounds.getNorthEast().toArray(), bounds.getSouthWest().toArray()],
     source: { type: 'geojson', data },
   }
 }

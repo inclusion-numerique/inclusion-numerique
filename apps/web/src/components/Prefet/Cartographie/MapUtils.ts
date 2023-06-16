@@ -7,6 +7,15 @@ import {
 
 export const epciMaxZoom = 9
 
+export const departementLayer: LineLayerSpecification = {
+  id: 'departements',
+  source: 'decoupage',
+  'source-layer': 'departements',
+  type: 'line',
+  filter: ['==', ['get', 'code'], '08'],
+  paint: { 'line-color': '#161616', 'line-width': 2 },
+}
+
 const communes: Omit<
   LineLayerSpecification | FillLayerSpecification,
   'paint' | 'type' | 'id'
@@ -30,11 +39,7 @@ const lineLayer: LineLayerSpecification['paint'] = {
   'line-color': '#161616',
   'line-opacity': [
     'case',
-    [
-      'any',
-      ['boolean', ['feature-state', 'hover'], false],
-      ['boolean', ['feature-state', 'selected'], false],
-    ],
+    ['any', ['boolean', ['feature-state', 'hover'], false]],
     1,
     0.2,
   ],
@@ -44,11 +49,7 @@ const fillLayer: FillLayerSpecification['paint'] = {
   'fill-color': '#161616',
   'fill-opacity': [
     'case',
-    [
-      'any',
-      ['boolean', ['feature-state', 'hover'], false],
-      ['boolean', ['feature-state', 'selected'], false],
-    ],
+    ['boolean', ['feature-state', 'hover'], false],
     0.08,
     0,
   ],
@@ -80,6 +81,22 @@ export const communesFilledLayer: LayerSpecification = {
   id: 'communesFilled',
   type: 'fill',
   paint: fillLayer,
+}
+
+export const selectedCommunesLayer: LayerSpecification = {
+  ...communes,
+  id: 'selectedCommunes',
+  type: 'line',
+  paint: { 'line-color': '#161616' },
+  filter: ['boolean', false],
+}
+
+export const selectedCommunesFilledLayer: LayerSpecification = {
+  ...communes,
+  id: 'selectedCommunesFilled',
+  type: 'fill',
+  paint: { 'fill-color': '#161616', 'fill-opacity': 0.08 },
+  filter: ['boolean', false],
 }
 
 export const communesWithIndexLayer: LayerSpecification = {

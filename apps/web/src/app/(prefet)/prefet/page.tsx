@@ -16,7 +16,6 @@ const Page = async () => {
     notFound()
   }
 
-  console.log(geoJSON.bounds)
   return <PrefetPage user={user} geoJSON={geoJSON} />
 }
 
