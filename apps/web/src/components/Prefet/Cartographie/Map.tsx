@@ -12,6 +12,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import IndiceNumerique from './IndiceNumerique'
 import {
   addHoverState,
+  addSelectedState,
   communesFilledLayer,
   communesLayer,
   epciMaxZoom,
@@ -61,8 +62,12 @@ const Map = ({ bounds }: { bounds: LngLatBoundsLike }) => {
       map.current.addLayer(epcisLayer)
 
       map.current.on('click', 'communesFilled', (event) => {
-        if (event.features && event.features.length > 0) {
-          setClicked({ type: 'commune', ...event.features[0].properties })
+        if (map.current && event.features && event.features.length > 0) {
+          addSelectedState(map.current, 'communes', event.features[0].id)
+          setClicked({
+            type: 'commune',
+            ...event.features[0].properties,
+          })
         }
       })
       map.current.on('click', 'epcisFilled', (event) => {
@@ -112,7 +117,15 @@ const Map = ({ bounds }: { bounds: LngLatBoundsLike }) => {
         </div>
       </div>
       {clicked && (
-        <MapPopup properties={clicked} close={() => setClicked(null)} />
+        <MapPopup
+          properties={clicked}
+          close={() => {
+            if (map.current) {
+              addSelectedState(map.current, 'communes')
+            }
+            setClicked(null)
+          }}
+        />
       )}
       <IndiceNumerique
         setViewIndiceFN={setViewIndiceFN}

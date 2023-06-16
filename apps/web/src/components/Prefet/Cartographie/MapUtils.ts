@@ -30,7 +30,11 @@ const lineLayer: LineLayerSpecification['paint'] = {
   'line-color': '#161616',
   'line-opacity': [
     'case',
-    ['boolean', ['feature-state', 'hover'], false],
+    [
+      'any',
+      ['boolean', ['feature-state', 'hover'], false],
+      ['boolean', ['feature-state', 'selected'], false],
+    ],
     1,
     0.2,
   ],
@@ -40,8 +44,12 @@ const fillLayer: FillLayerSpecification['paint'] = {
   'fill-color': '#161616',
   'fill-opacity': [
     'case',
-    ['boolean', ['feature-state', 'hover'], false],
-    0.1,
+    [
+      'any',
+      ['boolean', ['feature-state', 'hover'], false],
+      ['boolean', ['feature-state', 'selected'], false],
+    ],
+    0.08,
     0,
   ],
 }
@@ -102,20 +110,32 @@ export const communesWithIndexLayer: LayerSpecification = {
   },
 }
 
-let hoveredStateId: string | number | undefined
-const setHoveringState = (map: Map, layer: string, hover: boolean) => {
-  if (hoveredStateId) {
+const stateId: Record<string, string | number | undefined> = {}
+const setState = (map: Map, layer: string, key: string, value: boolean) => {
+  if (stateId[key]) {
     map.setFeatureState(
       {
         source: 'decoupage',
-        id: hoveredStateId,
+        id: stateId[key],
         sourceLayer: layer,
       },
-      { hover },
+      { [key]: value },
     )
-    if (!hover) {
-      hoveredStateId = undefined
+    if (!value) {
+      stateId[key] = undefined
     }
+  }
+}
+
+export const addSelectedState = (
+  map: Map,
+  layer: string,
+  selectedId?: string | number,
+) => {
+  setState(map, layer, 'selected', false)
+  if (selectedId) {
+    stateId.selected = selectedId
+    setState(map, layer, 'selected', true)
   }
 }
 
@@ -124,15 +144,15 @@ export const addHoverState = (map: Map, id: string, layer: string) => {
     if (map && event.features && event.features.length > 0) {
       // eslint-disable-next-line no-param-reassign
       map.getCanvas().style.cursor = 'pointer'
-      setHoveringState(map, layer, false)
-      hoveredStateId = event.features[0].id
-      setHoveringState(map, layer, true)
+      setState(map, layer, 'hover', false)
+      stateId.hover = event.features[0].id
+      setState(map, layer, 'hover', true)
     }
   })
 
   map.on('mouseleave', id, () => {
     if (map) {
-      setHoveringState(map, layer, false)
+      setState(map, layer, 'hover', false)
     }
   })
 }
