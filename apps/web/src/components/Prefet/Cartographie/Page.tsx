@@ -18,7 +18,7 @@ const Cartographie = ({
 }) => {
   console.log(user)
   const [cities, setCities] = useState<City[]>([])
-  const [selected, setSelected] = useState<City | null | undefined>()
+  const [selectedCity, setSelectedCity] = useState<City | null | undefined>()
 
   useEffect(() => {
     axios
@@ -32,9 +32,9 @@ const Cartographie = ({
   const onCitySelected = useCallback(
     (city: string | undefined | null) => {
       if (city) {
-        setSelected(cities.find((c) => c.nom === city))
+        setSelectedCity(cities.find((c) => c.nom === city))
       } else {
-        setSelected(null)
+        setSelectedCity(null)
       }
     },
     [cities],
@@ -42,10 +42,10 @@ const Cartographie = ({
 
   return (
     <div className={styles.container}>
-      <Legend cities={cities} setSelected={setSelected} />
+      <Legend cities={cities} setSelectedCity={setSelectedCity} />
       <Map
         bounds={bounds}
-        selectedCity={selected}
+        selectedCity={selectedCity}
         onCitySelected={onCitySelected}
       />
     </div>

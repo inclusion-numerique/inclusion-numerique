@@ -127,19 +127,70 @@ export const communesWithIndexLayer: LayerSpecification = {
   },
 }
 
+export const structuresCircleLayer: LayerSpecification = {
+  id: 'structuresCircle',
+  source: 'structures',
+  type: 'circle',
+  filter: ['!=', 'cluster', true],
+  paint: {
+    'circle-color': '#000091',
+    'circle-stroke-color': 'white',
+    'circle-stroke-width': [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+      3,
+      0,
+    ],
+    'circle-radius': 13,
+  },
+}
+
+export const structuresClusterSymbolLayer: LayerSpecification = {
+  id: 'structuresClusterSymbol',
+  source: 'structures',
+  type: 'symbol',
+  filter: ['==', 'cluster', true],
+  layout: {
+    'text-field': ['get', 'count'],
+    'text-size': 18,
+    'text-allow-overlap': true,
+  },
+  paint: {
+    'text-color': 'white',
+  },
+}
+
+export const structuresClusterCircleLayer: LayerSpecification = {
+  id: 'structuresClusterCircle',
+  source: 'structures',
+  type: 'circle',
+  filter: ['==', 'cluster', true],
+  paint: {
+    'circle-color': '#000091',
+    'circle-radius': 20,
+  },
+}
+
 const stateId: Record<string, string | number | undefined> = {}
-const setState = (map: Map, layer: string, key: string, value: boolean) => {
-  if (stateId[key]) {
+const setState = (
+  map: Map,
+  source: string,
+  layer: string | undefined,
+  stateKey: string,
+  key: string,
+  value: boolean,
+) => {
+  if (stateId[stateKey] !== undefined) {
     map.setFeatureState(
       {
-        source: 'decoupage',
-        id: stateId[key],
+        source,
+        id: stateId[stateKey],
         sourceLayer: layer,
       },
       { [key]: value },
     )
     if (!value) {
-      stateId[key] = undefined
+      stateId[stateKey] = undefined
     }
   }
 }
@@ -149,27 +200,33 @@ export const addSelectedState = (
   layer: string,
   selectedId?: string | number,
 ) => {
-  setState(map, layer, 'selected', false)
+  setState(map, 'decoupage', layer, 'selected', 'selected', false)
   if (selectedId) {
     stateId.selected = selectedId
-    setState(map, layer, 'selected', true)
+    setState(map, 'decoupage', layer, 'selected', 'selected', true)
   }
 }
 
-export const addHoverState = (map: Map, id: string, layer: string) => {
+export const addHoverState = (
+  map: Map,
+  source: string,
+  id: string,
+  layer?: string,
+) => {
+  const key = `${source}-hover`
   map.on('mousemove', id, (event) => {
     if (map && event.features && event.features.length > 0) {
       // eslint-disable-next-line no-param-reassign
       map.getCanvas().style.cursor = 'pointer'
-      setState(map, layer, 'hover', false)
-      stateId.hover = event.features[0].id
-      setState(map, layer, 'hover', true)
+      setState(map, source, layer, key, 'hover', false)
+      stateId[key] = event.features[0].id
+      setState(map, source, layer, key, 'hover', true)
     }
   })
 
   map.on('mouseleave', id, () => {
     if (map) {
-      setState(map, layer, 'hover', false)
+      setState(map, source, layer, key, 'hover', false)
     }
   })
 }

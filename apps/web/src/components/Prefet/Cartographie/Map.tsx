@@ -21,10 +21,29 @@ import {
   epcisLayer,
   selectedCommunesFilledLayer,
   selectedCommunesLayer,
+  structuresCircleLayer,
+  structuresClusterCircleLayer,
+  structuresClusterSymbolLayer,
 } from './MapUtils'
 import MapPopup from './MapPopup'
 import styles from './Map.module.css'
 import { mapStyle } from './mapStyle'
+
+const images = ['building', 'public', 'people']
+
+const data = Array.from({ length: 250 }).map(() => {
+  const x = Math.random() - 0.5
+  const y = Math.random() - 0.5
+  const type = images[Math.floor(Math.random() * 100) % 3]
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [4.3853 + x, 49.6953 + y],
+    },
+    properties: { type },
+  }
+})
 
 const Map = ({
   bounds,
@@ -58,6 +77,13 @@ const Map = ({
         return
       }
 
+      for (const source of images) {
+        map.current?.loadImage(
+          `/images/${source}.png`,
+          (error, image) => image && map.current?.addImage(source, image),
+        )
+      }
+
       map.current.fitBounds(bounds, { padding: 20, animate: false })
 
       map.current.addSource('decoupage', {
@@ -66,6 +92,7 @@ const Map = ({
           'https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif/{z}/{x}/{y}.pbf',
         ],
       })
+
       map.current.addLayer(departementLayer)
       map.current.addLayer(communesFilledLayer)
       map.current.addLayer(communesLayer)
@@ -74,14 +101,51 @@ const Map = ({
       map.current.addLayer(epcisFilledLayer)
       map.current.addLayer(epcisLayer)
 
+      map.current.addSource('structures', {
+        type: 'geojson',
+        generateId: true,
+        data: {
+          type: 'FeatureCollection',
+          features: data,
+        },
+        cluster: true,
+        clusterRadius: 25,
+        clusterProperties: { count: ['+', 1] },
+      })
+      map.current.addLayer(structuresCircleLayer)
+      map.current.addLayer(structuresClusterCircleLayer)
+      map.current.addLayer(structuresClusterSymbolLayer)
+      for (const source of images) {
+        map.current.addLayer({
+          id: `structuresSymbol${source}`,
+          source: 'structures',
+          type: 'symbol',
+          layout: {
+            'icon-allow-overlap': true,
+            'icon-image': source,
+          },
+          filter: ['==', ['get', 'type'], source],
+        })
+      }
+
       map.current.on('click', 'epcisFilled', (event) => {
         if (map.current) {
           map.current.flyTo({ zoom: epciMaxZoom + 1, center: event.lngLat })
         }
       })
 
-      addHoverState(map.current, 'communesFilled', 'communes')
-      addHoverState(map.current, 'epcisFilled', 'epcis')
+      map.current.on('click', 'structuresClusterCircle', (event) => {
+        if (map.current) {
+          map.current.flyTo({
+            zoom: map.current.getZoom() + 1,
+            center: event.lngLat,
+          })
+        }
+      })
+
+      addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
+      addHoverState(map.current, 'decoupage', 'epcisFilled', 'epcis')
+      addHoverState(map.current, 'structures', 'structuresCircle')
 
       const navControl = new maplibregl.NavigationControl({
         showZoom: true,

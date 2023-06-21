@@ -11,10 +11,10 @@ import LegendCity from './LegendCity'
 
 const Legend = ({
   cities,
-  setSelected,
+  setSelectedCity,
 }: {
   cities: City[]
-  setSelected: Dispatch<SetStateAction<City | undefined | null>>
+  setSelectedCity: Dispatch<SetStateAction<City | undefined | null>>
 }) => {
   const [legendCollapsed, setLegendCollapsed] = useState(false)
 
@@ -73,7 +73,7 @@ const Legend = ({
           <SearchableSelect
             placeholder="Recherche une commune ou une structure"
             setSelected={(selectedCity) =>
-              setSelected(cities.find((city) => city.nom === selectedCity))
+              setSelectedCity(cities.find((city) => city.nom === selectedCity))
             }
             categories={categories}
             options={undefined}
