@@ -61,7 +61,11 @@ const DepartmentMap = ({ geoJSON }: { geoJSON: DepartmentGeoJSON }) => {
   return (
     <div className={styles.container}>
       <div className={styles.mapContainer}>
-        <div ref={mapContainer} className={styles.map} />
+        <div
+          ref={mapContainer}
+          className={styles.map}
+          data-testid="department-map"
+        />
       </div>
       <h4 className={styles.departement}>Ardennes</h4>
       <div className={styles.actionBox}>
@@ -72,7 +76,11 @@ const DepartmentMap = ({ geoJSON }: { geoJSON: DepartmentGeoJSON }) => {
             l’Inclusion Numérique sur votre territoire à l’aide de cette
             cartographie.
           </div>
-          <Link href="/prefet/cartographie" className="fr-btn">
+          <Link
+            href="/prefet/cartographie"
+            className="fr-btn"
+            data-testid="cartographie-button"
+          >
             <span className="fr-icon-road-map-line fr-mr-1w" />
             Visualiser la cartographie
           </Link>

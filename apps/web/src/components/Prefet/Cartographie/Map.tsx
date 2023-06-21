@@ -139,7 +139,7 @@ const Map = ({
 
   return (
     <div className={styles.mapContainer}>
-      <div ref={mapContainer} className={styles.map}>
+      <div ref={mapContainer} className={styles.map} data-testid="detailed-map">
         <div className="maplibregl-ctrl-bottom-right maplibregl-ctrl">
           <div
             className={classNames(
