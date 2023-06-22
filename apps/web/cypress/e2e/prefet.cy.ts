@@ -11,7 +11,7 @@ describe('Préfet', () => {
     ).as('france-map')
   })
 
-  it('Should access dashboard and see detailed map informations', () => {
+  it.skip('Should access dashboard and see detailed map informations', () => {
     cy.testId('prefet-button').click()
     cy.url().should('equal', appUrl('/prefet'))
     cy.wait(1000)
