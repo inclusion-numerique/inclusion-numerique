@@ -4,6 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import maplibregl, {
   LngLatBoundsLike,
+  LngLatLike,
+  MapGeoJSONFeature,
+  MapMouseEvent,
   Map as MapType,
   StyleSpecification,
 } from 'maplibre-gl'
@@ -29,7 +32,7 @@ import MapPopup from './MapPopup'
 import styles from './Map.module.css'
 import { mapStyle } from './mapStyle'
 
-const images = ['building', 'public', 'people']
+const images = ['associations', 'public', 'private']
 
 const data = Array.from({ length: 250 }).map(() => {
   const x = Math.random() - 0.5
@@ -41,7 +44,7 @@ const data = Array.from({ length: 250 }).map(() => {
       type: 'Point',
       coordinates: [4.3853 + x, 49.6953 + y],
     },
-    properties: { type },
+    properties: { type, name: 'random styff' },
   }
 })
 
@@ -58,6 +61,11 @@ const Map = ({
   const map = useRef<MapType>()
   const [viewIndiceFN, setViewIndiceFN] = useState(true)
   const [division, setDivision] = useState('EPCI')
+  const clickedPoint = useRef<string>()
+  const [selectedStructure, setSelectedStructure] = useState<{
+    lngLat: LngLatLike
+    name: string
+  }>()
 
   useEffect(() => {
     if (map.current || !mapContainer.current) {
@@ -128,21 +136,6 @@ const Map = ({
         })
       }
 
-      map.current.on('click', 'epcisFilled', (event) => {
-        if (map.current) {
-          map.current.flyTo({ zoom: epciMaxZoom + 1, center: event.lngLat })
-        }
-      })
-
-      map.current.on('click', 'structuresClusterCircle', (event) => {
-        if (map.current) {
-          map.current.flyTo({
-            zoom: map.current.getZoom() + 1,
-            center: event.lngLat,
-          })
-        }
-      })
-
       addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'epcisFilled', 'epcis')
       addHoverState(map.current, 'structures', 'structuresCircle')
@@ -191,13 +184,96 @@ const Map = ({
   }, [map, selectedCity])
 
   useEffect(() => {
+    if (map.current && selectedStructure) {
+      const popup = new maplibregl.Popup({
+        closeButton: false,
+        className: styles.popup,
+      })
+        .setLngLat(selectedStructure.lngLat)
+        .setHTML(`<b>${selectedStructure.name}</b>`)
+        .addTo(map.current)
+      return () => {
+        popup.remove()
+      }
+    }
+  }, [map, selectedStructure])
+
+  useEffect(() => {
     if (map.current) {
-      map.current.on('click', 'communesFilled', (event) => {
-        if (map.current && event.features && event.features.length > 0) {
+      const onCommuneClick = (
+        event: MapMouseEvent & {
+          features?: MapGeoJSONFeature[] | undefined
+        },
+      ) => {
+        if (
+          map.current &&
+          event.features &&
+          event.features.length > 0 &&
+          clickedPoint.current !== event.lngLat.toString()
+        ) {
           addSelectedState(map.current, 'communes', event.features[0].id)
           onCitySelected(event.features[0].properties.nom as string)
         }
-      })
+        clickedPoint.current = event.lngLat.toString()
+      }
+
+      const onStructureClick = (
+        event: MapMouseEvent & {
+          features?: MapGeoJSONFeature[] | undefined
+        },
+      ) => {
+        if (map.current && event.features && event.features.length > 0) {
+          setSelectedStructure({
+            lngLat: (event.features[0].geometry as GeoJSON.Point)
+              .coordinates as LngLatLike,
+            name: event.features[0].properties.name as string,
+          })
+        }
+        clickedPoint.current = event.lngLat.toString()
+      }
+      const onStructureClusterClick = (
+        event: MapMouseEvent & {
+          features?: MapGeoJSONFeature[] | undefined
+        },
+      ) => {
+        if (map.current) {
+          map.current.flyTo({
+            zoom: map.current.getZoom() + 1,
+            center: event.lngLat,
+          })
+        }
+        clickedPoint.current = event.lngLat.toString()
+      }
+
+      const onEPCIClick = (
+        event: MapMouseEvent & {
+          features?: MapGeoJSONFeature[] | undefined
+        },
+      ) => {
+        if (map.current && clickedPoint.current !== event.lngLat.toString()) {
+          map.current.flyTo({ zoom: epciMaxZoom + 1, center: event.lngLat })
+        }
+        clickedPoint.current = event.lngLat.toString()
+      }
+
+      map.current.on('click', 'structuresCircle', onStructureClick)
+      map.current.on(
+        'click',
+        'structuresClusterCircle',
+        onStructureClusterClick,
+      )
+      map.current.on('click', 'epcisFilled', onEPCIClick)
+      map.current.on('click', 'communesFilled', onCommuneClick)
+      return () => {
+        map.current?.off('click', 'structuresCircle', onStructureClick)
+        map.current?.off(
+          'click',
+          'structuresClusterCircle',
+          onStructureClusterClick,
+        )
+        map.current?.off('click', 'epcisFilled', onEPCIClick)
+        map.current?.off('click', 'communesFilled', onCommuneClick)
+      }
     }
   }, [map, onCitySelected])
 

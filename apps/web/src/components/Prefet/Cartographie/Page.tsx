@@ -16,7 +16,6 @@ const Cartographie = ({
   user: SessionUser
   bounds: LngLatBoundsLike
 }) => {
-  console.log(user)
   const [cities, setCities] = useState<City[]>([])
   const [selectedCity, setSelectedCity] = useState<City | null | undefined>()
 
