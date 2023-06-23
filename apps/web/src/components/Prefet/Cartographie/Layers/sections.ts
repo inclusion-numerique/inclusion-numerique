@@ -34,19 +34,23 @@ export const departementLayer: LineLayerSpecification = {
   paint: { 'line-color': '#161616', 'line-width': 2 },
 }
 
-export const epcisLayer: LayerSpecification = {
+export const epcisLayer = (epcisCode: string[]): LayerSpecification => ({
   ...epcis,
   id: 'epcis',
   type: 'line',
   paint: lineLayer,
-}
+  filter: ['in', ['get', 'code'], ['literal', epcisCode]],
+  layout: { visibility: 'none' },
+})
 
-export const epcisFilledLayer: LayerSpecification = {
+export const epcisFilledLayer = (epcisCode: string[]): LayerSpecification => ({
   ...epcis,
   id: 'epcisFilled',
   type: 'fill',
   paint: fillLayer,
-}
+  filter: ['in', ['get', 'code'], ['literal', epcisCode]],
+  layout: { visibility: 'none' },
+})
 
 export const communesLayer: LayerSpecification = {
   ...communes,

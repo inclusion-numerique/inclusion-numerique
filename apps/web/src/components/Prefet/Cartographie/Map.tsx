@@ -11,7 +11,7 @@ import maplibregl, {
   StyleSpecification,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { City } from '@app/web/types/City'
+import { City, EPCI } from '@app/web/types/City'
 import IndiceNumerique from './IndiceNumerique'
 import { addHoverState, addSelectedState } from './MapUtils'
 import MapPopup from './MapPopup'
@@ -20,6 +20,8 @@ import { mapStyle } from './mapStyle'
 import {
   communesIFNFilledLayer,
   communesIFNLayer,
+  epcisIFNFilledLayer,
+  epcisIFNLayer,
   ifnColors,
   selectedCommunesIFNLayer,
 } from './Layers/ifn'
@@ -60,11 +62,13 @@ const Map = ({
   selectedCity,
   onCitySelected,
   cities,
+  epcis,
 }: {
   bounds: LngLatBoundsLike
   selectedCity?: City | null
   cities: City[]
   onCitySelected: (city: string | null | undefined) => void
+  epcis: EPCI[]
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<MapType>()
@@ -83,6 +87,14 @@ const Map = ({
     }
     return result
   }, [cities])
+
+  const epcisByIndex: string[][] = useMemo(() => {
+    const result: string[][] = ifnColors.map(() => [])
+    for (const epci of epcis) {
+      result[Math.floor((epci.ifn * ifnColors.length) / 10)].push(epci.code)
+    }
+    return result
+  }, [epcis])
 
   useEffect(() => {
     if (map.current || !mapContainer.current) {
@@ -118,17 +130,21 @@ const Map = ({
         ],
       })
 
+      const epcisCode = epcis.map((epci) => epci.code)
       map.current.addLayer(communesIFNFilledLayer(citiesByIndex))
       map.current.addLayer(communesIFNLayer(citiesByIndex))
       map.current.addLayer(selectedCommunesIFNLayer(citiesByIndex))
+      map.current.addLayer(epcisIFNFilledLayer(epcisByIndex, epcisCode))
+      map.current.addLayer(epcisIFNLayer(epcisByIndex, epcisCode))
 
       map.current.addLayer(departementLayer)
       map.current.addLayer(communesFilledLayer)
       map.current.addLayer(communesLayer)
       map.current.addLayer(selectedCommunesFilledLayer)
       map.current.addLayer(selectedCommunesLayer)
-      map.current.addLayer(epcisFilledLayer)
-      map.current.addLayer(epcisLayer)
+
+      map.current.addLayer(epcisFilledLayer(epcisCode))
+      map.current.addLayer(epcisLayer(epcisCode))
 
       map.current.addSource('structures', {
         type: 'geojson',
@@ -160,6 +176,7 @@ const Map = ({
       addHoverState(map.current, 'decoupage', 'communesIFNFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'epcisFilled', 'epcis')
+      addHoverState(map.current, 'decoupage', 'epcisIFNFilled', 'epcis')
       addHoverState(map.current, 'structures', 'structuresCircle')
 
       const navControl = new maplibregl.NavigationControl({
@@ -240,6 +257,8 @@ const Map = ({
           'visibility',
           'visible',
         )
+        map.current.setLayoutProperty('epcisIFN', 'visibility', 'visible')
+        map.current.setLayoutProperty('epcisIFNFilled', 'visibility', 'visible')
 
         map.current.setLayoutProperty('communes', 'visibility', 'none')
         map.current.setLayoutProperty('communesFilled', 'visibility', 'none')
@@ -249,6 +268,8 @@ const Map = ({
           'visibility',
           'none',
         )
+        map.current.setLayoutProperty('epcis', 'visibility', 'none')
+        map.current.setLayoutProperty('epcisFilled', 'visibility', 'none')
       } else {
         map.current.setLayoutProperty('communesIFNFilled', 'visibility', 'none')
         map.current.setLayoutProperty('communesIFN', 'visibility', 'none')
@@ -257,6 +278,8 @@ const Map = ({
           'visibility',
           'none',
         )
+        map.current.setLayoutProperty('epcisIFN', 'visibility', 'none')
+        map.current.setLayoutProperty('epcisIFNFilled', 'visibility', 'none')
 
         map.current.setLayoutProperty('communes', 'visibility', 'visible')
         map.current.setLayoutProperty('communesFilled', 'visibility', 'visible')
@@ -270,6 +293,8 @@ const Map = ({
           'visibility',
           'visible',
         )
+        map.current.setLayoutProperty('epcis', 'visibility', 'visible')
+        map.current.setLayoutProperty('epcisFilled', 'visibility', 'visible')
       }
     }
   }, [map, viewIndiceFN])
@@ -338,6 +363,7 @@ const Map = ({
         onStructureClusterClick,
       )
       map.current.on('click', 'epcisFilled', onEPCIClick)
+      map.current.on('click', 'epcisIFNFilled', onEPCIClick)
       map.current.on('click', 'communesFilled', onCommuneClick)
       map.current.on('click', 'communesIFNFilled', onCommuneClick)
       return () => {
@@ -348,6 +374,7 @@ const Map = ({
           onStructureClusterClick,
         )
         map.current?.off('click', 'epcisFilled', onEPCIClick)
+        map.current?.off('click', 'epcisIFNFilled', onEPCIClick)
         map.current?.off('click', 'communesFilled', onCommuneClick)
         map.current?.off('click', 'communesIFNFilled', onCommuneClick)
       }

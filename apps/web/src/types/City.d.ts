@@ -6,8 +6,14 @@ export type City = {
   nom: string
   code: string
   codesPostaux: string[]
+  codeEpci: string
   population: number
   centre: { type: 'Polygon'; coordinates: LngLatLike }
+  ifn: number
+}
+
+export type EPCI = {
+  code: string
   ifn: number
 }
 
