@@ -15,7 +15,7 @@
 
 .popup {
   :global(.maplibregl-popup-tip) {
-    border-top-color: transparent;
+    border-top-color: transparent !important;
   }
 
   :global(.maplibregl-popup-content) {
