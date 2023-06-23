@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import maplibregl, {
   LngLatBoundsLike,
@@ -13,24 +13,31 @@ import maplibregl, {
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { City } from '@app/web/types/City'
 import IndiceNumerique from './IndiceNumerique'
+import { addHoverState, addSelectedState } from './MapUtils'
+import MapPopup from './MapPopup'
+import styles from './Map.module.css'
+import { mapStyle } from './mapStyle'
 import {
-  addHoverState,
-  addSelectedState,
+  communesIFNFilledLayer,
+  communesIFNLayer,
+  ifnColors,
+  selectedCommunesIFNLayer,
+} from './Layers/ifn'
+import {
   communesFilledLayer,
   communesLayer,
   departementLayer,
-  epciMaxZoom,
   epcisFilledLayer,
   epcisLayer,
   selectedCommunesFilledLayer,
   selectedCommunesLayer,
+} from './Layers/sections'
+import {
   structuresCircleLayer,
   structuresClusterCircleLayer,
   structuresClusterSymbolLayer,
-} from './MapUtils'
-import MapPopup from './MapPopup'
-import styles from './Map.module.css'
-import { mapStyle } from './mapStyle'
+} from './Layers/structures'
+import { epciMaxZoom } from './Layers/common'
 
 const images = ['associations', 'public', 'private']
 
@@ -52,9 +59,11 @@ const Map = ({
   bounds,
   selectedCity,
   onCitySelected,
+  cities,
 }: {
   bounds: LngLatBoundsLike
   selectedCity?: City | null
+  cities: City[]
   onCitySelected: (city: string | null | undefined) => void
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null)
@@ -66,6 +75,14 @@ const Map = ({
     lngLat: LngLatLike
     name: string
   }>()
+
+  const citiesByIndex: string[][] = useMemo(() => {
+    const result: string[][] = ifnColors.map(() => [])
+    for (const city of cities) {
+      result[Math.floor((city.ifn * ifnColors.length) / 10)].push(city.code)
+    }
+    return result
+  }, [cities])
 
   useEffect(() => {
     if (map.current || !mapContainer.current) {
@@ -100,6 +117,10 @@ const Map = ({
           'https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif/{z}/{x}/{y}.pbf',
         ],
       })
+
+      map.current.addLayer(communesIFNFilledLayer(citiesByIndex))
+      map.current.addLayer(communesIFNLayer(citiesByIndex))
+      map.current.addLayer(selectedCommunesIFNLayer(citiesByIndex))
 
       map.current.addLayer(departementLayer)
       map.current.addLayer(communesFilledLayer)
@@ -136,6 +157,7 @@ const Map = ({
         })
       }
 
+      addHoverState(map.current, 'decoupage', 'communesIFNFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'epcisFilled', 'epcis')
       addHoverState(map.current, 'structures', 'structuresCircle')
@@ -176,9 +198,15 @@ const Map = ({
           ['get', 'nom'],
           selectedCity.nom,
         ])
+        map.current.setFilter('selectedCommunesIFN', [
+          '==',
+          ['get', 'nom'],
+          selectedCity.nom,
+        ])
       } else {
         map.current.setFilter('selectedCommunesFilled', ['boolean', false])
         map.current.setFilter('selectedCommunes', ['boolean', false])
+        map.current.setFilter('selectedCommunesIFN', ['boolean', false])
       }
     }
   }, [map, selectedCity])
@@ -198,6 +226,53 @@ const Map = ({
     }
   }, [map, selectedStructure])
 
+  useEffect(() => {
+    if (map.current && map.current.isStyleLoaded()) {
+      if (viewIndiceFN) {
+        map.current.setLayoutProperty(
+          'communesIFNFilled',
+          'visibility',
+          'visible',
+        )
+        map.current.setLayoutProperty('communesIFN', 'visibility', 'visible')
+        map.current.setLayoutProperty(
+          'selectedCommunesIFN',
+          'visibility',
+          'visible',
+        )
+
+        map.current.setLayoutProperty('communes', 'visibility', 'none')
+        map.current.setLayoutProperty('communesFilled', 'visibility', 'none')
+        map.current.setLayoutProperty('selectedCommunes', 'visibility', 'none')
+        map.current.setLayoutProperty(
+          'selectedCommunesFilled',
+          'visibility',
+          'none',
+        )
+      } else {
+        map.current.setLayoutProperty('communesIFNFilled', 'visibility', 'none')
+        map.current.setLayoutProperty('communesIFN', 'visibility', 'none')
+        map.current.setLayoutProperty(
+          'selectedCommunesIFN',
+          'visibility',
+          'none',
+        )
+
+        map.current.setLayoutProperty('communes', 'visibility', 'visible')
+        map.current.setLayoutProperty('communesFilled', 'visibility', 'visible')
+        map.current.setLayoutProperty(
+          'selectedCommunes',
+          'visibility',
+          'visible',
+        )
+        map.current.setLayoutProperty(
+          'selectedCommunesFilled',
+          'visibility',
+          'visible',
+        )
+      }
+    }
+  }, [map, viewIndiceFN])
   useEffect(() => {
     if (map.current) {
       const onCommuneClick = (
@@ -264,6 +339,7 @@ const Map = ({
       )
       map.current.on('click', 'epcisFilled', onEPCIClick)
       map.current.on('click', 'communesFilled', onCommuneClick)
+      map.current.on('click', 'communesIFNFilled', onCommuneClick)
       return () => {
         map.current?.off('click', 'structuresCircle', onStructureClick)
         map.current?.off(
@@ -273,6 +349,7 @@ const Map = ({
         )
         map.current?.off('click', 'epcisFilled', onEPCIClick)
         map.current?.off('click', 'communesFilled', onCommuneClick)
+        map.current?.off('click', 'communesIFNFilled', onCommuneClick)
       }
     }
   }, [map, onCitySelected])
