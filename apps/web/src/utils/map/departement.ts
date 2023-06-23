@@ -1,12 +1,15 @@
 import axios from 'axios'
 import { City, EPCI, IFNResponse } from '@app/web/types/City'
+import { DepartmentGeoJSON, getDepartmentGeoJSON } from './geom'
 
-export const getSections = async (): Promise<{
+const getSections = async (
+  departement: string,
+): Promise<{
   cities: City[]
   epcis: EPCI[]
 }> => {
   const cities = await axios.get<Omit<City, 'ifn'>[]>(
-    'https://geo.api.gouv.fr/departements/08/communes?fields=centre,population,codesPostaux,codeEpci',
+    `https://geo.api.gouv.fr/departements/${departement}/communes?fields=centre,population,codesPostaux,codeEpci`,
   )
 
   const epcis = cities.data
@@ -40,4 +43,21 @@ export const getSections = async (): Promise<{
       ifn: ifnEPCIs.data[epci].score.total,
     })),
   }
+}
+
+export const getDepartmentInformations = async (
+  departement: string,
+): Promise<{
+  cities: City[]
+  epcis: EPCI[]
+  geoJSON: DepartmentGeoJSON
+} | null> => {
+  const geoJSON = getDepartmentGeoJSON(departement)
+  const sections = await getSections(departement)
+  return geoJSON
+    ? {
+        ...sections,
+        geoJSON,
+      }
+    : null
 }

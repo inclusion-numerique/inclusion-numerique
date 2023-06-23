@@ -6,7 +6,7 @@ import { getDepartmentGeoJSON } from '@app/web/utils/map/geom'
 
 const Page = async () => {
   const user = await getSessionUser()
-  const geoJSON = getDepartmentGeoJSON()
+  const geoJSON = getDepartmentGeoJSON('08')
 
   if (!user) {
     redirect('/connexion?suivant=/prefet')

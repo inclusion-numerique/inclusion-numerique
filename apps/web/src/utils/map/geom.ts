@@ -19,9 +19,11 @@ const getBounds = (coordinates: number[][][]) =>
       new LngLatBounds(),
     )
 
-export const getDepartmentGeoJSON = (): null | DepartmentGeoJSON => {
+export const getDepartmentGeoJSON = (
+  code: string,
+): null | DepartmentGeoJSON => {
   const data = departments.features.find(
-    (departement) => departement.properties.code === '08',
+    (departement) => departement.properties.code === code,
   )
   if (!data) {
     return null
