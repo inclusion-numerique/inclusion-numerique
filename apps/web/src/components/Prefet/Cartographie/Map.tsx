@@ -115,13 +115,6 @@ const Map = ({
         return
       }
 
-      for (const source of images) {
-        map.current?.loadImage(
-          `/images/${source}.png`,
-          (error, image) => image && map.current?.addImage(source, image),
-        )
-      }
-
       map.current.fitBounds(bounds, { padding: 20, animate: false })
 
       map.current.addSource('decoupage', {
@@ -164,15 +157,20 @@ const Map = ({
       map.current.addLayer(structuresClusterCircleLayer)
       map.current.addLayer(structuresClusterSymbolLayer)
       for (const source of images) {
-        map.current.addLayer({
-          id: `structuresSymbol${source}`,
-          source: 'structures',
-          type: 'symbol',
-          layout: {
-            'icon-allow-overlap': true,
-            'icon-image': source,
-          },
-          filter: ['==', ['get', 'type'], source],
+        map.current.loadImage(`/images/${source}.png`, (error, image) => {
+          if (map.current && image) {
+            map.current.addImage(source, image)
+            map.current.addLayer({
+              id: `structuresSymbol${source}`,
+              source: 'structures',
+              type: 'symbol',
+              layout: {
+                'icon-allow-overlap': true,
+                'icon-image': source,
+              },
+              filter: ['==', ['get', 'type'], source],
+            })
+          }
         })
       }
 
