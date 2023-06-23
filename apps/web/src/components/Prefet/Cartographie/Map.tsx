@@ -40,6 +40,7 @@ import {
   structuresClusterSymbolLayer,
 } from './Layers/structures'
 import { epciMaxZoom } from './Layers/common'
+import { placesLayer } from './Layers/places'
 
 const images = ['associations', 'public', 'private']
 
@@ -145,6 +146,8 @@ const Map = ({
 
       map.current.addLayer(epcisFilledLayer(epcisCode))
       map.current.addLayer(epcisLayer(epcisCode))
+
+      placesLayer.map((placeLayer) => map.current?.addLayer(placeLayer))
 
       map.current.addSource('structures', {
         type: 'geojson',
