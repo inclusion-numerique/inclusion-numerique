@@ -84,7 +84,9 @@ const Map = ({
   const citiesByIndex: string[][] = useMemo(() => {
     const result: string[][] = ifnColors.map(() => [])
     for (const city of cities) {
-      result[Math.floor((city.ifn * ifnColors.length) / 10)].push(city.code)
+      result[Math.floor(((city.ifn - 1) * ifnColors.length) / 10)].push(
+        city.code,
+      )
     }
     return result
   }, [cities])
@@ -92,7 +94,9 @@ const Map = ({
   const epcisByIndex: string[][] = useMemo(() => {
     const result: string[][] = ifnColors.map(() => [])
     for (const epci of epcis) {
-      result[Math.floor((epci.ifn * ifnColors.length) / 10)].push(epci.code)
+      result[Math.floor(((epci.ifn - 1) * ifnColors.length) / 10)].push(
+        epci.code,
+      )
     }
     return result
   }, [epcis])
