@@ -2,16 +2,18 @@ import { LngLatBounds, LngLatBoundsLike } from 'maplibre-gl'
 import { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import dataFile from './departements.json'
 
+type JsonDataFeature = {
+  type: 'Feature'
+  geometry: {
+    type: 'Polygon'
+    coordinates: number[][][]
+  }
+  properties: { code: string; nom: string }
+}
+
 const data = dataFile as {
   type: 'FeatureCollection'
-  features: {
-    type: 'Feature'
-    geometry: {
-      type: 'Polygon'
-      coordinates: number[][][]
-    }
-    properties: { code: string; nom: string }
-  }[]
+  features: JsonDataFeature[]
 }
 
 export type DepartementGeoJson = {
@@ -19,7 +21,7 @@ export type DepartementGeoJson = {
   name: string
   // north East and south West coordinates
   bounds: [[number, number], [number, number]]
-  source: GeoJSONSourceSpecification
+  source: GeoJSONSourceSpecification & { data: JsonDataFeature }
 }
 
 /*

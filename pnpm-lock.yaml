@@ -208,6 +208,9 @@ importers:
       fuse.js:
         specifier: ^6.6.2
         version: 6.6.2
+      geolib:
+        specifier: ^3.3.4
+        version: 3.3.4
       html-minifier:
         specifier: ^4.0.0
         version: 4.0.0
@@ -11999,6 +12002,10 @@ packages:
 
   /geojson-vt@3.2.1:
     resolution: {integrity: sha512-EvGQQi/zPrDA6zr6BnJD/YhwAkBP8nnJ9emh3EnHQKVMfg/MRVtPbMYdgVy/IaEmn4UfagD2a6fafPDL5hbtwg==}
+    dev: false
+
+  /geolib@3.3.4:
+    resolution: {integrity: sha512-EicrlLLL3S42gE9/wde+11uiaYAaeSVDwCUIv2uMIoRBfNJCn8EsSI+6nS3r4TCKDO6+RQNM9ayLq2at+oZQWQ==}
     dev: false
 
   /get-caller-file@2.0.5:

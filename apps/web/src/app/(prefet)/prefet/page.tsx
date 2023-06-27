@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
+import { hasAccessToDepartementDashboard } from '@app/web/security/securityRules'
 
 export const generateMetadata = async () => {
   const user = await getSessionUser()
@@ -9,8 +10,12 @@ export const generateMetadata = async () => {
   }
 
   if (user.role === 'Prefect' && user.roleScope) {
-    // TODO : check if user is allowed to access this page and redirect to own departement
     redirect(`/prefet/${user.roleScope}`)
+    return
+  }
+
+  if (hasAccessToDepartementDashboard(user, '69')) {
+    redirect(`/prefet/69`)
     return
   }
 
