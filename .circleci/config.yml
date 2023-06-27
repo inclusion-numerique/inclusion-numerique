@@ -474,7 +474,7 @@ jobs:
             - run:
                 name: 'Load fixtures on preview envs'
                 command: |
-                  pnpm --silent -F @app/fixtures load -e
+                  pnpm --silent -F @app/fixtures load
       - run:
           name: 'Execute migration from legacy data'
           command: |
