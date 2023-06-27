@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import classNames from 'classnames'
-import { Statistic as StatisticType } from '../data'
+import { Statistic as StatisticType } from '../departementData'
 import styles from './Statistic.module.css'
 
 type StatisticProps = {

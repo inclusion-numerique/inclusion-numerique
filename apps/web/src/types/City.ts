@@ -9,12 +9,12 @@ export type City = {
   codeEpci: string
   population: number
   centre: { type: 'Polygon'; coordinates: LngLatLike }
-  ifn: number
+  ifn: number | null
 }
 
 export type EPCI = {
   code: string
-  ifn: number
+  ifn: number | null
 }
 
 export type IFNResponse = Record<

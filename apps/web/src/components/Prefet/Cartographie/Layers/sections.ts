@@ -24,15 +24,16 @@ export const fillLayer: FillLayerSpecification['paint'] = {
     0,
   ],
 }
-
-export const departementLayer: LineLayerSpecification = {
+export const departementLayer = (
+  departementCode: string,
+): LineLayerSpecification => ({
   id: 'departements',
   source: 'decoupage',
   'source-layer': 'departements',
   type: 'line',
-  filter: ['==', ['get', 'code'], '08'],
+  filter: ['==', ['get', 'code'], departementCode],
   paint: { 'line-color': '#161616', 'line-width': 2 },
-}
+})
 
 export const epcisLayer = (epcisCode: string[]): LayerSpecification => ({
   ...epcis,
@@ -52,36 +53,42 @@ export const epcisFilledLayer = (epcisCode: string[]): LayerSpecification => ({
   layout: { visibility: 'none' },
 })
 
-export const communesLayer: LayerSpecification = {
-  ...communes,
+export const communesLayer = (departementCode: string): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'communes',
   type: 'line',
   paint: lineLayer,
   layout: { visibility: 'none' },
-}
+})
 
-export const communesFilledLayer: LayerSpecification = {
-  ...communes,
+export const communesFilledLayer = (
+  departementCode: string,
+): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'communesFilled',
   type: 'fill',
   paint: fillLayer,
   layout: { visibility: 'none' },
-}
+})
 
-export const selectedCommunesLayer: LayerSpecification = {
-  ...communes,
+export const selectedCommunesLayer = (
+  departementCode: string,
+): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'selectedCommunes',
   type: 'line',
   paint: { 'line-color': '#161616' },
   filter: ['boolean', false],
   layout: { visibility: 'none' },
-}
+})
 
-export const selectedCommunesFilledLayer: LayerSpecification = {
-  ...communes,
+export const selectedCommunesFilledLayer = (
+  departementCode: string,
+): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'selectedCommunesFilled',
   type: 'fill',
   paint: { 'fill-color': '#161616', 'fill-opacity': 0.08 },
   filter: ['boolean', false],
   layout: { visibility: 'none' },
-}
+})

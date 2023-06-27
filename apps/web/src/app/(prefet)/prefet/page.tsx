@@ -1,22 +1,22 @@
-import { notFound, redirect } from 'next/navigation'
-import React from 'react'
+import { redirect } from 'next/navigation'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
-import PrefetPage from '@app/web/components/Prefet/Page'
-import { getDepartmentGeoJSON } from '@app/web/utils/map/geom'
 
-const Page = async () => {
+export const generateMetadata = async () => {
   const user = await getSessionUser()
-  const geoJSON = getDepartmentGeoJSON('08')
-
   if (!user) {
-    redirect('/connexion?suivant=/prefet')
+    redirect(`/connexion?suivant=/prefet`)
+    return
   }
 
-  if (!geoJSON) {
-    notFound()
+  if (user.role === 'Prefect' && user.roleScope) {
+    // TODO : check if user is allowed to access this page and redirect to own departement
+    redirect(`/prefet/${user.roleScope}`)
+    return
   }
 
-  return <PrefetPage user={user} geoJSON={geoJSON} />
+  redirect('/profil')
 }
+
+const Page = () => null
 
 export default Page

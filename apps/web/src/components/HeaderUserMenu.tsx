@@ -50,7 +50,7 @@ export const HeaderUserMenu = ({
       <li>
         <Link
           className="fr-nav__link"
-          href="/"
+          href="/profil"
           style={{
             boxShadow: 'none',
             borderBottom: 'var(--slim-grey-border)',

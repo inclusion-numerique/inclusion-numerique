@@ -1,26 +1,25 @@
 'use client'
 
-import React, { useCallback, useState } from 'react'
-import { LngLatBoundsLike } from 'maplibre-gl'
-import { SessionUser } from '@app/web/auth/sessionUser'
-import { City, EPCI } from '@app/web/types/City'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { City } from '@app/web/types/City'
+import { StructuresData } from '@app/web/components/Prefet/structuresData'
+import { DepartementData } from '@app/web/utils/map/departement'
 import styles from './Page.module.css'
 import Legend from './Legend'
 import Map from './Map'
 
 const Cartographie = ({
-  user,
-  bounds,
-  cities,
-  epcis,
+  departement,
+  structuresData,
 }: {
-  user: SessionUser
-  bounds: LngLatBoundsLike
-  cities: City[]
-  epcis: EPCI[]
+  departement: DepartementData
+  structuresData: StructuresData
 }) => {
-  console.log(user)
   const [selectedCity, setSelectedCity] = useState<City | null | undefined>()
+
+  const { cities, code } = departement
+  const router = useRouter()
 
   const onCitySelected = useCallback(
     (city: string | undefined | null) => {
@@ -33,13 +32,20 @@ const Cartographie = ({
     [cities],
   )
 
+  useEffect(() => {
+    router.prefetch(`/prefet/${code}`)
+  }, [router, code])
+
   return (
     <div className={styles.container}>
-      <Legend cities={cities} setSelectedCity={setSelectedCity} />
-      <Map
-        bounds={bounds}
-        epcis={epcis}
+      <Legend
         cities={cities}
+        departement={departement}
+        setSelectedCity={setSelectedCity}
+      />
+      <Map
+        departement={departement}
+        structuresData={structuresData}
         selectedCity={selectedCity}
         onCitySelected={onCitySelected}
       />

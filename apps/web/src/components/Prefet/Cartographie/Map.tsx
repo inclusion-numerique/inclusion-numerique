@@ -3,15 +3,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import maplibregl, {
-  LngLatBoundsLike,
   LngLatLike,
+  Map as MapType,
   MapGeoJSONFeature,
   MapMouseEvent,
-  Map as MapType,
   StyleSpecification,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { City, EPCI } from '@app/web/types/City'
+import { City } from '@app/web/types/City'
+import {
+  StructuresData,
+  structureTypes,
+} from '@app/web/components/Prefet/structuresData'
+import { DepartementData } from '@app/web/utils/map/departement'
 import IndiceNumerique from './IndiceNumerique'
 import { addHoverState, addSelectedState } from './MapUtils'
 import MapPopup from './MapPopup'
@@ -42,35 +46,21 @@ import {
 import { epciMaxZoom } from './Layers/common'
 import { placesLayer } from './Layers/places'
 
-const images = ['associations', 'public', 'private']
-
-const data = Array.from({ length: 250 }).map(() => {
-  const x = Math.random() - 0.5
-  const y = Math.random() - 0.5
-  const type = images[Math.floor(Math.random() * 100) % 3]
-  return {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [4.3853 + x, 49.6953 + y],
-    },
-    properties: { type, name: 'random styff' },
-  }
-})
+const getColorIndexFromIfn = (ifn: number) =>
+  Math.floor(((ifn - 1) * ifnColors.length) / 10)
 
 const Map = ({
-  bounds,
+  departement,
   selectedCity,
   onCitySelected,
-  cities,
-  epcis,
+  structuresData,
 }: {
-  bounds: LngLatBoundsLike
+  departement: DepartementData
+  structuresData: StructuresData
   selectedCity?: City | null
-  cities: City[]
   onCitySelected: (city: string | null | undefined) => void
-  epcis: EPCI[]
 }) => {
+  const { cities, epcis, bounds, code: departementCode } = departement
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<MapType>()
   const [viewIndiceFN, setViewIndiceFN] = useState(true)
@@ -84,19 +74,22 @@ const Map = ({
   const citiesByIndex: string[][] = useMemo(() => {
     const result: string[][] = ifnColors.map(() => [])
     for (const city of cities) {
-      result[Math.floor(((city.ifn - 1) * ifnColors.length) / 10)].push(
-        city.code,
-      )
+      if (city.ifn === null || city.ifn === undefined) {
+        continue
+      }
+      result[getColorIndexFromIfn(city.ifn)].push(city.code)
     }
+
     return result
   }, [cities])
 
   const epcisByIndex: string[][] = useMemo(() => {
     const result: string[][] = ifnColors.map(() => [])
     for (const epci of epcis) {
-      result[Math.floor(((epci.ifn - 1) * ifnColors.length) / 10)].push(
-        epci.code,
-      )
+      if (epci.ifn === null || epci.ifn === undefined) {
+        continue
+      }
+      result[getColorIndexFromIfn(epci.ifn)].push(epci.code)
     }
     return result
   }, [epcis])
@@ -106,6 +99,7 @@ const Map = ({
       return
     }
 
+    // Initialize map with min and max zoom
     map.current = new maplibregl.Map({
       attributionControl: false,
       container: mapContainer.current,
@@ -119,8 +113,10 @@ const Map = ({
         return
       }
 
+      // Zoom to departement bounds
       map.current.fitBounds(bounds, { padding: 20, animate: false })
 
+      // Add source for cities and epcis
       map.current.addSource('decoupage', {
         type: 'vector',
         tiles: [
@@ -128,21 +124,25 @@ const Map = ({
         ],
       })
 
-      const epcisCode = epcis.map((epci) => epci.code)
-      map.current.addLayer(communesIFNFilledLayer(citiesByIndex))
-      map.current.addLayer(communesIFNLayer(citiesByIndex))
-      map.current.addLayer(selectedCommunesIFNLayer(citiesByIndex))
-      map.current.addLayer(epcisIFNFilledLayer(epcisByIndex, epcisCode))
-      map.current.addLayer(epcisIFNLayer(epcisByIndex, epcisCode))
+      const epciCodes = epcis.map((epci) => epci.code)
+      map.current.addLayer(
+        communesIFNFilledLayer({ departementCode, citiesByIndex }),
+      )
+      map.current.addLayer(communesIFNLayer({ departementCode, citiesByIndex }))
+      map.current.addLayer(
+        selectedCommunesIFNLayer({ departementCode, citiesByIndex }),
+      )
+      map.current.addLayer(epcisIFNFilledLayer(epcisByIndex, epciCodes))
+      map.current.addLayer(epcisIFNLayer(epcisByIndex, epciCodes))
 
-      map.current.addLayer(departementLayer)
-      map.current.addLayer(communesFilledLayer)
-      map.current.addLayer(communesLayer)
-      map.current.addLayer(selectedCommunesFilledLayer)
-      map.current.addLayer(selectedCommunesLayer)
+      map.current.addLayer(departementLayer(departementCode))
+      map.current.addLayer(communesFilledLayer(departementCode))
+      map.current.addLayer(communesLayer(departementCode))
+      map.current.addLayer(selectedCommunesFilledLayer(departementCode))
+      map.current.addLayer(selectedCommunesLayer(departementCode))
 
-      map.current.addLayer(epcisFilledLayer(epcisCode))
-      map.current.addLayer(epcisLayer(epcisCode))
+      map.current.addLayer(epcisFilledLayer(epciCodes))
+      map.current.addLayer(epcisLayer(epciCodes))
 
       placesLayer.map((placeLayer) => map.current?.addLayer(placeLayer))
 
@@ -151,7 +151,7 @@ const Map = ({
         generateId: true,
         data: {
           type: 'FeatureCollection',
-          features: data,
+          features: structuresData.structures,
         },
         cluster: true,
         clusterRadius: 25,
@@ -160,22 +160,25 @@ const Map = ({
       map.current.addLayer(structuresCircleLayer)
       map.current.addLayer(structuresClusterCircleLayer)
       map.current.addLayer(structuresClusterSymbolLayer)
-      for (const source of images) {
-        map.current.loadImage(`/images/${source}.png`, (error, image) => {
-          if (map.current && image) {
-            map.current.addImage(source, image)
-            map.current.addLayer({
-              id: `structuresSymbol${source}`,
-              source: 'structures',
-              type: 'symbol',
-              layout: {
-                'icon-allow-overlap': true,
-                'icon-image': source,
-              },
-              filter: ['==', ['get', 'type'], source],
-            })
-          }
-        })
+      for (const structureImageName of structureTypes) {
+        map.current.loadImage(
+          `/images/structure/${structureImageName}.png`,
+          (error, image) => {
+            if (map.current && image) {
+              map.current.addImage(structureImageName, image)
+              map.current.addLayer({
+                id: `structuresSymbol${structureImageName}`,
+                source: 'structures',
+                type: 'symbol',
+                layout: {
+                  'icon-allow-overlap': true,
+                  'icon-image': structureImageName,
+                },
+                filter: ['==', ['get', 'type'], structureImageName],
+              })
+            }
+          },
+        )
       }
 
       addHoverState(map.current, 'decoupage', 'communesIFNFilled', 'communes')
@@ -233,6 +236,7 @@ const Map = ({
     }
   }, [map, selectedCity])
 
+  // Add structure popup on hover
   useEffect(() => {
     if (map.current && selectedStructure) {
       const popup = new maplibregl.Popup({
@@ -303,6 +307,8 @@ const Map = ({
       }
     }
   }, [map, viewIndiceFN])
+
+  // Setup event handlers
   useEffect(() => {
     if (map.current) {
       const onCommuneClick = (

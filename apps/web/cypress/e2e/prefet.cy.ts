@@ -15,7 +15,7 @@ describe('Préfet', () => {
     cy.testId('prefet-button').click()
     cy.url().should('equal', appUrl('/prefet'))
     cy.wait(1000)
-    cy.testId('department-map').compareSnapshot('department-map', 0)
+    cy.testId('departement-map').compareSnapshot('departement-map', 0)
     cy.testId('cartographie-button').click()
     cy.url().should('equal', appUrl('/prefet/cartographie'))
     cy.wait('@france-map')

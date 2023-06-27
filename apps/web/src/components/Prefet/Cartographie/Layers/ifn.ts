@@ -71,10 +71,14 @@ export const epcisIFNFilledLayer = (
   },
 })
 
-export const communesIFNLayer = (
-  citiesByIndex: string[][],
-): LayerSpecification => ({
-  ...communes,
+export const communesIFNLayer = ({
+  citiesByIndex,
+  departementCode,
+}: {
+  departementCode: string
+  citiesByIndex: string[][]
+}): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'communesIFN',
   type: 'line',
   paint: {
@@ -103,10 +107,14 @@ export const communesIFNLayer = (
   },
 })
 
-export const communesIFNFilledLayer = (
-  citiesByIndex: string[][],
-): LayerSpecification => ({
-  ...communes,
+export const communesIFNFilledLayer = ({
+  citiesByIndex,
+  departementCode,
+}: {
+  departementCode: string
+  citiesByIndex: string[][]
+}): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'communesIFNFilled',
   type: 'fill',
   paint: {
@@ -124,10 +132,14 @@ export const communesIFNFilledLayer = (
   },
 })
 
-export const selectedCommunesIFNLayer = (
-  citiesByIndex: string[][],
-): LayerSpecification => ({
-  ...communes,
+export const selectedCommunesIFNLayer = ({
+  citiesByIndex,
+  departementCode,
+}: {
+  departementCode: string
+  citiesByIndex: string[][]
+}): LayerSpecification => ({
+  ...communes(departementCode),
   id: 'selectedCommunesIFN',
   type: 'line',
   paint: {

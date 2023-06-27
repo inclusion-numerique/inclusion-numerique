@@ -12,9 +12,11 @@ import LegendCity from './LegendCity'
 const Legend = ({
   cities,
   setSelectedCity,
+  departement,
 }: {
   cities: City[]
   setSelectedCity: Dispatch<SetStateAction<City | undefined | null>>
+  departement: { name: string; code: string }
 }) => {
   const [legendCollapsed, setLegendCollapsed] = useState(false)
 
@@ -63,9 +65,9 @@ const Legend = ({
                 },
               },
               {
-                label: 'Tableau de bord',
+                label: departement.name,
                 linkProps: {
-                  href: '/prefet',
+                  href: `/prefet/${departement.code}`,
                 },
               },
             ]}

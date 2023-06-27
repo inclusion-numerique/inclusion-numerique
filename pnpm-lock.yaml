@@ -124,6 +124,9 @@ importers:
       '@luma-team/mjml-react':
         specifier: ^0.3.0-0
         version: 0.3.0-0(react-dom@18.2.0)(react@18.2.0)
+      '@maplibre/maplibre-gl-style-spec':
+        specifier: ^19.2.1
+        version: 19.2.1
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
         version: 1.0.7(@prisma/client@4.15.0)(next-auth@4.22.1)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatisticBox as StatisticBoxType } from '../data'
+import { StatisticBox as StatisticBoxType } from '../departementData'
 import Statistic from './Statistic'
 import styles from './StatisticBox.module.css'
 import Source from './Source'
