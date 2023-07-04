@@ -400,8 +400,8 @@ jobs:
           # Reproducing Dockerfile COPY instructions to isolate built standalone application from project node_modules
           command: |
             mv apps/web/.next/standalone ~/dist
-            mv apps/web/public ~/dist/apps/web/public
-            mv apps/web/.next/static ~/dist/apps/web/.next/static
+            cp -R apps/web/public ~/dist/apps/web/
+            mv apps/web/.next/static ~/dist/apps/web/.next/
             cd ~/dist
             node apps/web/server.js
       - run:
