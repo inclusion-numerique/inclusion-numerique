@@ -156,7 +156,6 @@ const Map = ({
       map.current.addLayer(epcisLayer(epciCodes))
 
       placesLayer.map((placeLayer) => map.current?.addLayer(placeLayer))
-
       map.current.addSource('structures', {
         type: 'geojson',
         generateId: true,
@@ -170,9 +169,10 @@ const Map = ({
         clusterProperties: { count: ['+', 1] },
         clusterMaxZoom: 11,
       })
-      map.current.addLayer(structuresCircleLayer)
+
       map.current.addLayer(structuresClusterCircleLayer)
       map.current.addLayer(structuresClusterSymbolLayer)
+      map.current.addLayer(structuresCircleLayer)
       for (const structureImageName of structureTypes) {
         map.current.loadImage(
           `/images/structure/${structureImageName}.png`,
