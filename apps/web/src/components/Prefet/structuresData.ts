@@ -1,12 +1,6 @@
 import { DepartementGeoJson } from '@app/web/utils/map/departementGeoJson'
-
 import { DataInclusionTypologies } from '@app/web/data/dataInclusionSchema'
 import { getDataInclusionStructures } from '@app/web/data/dataInclusion'
-import {
-  booleanChelouToBoolean,
-  getCnfsStructures,
-  mapCnfsStructuresBySiret,
-} from '@app/web/data/cnfsStructures'
 import {
   getAidantsConnectStructures,
   mapAidantsConnectStructuresBySiret,
@@ -15,6 +9,10 @@ import {
 import { isValidSiret } from '@app/web/data/siret'
 import { StructureType } from '@app/web/components/Prefet/structuresTypes'
 import { titleCase } from '@app/web/utils/titleCase'
+import {
+  getCnfsPermanences,
+  mapCnfsPermanencesById,
+} from '@app/web/data/cnfsPermanences'
 
 export type Structure = {
   type: 'Feature'
@@ -58,7 +56,7 @@ export const getStructuresData = async (
 
   // TODO We will fetch all this from insitu graphql endpoint instead
   const allDataInclusionStructures = await getDataInclusionStructures()
-  const allCnfsStructures = await getCnfsStructures()
+  const allCnfsPermanences = await getCnfsPermanences()
   const allAidantsConnectStructures = await getAidantsConnectStructures()
 
   const dataInclusionStructures = allDataInclusionStructures.filter(
@@ -69,7 +67,7 @@ export const getStructuresData = async (
           code_postal.startsWith(departement.code),
   )
 
-  const cnfsStructuresBySiret = mapCnfsStructuresBySiret(allCnfsStructures)
+  const cnfsPermanencesById = mapCnfsPermanencesById(allCnfsPermanences)
   const aidantsConnectStructuresBySiret = mapAidantsConnectStructuresBySiret(
     allAidantsConnectStructures,
   )
@@ -82,31 +80,25 @@ export const getStructuresData = async (
         ? DataInclusionTypologies[structure.typologie].type
         : 'private'
 
-    const cnfsStructure = isValidSiret(structure.siret)
-      ? cnfsStructuresBySiret.bySiret.get(structure.siret)
+    const cnfsPermanence = structure.cnfsPermanenceId
+      ? cnfsPermanencesById.byKey.get(structure.cnfsPermanenceId)
       : undefined
 
-    // TODO Check that this is the best way to infer these data
-    const infoFromCnfsStructure = cnfsStructure
+    const infoFromCnfsStructure = cnfsPermanence
       ? {
-          conseillersNumeriques: Number.parseFloat(
-            cnfsStructure['Nombre de conseillers validés par le COSELEC'],
-          ),
+          conseillersNumeriques: cnfsPermanence?.aidants?.length ?? 0,
           cnfsLabel: true,
-          franceServicesLabel: booleanChelouToBoolean(
-            cnfsStructure['France services'],
-          ),
-          inZrr: booleanChelouToBoolean(cnfsStructure.ZRR),
-          inQpv: booleanChelouToBoolean(cnfsStructure.QPV),
         }
       : {
           conseillersNumeriques: null,
-          aidantsHabilitesAidantsConnect: null,
           cnfsLabel: null,
-          franceServicesLabel: null,
-          inZrr: null,
-          inQpv: null,
         }
+
+    const missingInfo = {
+      franceServicesLabel: null,
+      inZrr: null,
+      inQpv: null,
+    }
 
     const aidantsConnectStructure = isValidSiret(structure.siret)
       ? aidantsConnectStructuresBySiret.bySiret.get(structure.siret)
@@ -147,6 +139,7 @@ export const getStructuresData = async (
         updated: structure.date_maj,
         sourceLabel: 'Data inclusion',
         sourceUrl: 'https://www.data.inclusion.beta.gouv.fr',
+        ...missingInfo,
         ...infoFromAidantsConnectStructure,
         ...infoFromCnfsStructure,
       },

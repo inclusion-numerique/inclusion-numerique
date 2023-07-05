@@ -40,7 +40,8 @@ const StructureDetails = ({
     <hr className="fr-mt-6v" />
     <p className="fr-text--lg fr-text--bold fr-mb-2v">
       {conseillersNumeriques ?? 0}  Conseiller
-      {conseillersNumeriques === 1 ? '' : 's'} Numériques
+      {conseillersNumeriques === 1 ? '' : 's'} Numérique
+      {conseillersNumeriques === 1 ? '' : 's'}
     </p>
     <p className="fr-text--lg fr-text--bold">
       {aidantsHabilitesAidantsConnect ?? 0}  Aidant

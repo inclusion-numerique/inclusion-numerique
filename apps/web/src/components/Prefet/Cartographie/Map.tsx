@@ -16,6 +16,7 @@ import type {
 } from '@app/web/components/Prefet/structuresData'
 import { DepartementData } from '@app/web/utils/map/departement'
 import { structureTypes } from '@app/web/components/Prefet/structuresTypes'
+import { Spinner } from '@app/web/ui/Spinner'
 import IndiceNumerique from './IndiceNumerique'
 import { addHoverState, addSelectedState } from './MapUtils'
 import MapPopup from './MapPopup'
@@ -446,6 +447,11 @@ const Map = ({
         setViewIndiceFN={setViewIndiceFN}
         viewIndiceFN={viewIndiceFN}
       />
+      <div className={styles.mapLoadingOverlay}>
+        <div className={styles.mapLoader}>
+          <Spinner size="small" /> <p className={styles.title}>Chargement</p>
+        </div>
+      </div>
     </div>
   )
 }
