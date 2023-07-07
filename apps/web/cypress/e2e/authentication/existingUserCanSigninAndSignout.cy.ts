@@ -61,7 +61,6 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
       emailUser.email,
     )
   })
-
   it('Acceptation 2 - Connexion avec email', () => {
     cy.visit('/connexion')
     cy.execute('createUser', emailUser)
