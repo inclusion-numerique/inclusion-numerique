@@ -167,7 +167,6 @@ const Map = ({
         cluster: true,
         clusterRadius: 25,
         clusterProperties: { count: ['+', 1] },
-        clusterMaxZoom: 11,
       })
 
       map.current.addLayer(structuresClusterCircleLayer)
@@ -184,6 +183,7 @@ const Map = ({
                 source: 'structures',
                 type: 'symbol',
                 layout: {
+                  'icon-size': 0.5,
                   'icon-allow-overlap': true,
                   'icon-image': structureImageName,
                 },

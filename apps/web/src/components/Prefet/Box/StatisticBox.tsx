@@ -27,7 +27,10 @@ const StatisticBox = ({
               styles.headerDescription,
             )}
           >
-            recensés sur La Cartographie Nationale
+            recensés sur{' '}
+            <a href="/" target="_blank" rel="noopener noreferrer">
+              La Cartographie Nationale
+            </a>
           </span>
         )}
       </div>
