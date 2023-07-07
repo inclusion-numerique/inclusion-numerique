@@ -6,19 +6,9 @@ type PercentageProps = {
   color: string
   value: number
   label: string
-  withMarginBottom?: boolean
 }
-const Percentage = ({
-  value,
-  label,
-  color,
-  withMarginBottom,
-}: PercentageProps) => (
-  <div
-    className={classNames(styles.statistic, {
-      [styles.marginBottom]: withMarginBottom,
-    })}
-  >
+const Percentage = ({ value, label, color }: PercentageProps) => (
+  <div className={styles.statistic}>
     <div className={styles.label}>
       <div className={styles.circle} style={{ backgroundColor: color }} />
       <span className="fr-text--sm fr-mb-0 fr-mr-2w">{label}</span>

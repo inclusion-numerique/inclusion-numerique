@@ -164,6 +164,7 @@ const Map = ({
           type: 'FeatureCollection',
           features: structuresData.structures,
         },
+        clusterMaxZoom: 11,
         cluster: true,
         clusterRadius: 25,
         clusterProperties: { count: ['+', 1] },
