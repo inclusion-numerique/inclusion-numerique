@@ -15,6 +15,9 @@ export const CartoInclusionLieuxMediation = {
 export type CartoInclusionLieuxMediationStructure = DataInclusionStructure & {
   cnfsPermanenceId?: string
   aidantsConnectStructureId?: string
+  conseillerNumeriqueLabel: boolean
+  franceServicesLabel: boolean
+  aidantsConnectLabel: boolean
 }
 
 /**
@@ -48,6 +51,12 @@ export const refineDataInclusionStructure = (
 ): CartoInclusionLieuxMediationStructure => ({
   ...structure,
   ...extractMetadataFromId(structure.id),
+  conseillerNumeriqueLabel:
+    structure.labels_nationaux?.includes('conseiller-numerique') ?? false,
+  franceServicesLabel:
+    structure.labels_nationaux?.includes('france-service') ?? false,
+  aidantsConnectLabel:
+    structure.labels_nationaux?.includes('aidants-connect') ?? false,
 })
 
 export const getDataInclusionStructures = async () => {

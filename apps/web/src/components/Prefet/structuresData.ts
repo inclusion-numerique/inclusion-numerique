@@ -4,7 +4,6 @@ import { getDataInclusionStructures } from '@app/web/data/dataInclusion'
 import {
   getAidantsConnectStructures,
   mapAidantsConnectStructuresBySiret,
-  stringBooleanToBoolean,
 } from '@app/web/data/aidantsConnectStructures'
 import { isValidSiret } from '@app/web/data/siret'
 import {
@@ -103,15 +102,12 @@ export const getStructuresData = async (
     const infoFromCnfsStructure = cnfsPermanence
       ? {
           conseillersNumeriques: cnfsPermanence?.aidants?.length ?? 0,
-          cnfsLabel: true,
         }
       : {
           conseillersNumeriques: null,
-          cnfsLabel: null,
         }
 
     const missingInfo = {
-      franceServicesLabel: null,
       inZrr: null,
       inQpv: null,
     }
@@ -123,18 +119,11 @@ export const getStructuresData = async (
     // TODO Check that this is the best way to infer these data
     const infoFromAidantsConnectStructure = aidantsConnectStructure
       ? {
-          // Maybe we can get the public/private type from Type Id also ?
-          aidantsConnectLabel: true,
-          franceServicesLabel: stringBooleanToBoolean(
-            aidantsConnectStructure['France Services Label'],
-          ),
           // TODO We will need to use the data from the "real" insitu api to join a nd get the number of aidants
           aidantsHabilitesAidantsConnect: null,
         }
       : {
-          aidantsConnectLabel: null,
           aidantsHabilitesAidantsConnect: null,
-          franceServicesLabel: null,
         }
 
     return {
@@ -156,6 +145,9 @@ export const getStructuresData = async (
         updated: structure.date_maj,
         sourceLabel: 'Data inclusion',
         sourceUrl: 'https://www.data.inclusion.beta.gouv.fr',
+        cnfsLabel: structure.conseillerNumeriqueLabel,
+        franceServicesLabel: structure.franceServicesLabel,
+        aidantsConnectLabel: structure.aidantsConnectLabel,
         ...missingInfo,
         ...infoFromAidantsConnectStructure,
         ...infoFromCnfsStructure,

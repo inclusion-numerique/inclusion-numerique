@@ -151,15 +151,6 @@ const CityDetails = ({
           </div>
           <div className={classNames(styles.row, 'fr-mb-1v')}>
             <p className="fr-text--sm">
-              <span className="fr-icon-team-fill fr-mr-1w fr-icon--sm" />{' '}
-              Associations
-            </p>
-            <p className=" fr-text--bold">
-              {structuresCount.typologie.association}
-            </p>
-          </div>
-          <div className={classNames(styles.row, 'fr-mb-1v')}>
-            <p className="fr-text--sm">
               <span className="fr-icon-building-fill fr-mr-1w fr-icon--sm" />{' '}
               Autre acteurs privés
             </p>
