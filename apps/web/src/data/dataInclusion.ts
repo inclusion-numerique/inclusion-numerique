@@ -9,7 +9,7 @@ export const CartoInclusionLieuxMediation = {
   url: 'https://www.data.gouv.fr/fr/datasets/lieux-de-mediation-numerique-sur-le-territoire-national-fournis-par-data-inclusion-1/',
   downloadUrl:
     'https://www.data.gouv.fr/fr/datasets/r/be3323ec-4662-4b3b-b90e-18cf5c97193d',
-  dataFile: 'structures-inclusion-20230628-data-inclusion-sans-doublons.json',
+  dataFile: 'structures-inclusion-20230710-data-inclusion-sans-doublons.json',
 }
 
 export type CartoInclusionLieuxMediationStructure = DataInclusionStructure & {
@@ -18,17 +18,28 @@ export type CartoInclusionLieuxMediationStructure = DataInclusionStructure & {
 }
 
 /**
- * Exemple mediation-numerique-conseiller-numerique-62ab017b8255a806e299c725-mediation-numerique
- * @param id
+ * E.g. "mediation-numerique-conseiller-numerique-62ab017b8255a806e299c725-mediation-numerique"
  */
-const cnfsIdExtract = /conseiller-numerique-([\dA-Fa-f]+)-/
+const cnfsIdExtract = /conseiller-numerique-([\dA-Fa-f]+)/
+
+/**
+ * E.g. "aidants-connect-1539|numi-conseiller-numerique-63d784fce6d6a806f256657a|numinumiconseiller-numerique-63d784fce6d6a806f256657a"
+ */
+const aidantsConnectIdExtract = /aidants-connect-([\dA-Fa-f]+)/
 
 export const extractMetadataFromId = (id: string) => {
-  const match = id.match(cnfsIdExtract)
-  const cnfsPermanenceId = match ? match[1] : undefined
+  const cnfsPermanenceIdMatch = id.match(cnfsIdExtract)
+  const cnfsPermanenceId = cnfsPermanenceIdMatch
+    ? cnfsPermanenceIdMatch[1]
+    : undefined
 
+  const aidantsConnectStructureIdMatch = id.match(aidantsConnectIdExtract)
+  const aidantsConnectStructureId = aidantsConnectStructureIdMatch
+    ? aidantsConnectStructureIdMatch[1]
+    : undefined
   return {
     cnfsPermanenceId,
+    aidantsConnectStructureId,
   }
 }
 

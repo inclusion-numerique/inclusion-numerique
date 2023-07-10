@@ -7,12 +7,19 @@ import {
   stringBooleanToBoolean,
 } from '@app/web/data/aidantsConnectStructures'
 import { isValidSiret } from '@app/web/data/siret'
-import { StructureType } from '@app/web/components/Prefet/structuresTypes'
+import {
+  StructureSubtype,
+  StructureType,
+} from '@app/web/components/Prefet/structuresTypes'
 import { titleCase } from '@app/web/utils/titleCase'
 import {
   getCnfsPermanences,
   mapCnfsPermanencesById,
 } from '@app/web/data/cnfsPermanences'
+import {
+  countStructures,
+  StructuresCount,
+} from '@app/web/components/Prefet/Cartographie/countStructures'
 
 export type Structure = {
   type: 'Feature'
@@ -23,6 +30,8 @@ export type Structure = {
   properties: {
     id: string
     type: StructureType
+    // Only defined if "publique"
+    subtype: StructureSubtype | null
     name: string
     adresse: string
     postalCode: string
@@ -42,7 +51,7 @@ export type Structure = {
   }
 }
 
-export type StructuresData = { structures: Structure[] }
+export type StructuresData = { structures: Structure[]; count: StructuresCount }
 
 const memoizedStructures = new Map<string, StructuresData>()
 
@@ -75,10 +84,17 @@ export const getStructuresData = async (
   // We use data inclusion as the base for the list of all structures
   // Then add information from Cnfs and aidants connect sources
   const structures = dataInclusionStructures.map((structure): Structure => {
-    const type =
+    const dataInclusionTypologie =
       !!structure.typologie && structure.typologie in DataInclusionTypologies
-        ? DataInclusionTypologies[structure.typologie].type
-        : 'private'
+        ? DataInclusionTypologies[structure.typologie]
+        : null
+
+    const type = dataInclusionTypologie?.type ?? 'nonDefini'
+
+    const subtype =
+      dataInclusionTypologie && 'subtype' in dataInclusionTypologie
+        ? dataInclusionTypologie.subtype
+        : null
 
     const cnfsPermanence = structure.cnfsPermanenceId
       ? cnfsPermanencesById.byKey.get(structure.cnfsPermanenceId)
@@ -125,13 +141,14 @@ export const getStructuresData = async (
       type: 'Feature',
       geometry: {
         type: 'Point',
-        // E.G. MDM Felix Brun
+        // E.G. MDM Felix Brun has missing coordinates
         // We keep those to aggregate them later,  but we don't use them for the m ap
         coordinates: [structure.longitude ?? 0, structure.latitude ?? 0],
       },
       properties: {
         id: structure.id,
         type,
+        subtype,
         name: titleCase(structure.nom),
         adresse: structure.adresse,
         postalCode: structure.code_postal,
@@ -146,7 +163,7 @@ export const getStructuresData = async (
     }
   })
 
-  const result = { structures }
+  const result = { structures, count: countStructures(structures) }
   memoizedStructures.set(departement.code, result)
   return result
 }

@@ -58,6 +58,7 @@ const Map = ({
   onCitySelected,
   structuresData,
   selectedStructure,
+  filteredStructures: _filteredStructures,
   onStructureSelected,
 }: {
   departement: DepartementData
@@ -65,6 +66,7 @@ const Map = ({
   selectedCity?: City | null
   onCitySelected: (city: string | null | undefined) => void
   selectedStructure?: Structure | null
+  filteredStructures: Structure[]
   onStructureSelected: (structure: string | null | undefined) => void
 }) => {
   const { cities, epcis, bounds, code: departementCode } = departement
@@ -73,6 +75,8 @@ const Map = ({
   const [viewIndiceFN, setViewIndiceFN] = useState(true)
   const [division, setDivision] = useState('EPCI')
   const clickedPoint = useRef<string>()
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [isMapStyleLoaded, setIsMapStyleLoaded] = useState(false)
 
   const citiesByIndex: string[][] = useMemo(() => {
     const result: string[][] = ifnColors.map(() => [])
@@ -117,6 +121,10 @@ const Map = ({
       style: mapStyle as StyleSpecification,
       minZoom: 8,
       maxZoom: 12.9,
+    })
+
+    map.current.on('style.load', () => {
+      setIsMapStyleLoaded(true)
     })
 
     map.current.on('load', () => {
@@ -219,6 +227,8 @@ const Map = ({
 
         setDivision(map.current.getZoom() < epciMaxZoom ? 'EPCI' : 'Commune')
       })
+
+      setIsMapLoaded(true)
     })
   }, [])
 
@@ -448,9 +458,17 @@ const Map = ({
         setViewIndiceFN={setViewIndiceFN}
         viewIndiceFN={viewIndiceFN}
       />
-      <div className={styles.mapLoadingOverlay}>
+      <div
+        className={classNames(
+          styles.mapLoadingOverlay,
+          isMapStyleLoaded && isMapLoaded
+            ? styles.hiddenMapLoadingOverlay
+            : null,
+        )}
+      >
         <div className={styles.mapLoader}>
-          <Spinner size="small" /> <p className={styles.title}>Chargement</p>
+          <Spinner size="small" />{' '}
+          <p className="fr-mb-0 fr-ml-1w">Chargement</p>
         </div>
       </div>
     </div>

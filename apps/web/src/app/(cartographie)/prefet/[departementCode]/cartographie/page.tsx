@@ -46,16 +46,17 @@ const Page = async ({
   params: { departementCode: string }
 }) => {
   const { departement } = await getUserAndDepartement(departementCode)
+  const structuresData = await getStructuresData(departement)
+
   const departementInformations = await getDepartementInformations(
     departementCode,
+    structuresData.structures,
   )
 
   if (!departementInformations) {
     notFound()
     return null
   }
-
-  const structuresData = await getStructuresData(departement)
 
   return (
     <Cartographie

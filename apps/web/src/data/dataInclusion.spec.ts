@@ -2,7 +2,8 @@ import { extractMetadataFromId } from '@app/web/data/dataInclusion'
 
 describe('extractMetadataFromId', () => {
   it('should return the correct id when it is present', () => {
-    const id = 'conseiller-numerique-62ab017b8255a806e299c725-autre-chose'
+    const id =
+      'mediation-conseiller-numerique-62ab017b8255a806e299c725-autre-chose'
     expect(extractMetadataFromId(id)).toEqual({
       cnfsPermanenceId: '62ab017b8255a806e299c725',
     })
