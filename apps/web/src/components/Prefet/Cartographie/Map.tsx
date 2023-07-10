@@ -58,7 +58,7 @@ const Map = ({
   onCitySelected,
   structuresData,
   selectedStructure,
-  filteredStructures: _filteredStructures,
+  filteredStructures,
   onStructureSelected,
 }: {
   departement: DepartementData
@@ -433,6 +433,27 @@ const Map = ({
       }
     }
   }, [map, onCitySelected, onStructureSelected])
+
+  useEffect(() => {
+    if (!isMapLoaded || !isMapStyleLoaded) {
+      return
+    }
+    if (filteredStructures.length === structuresData.structures.length) {
+      // Remove filter if all selected
+      map.current?.setFilter('structuresCircle', null)
+      return
+    }
+
+    // TODO Use the not yet implemented layer with structures with images
+
+    map.current?.setFilter('structuresCircle', [
+      'match',
+      ['get', 'id'],
+      filteredStructures.map((structure) => structure.properties.id),
+      true,
+      false,
+    ])
+  }, [structuresData, filteredStructures, isMapLoaded, isMapStyleLoaded])
 
   return (
     <div className={styles.mapContainer}>
