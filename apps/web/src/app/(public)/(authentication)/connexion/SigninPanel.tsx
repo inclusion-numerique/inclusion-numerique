@@ -2,7 +2,6 @@
 
 import { Route } from 'next'
 import { signIn } from 'next-auth/react'
-import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import MonCompteProButton from '@codegouvfr/react-dsfr/MonCompteProButton'
 import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
 import { signinErrorMessage } from '@app/web/app/(public)/(authentication)/authenticationErrorMessage'
@@ -34,22 +33,6 @@ const SigninPanel = ({
     <p className="fr-hr-or fr-mt-6v">ou</p>
     <h5>Se connecter avec son email</h5>
     <EmailSigninForm callbackUrl={callbackUrl} />
-    <hr className="fr-mt-6v" />
-    <h5 className="fr-mt-4v">Vous n’avez pas de compte ?</h5>
-    <ButtonsGroup
-      buttons={[
-        {
-          children: 'Se créer un compte',
-          linkProps: {
-            href:
-              callbackUrl === '/'
-                ? '/creer-un-compte'
-                : `/creer-un-compte?suivant=${callbackUrl}`,
-          },
-          priority: 'secondary',
-        },
-      ]}
-    />
   </AuthCard>
 )
 

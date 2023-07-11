@@ -24,16 +24,6 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
     cy.visit('/')
     cy.get('.fr-header__tools').contains('Espace Préfet').click()
     cy.url().should('equal', appUrl('/connexion?suivant=/prefet'))
-
-    cy.log('Check that the signup CTA is linked correctly')
-    cy.contains('Se créer un compte').click()
-    cy.url().should('equal', appUrl('/creer-un-compte?suivant=/prefet'))
-
-    cy.log('Check that the signin CTA is linked correctly')
-    cy.findByRole('main')
-      .contains(/^Se connecter$/)
-      .click()
-    cy.url().should('equal', appUrl('/connexion'))
   })
 
   it('Acceptation 0 - La connexion redirige vers la création de compte pour un nouvel utilisateur', () => {
