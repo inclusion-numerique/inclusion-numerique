@@ -17,10 +17,12 @@ export type StructureFilters = {
     conseillerNumerique: boolean
     franceServices: boolean
     aidantConnect: boolean
+    aucun: boolean
   }
   territoiresPrioritaires: {
     qpv: boolean
     zrr: boolean
+    aucun: boolean
   }
 }
 
@@ -30,6 +32,7 @@ export const applyStructureFilter = (
 ) => {
   const {
     type,
+    subtype,
     cnfsLabel,
     aidantsConnectLabel,
     franceServicesLabel,
@@ -38,9 +41,6 @@ export const applyStructureFilter = (
   } = structure.properties
 
   // Filtering out main type
-  if (type === 'publique' && !typologie.publique) {
-    return false
-  }
   if (type === 'privee' && !typologie.privee) {
     return false
   }
@@ -48,11 +48,25 @@ export const applyStructureFilter = (
     return false
   }
 
-  if (type === null && !typologie.nonDefini) {
+  if (type === 'nonDefini' && !typologie.nonDefini) {
     return false
   }
 
-  // TODO Filter out sub types of public type
+  if (type === 'publique') {
+    // Public type all have a subtype, we only consider the subtypes
+    if (subtype === 'commune' && !typologie.commune) {
+      return false
+    }
+    if (subtype === 'epci' && !typologie.epci) {
+      return false
+    }
+    if (subtype === 'departement' && !typologie.departement) {
+      return false
+    }
+    if (subtype === 'autre' && !typologie.autre) {
+      return false
+    }
+  }
 
   // Filtering out labels
   if (cnfsLabel && !labels.conseillerNumerique) {
@@ -64,12 +78,23 @@ export const applyStructureFilter = (
   if (franceServicesLabel && !labels.franceServices) {
     return false
   }
+  if (
+    !cnfsLabel &&
+    !aidantsConnectLabel &&
+    !franceServicesLabel &&
+    !labels.aucun
+  ) {
+    return false
+  }
 
   // Filtering out territoires prioritaires
   if (inZrr && !territoiresPrioritaires.zrr) {
     return false
   }
   if (inQpv && !territoiresPrioritaires.qpv) {
+    return false
+  }
+  if (!inZrr && !inQpv && !territoiresPrioritaires.aucun) {
     return false
   }
 

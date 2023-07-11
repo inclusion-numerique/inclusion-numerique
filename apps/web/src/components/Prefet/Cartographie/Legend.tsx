@@ -21,13 +21,15 @@ import LegendCity from './LegendCity'
 const LegendCheckboxLabel = ({
   label,
   count,
+  subtype,
 }: {
   label: string | ReactNode
   count: number
+  subtype?: boolean
 }) => (
   <span className={styles.legendCheckboxLabel}>
     <span>{label}</span>
-    <span>{count}</span>
+    <span className={subtype ? styles.labelSubtypeCount : ''}>{count}</span>
   </span>
 )
 
@@ -69,10 +71,12 @@ const Legend = ({
         conseillerNumerique: true,
         franceServices: true,
         aidantConnect: true,
+        aucun: true,
       },
       territoiresPrioritaires: {
         zrr: true,
         qpv: true,
+        aucun: true,
       },
     },
   })
@@ -274,6 +278,7 @@ const Legend = ({
                   <LegendCheckboxLabel
                     label="Commune"
                     count={structuresData.count.typologie.commune}
+                    subtype
                   />
                 }
               />
@@ -287,6 +292,7 @@ const Legend = ({
                   <LegendCheckboxLabel
                     label="EPCI"
                     count={structuresData.count.typologie.epci}
+                    subtype
                   />
                 }
               />
@@ -300,6 +306,7 @@ const Legend = ({
                   <LegendCheckboxLabel
                     label="Département"
                     count={structuresData.count.typologie.departement}
+                    subtype
                   />
                 }
               />
@@ -313,6 +320,7 @@ const Legend = ({
                   <LegendCheckboxLabel
                     label="Autre"
                     count={structuresData.count.typologie.autre}
+                    subtype
                   />
                 }
               />
@@ -401,6 +409,17 @@ const Legend = ({
                 />
               }
             />
+            <CheckboxFormField
+              control={filterForm.control}
+              small
+              path="labels.aucun"
+              label={
+                <LegendCheckboxLabel
+                  label="Aucun"
+                  count={structuresData.count.labels.aucun}
+                />
+              }
+            />
             <p className="fr-text--lg fr-text--bold fr-mt-6v fr-mb-3v">
               Territoires prioritaires
             </p>
@@ -423,6 +442,17 @@ const Legend = ({
                 <LegendCheckboxLabel
                   label="Structures en zone de revitalisation rurale (ZRR)"
                   count={structuresData.count.territoiresPrioritaires.zrr}
+                />
+              }
+            />
+            <CheckboxFormField
+              control={filterForm.control}
+              small
+              path="territoiresPrioritaires.aucun"
+              label={
+                <LegendCheckboxLabel
+                  label="Aucun"
+                  count={structuresData.count.territoiresPrioritaires.aucun}
                 />
               }
             />

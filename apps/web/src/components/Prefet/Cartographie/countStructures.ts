@@ -19,10 +19,12 @@ export const countStructures = (structures: Structure[]) => {
       conseillerNumerique: 0,
       franceServices: 0,
       aidantConnect: 0,
+      aucun: 0,
     },
     territoiresPrioritaires: {
       qpv: 0,
       zrr: 0,
+      aucun: 0,
     },
   }
 
@@ -85,6 +87,9 @@ export const countStructures = (structures: Structure[]) => {
     if (inQpv) {
       result.territoiresPrioritaires.qpv += 1
     }
+    if (!inZrr && !inQpv) {
+      result.territoiresPrioritaires.aucun += 1
+    }
     if (cnfsLabel) {
       result.labels.conseillerNumerique += 1
     }
@@ -93,6 +98,9 @@ export const countStructures = (structures: Structure[]) => {
     }
     if (franceServicesLabel) {
       result.labels.franceServices += 1
+    }
+    if (!cnfsLabel && !aidantsConnectLabel && !franceServicesLabel) {
+      result.labels.aucun += 1
     }
   }
   return result

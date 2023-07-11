@@ -9,13 +9,21 @@ import maplibregl, {
   StyleSpecification,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import * as Sentry from '@sentry/nextjs'
+import {
+  FilterSpecification,
+  GeoJSONSourceSpecification,
+} from '@maplibre/maplibre-gl-style-spec'
 import { City } from '@app/web/types/City'
 import type {
   Structure,
   StructuresData,
 } from '@app/web/components/Prefet/structuresData'
 import { DepartementData } from '@app/web/utils/map/departement'
-import { structureTypes } from '@app/web/components/Prefet/structuresTypes'
+import {
+  structureTypeImage,
+  structureTypes,
+} from '@app/web/components/Prefet/structuresTypes'
 import { Spinner } from '@app/web/ui/Spinner'
 import IndiceNumerique from './IndiceNumerique'
 import { addHoverState, addSelectedState } from './MapUtils'
@@ -43,6 +51,7 @@ import {
   structuresCircleLayer,
   structuresClusterCircleLayer,
   structuresClusterSymbolLayer,
+  structuresIconLayer,
 } from './Layers/structures'
 import { epciMaxZoom } from './Layers/common'
 import { placesLayer } from './Layers/places'
@@ -177,30 +186,41 @@ const Map = ({
         clusterProperties: { count: ['+', 1] },
       })
 
+      Promise.all(
+        structureTypes.map((type) => {
+          // Load image for each type of structure
+
+          const structureImageFile = structureTypeImage[type]
+
+          return new Promise((resolve, reject) => {
+            map.current.loadImage(structureImageFile, (error, image) => {
+              if (error) {
+                return reject(error)
+              }
+              if (map.current && image) {
+                console.log('ADDING IMAGE', `${type}.png`)
+                map.current.addImage(`${type}.png`, image)
+              }
+              resolve(null)
+            })
+          })
+        }),
+      )
+        .then(() => {
+          // Image loaded
+          // Adding iconLayer
+          map.current.addLayer(structuresIconLayer)
+          return null
+        })
+        .catch((error) => {
+          Sentry.captureException(error)
+          console.error('Could not load structure images', error)
+        })
+
+      map.current.addLayer(structuresCircleLayer)
+
       map.current.addLayer(structuresClusterCircleLayer)
       map.current.addLayer(structuresClusterSymbolLayer)
-      map.current.addLayer(structuresCircleLayer)
-      for (const structureImageName of structureTypes) {
-        map.current.loadImage(
-          `/images/structure/${structureImageName}.png`,
-          (error, image) => {
-            if (map.current && image) {
-              map.current.addImage(structureImageName, image)
-              map.current.addLayer({
-                id: `structuresSymbol${structureImageName}`,
-                source: 'structures',
-                type: 'symbol',
-                layout: {
-                  'icon-size': 0.5,
-                  'icon-allow-overlap': true,
-                  'icon-image': structureImageName,
-                },
-                filter: ['==', ['get', 'type'], structureImageName],
-              })
-            }
-          },
-        )
-      }
 
       addHoverState(map.current, 'decoupage', 'communesIFNFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
@@ -379,6 +399,7 @@ const Map = ({
           features?: MapGeoJSONFeature[] | undefined
         },
       ) => {
+        console.log('STRUCTURE CLICK', event.features[0])
         if (map.current && event.features && event.features.length > 0) {
           onStructureSelected(event.features[0].properties.id as string)
         }
@@ -389,9 +410,11 @@ const Map = ({
           features?: MapGeoJSONFeature[] | undefined
         },
       ) => {
+        console.log('STRUCTURE CLUSTER CLICK', event.features[0])
+
         if (map.current) {
           map.current.flyTo({
-            zoom: map.current.getZoom() + 1,
+            zoom: 12.9,
             center: event.lngLat,
           })
         }
@@ -410,6 +433,8 @@ const Map = ({
       }
 
       map.current.on('click', 'structuresCircle', onStructureClick)
+      map.current.on('click', 'structureIcon', onStructureClick)
+
       map.current.on(
         'click',
         'structuresClusterCircle',
@@ -434,25 +459,27 @@ const Map = ({
     }
   }, [map, onCitySelected, onStructureSelected])
 
+  // Display structures depending on filters
   useEffect(() => {
     if (!isMapLoaded || !isMapStyleLoaded) {
       return
     }
-    if (filteredStructures.length === structuresData.structures.length) {
-      // Remove filter if all selected
-      map.current?.setFilter('structuresCircle', null)
-      return
-    }
 
-    // TODO Use the not yet implemented layer with structures with images
+    // We cannot use setFilter() because of clusters
+    // See https://github.com/mapbox/mapbox-gl-js/issues/2613
 
-    map.current?.setFilter('structuresCircle', [
+    const mapStyles = map.current?.getStyle()
+
+    const selectedStructureFilter: FilterSpecification = [
       'match',
       ['get', 'id'],
       filteredStructures.map((structure) => structure.properties.id),
       true,
       false,
-    ])
+    ]
+    ;(mapStyles.sources.structures as GeoJSONSourceSpecification).filter =
+      selectedStructureFilter
+    map.current?.setStyle(mapStyles)
   }, [structuresData, filteredStructures, isMapLoaded, isMapStyleLoaded])
 
   return (

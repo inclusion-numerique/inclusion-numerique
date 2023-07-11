@@ -64,7 +64,7 @@ const StructureDetails = ({
       <p className="fr-text--lg fr-text--bold fr-mb-3v">
         Typologie de la structure
       </p>
-      {type === null ? (
+      {type === 'nonDefini' ? (
         <p>Non défini</p>
       ) : (
         <p>

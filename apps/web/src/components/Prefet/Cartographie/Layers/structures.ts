@@ -1,12 +1,37 @@
 import { LayerSpecification } from 'maplibre-gl'
 
+export const structuresIconLayer: LayerSpecification = {
+  id: 'structureIcon',
+  source: 'structures',
+  type: 'symbol',
+  filter: ['!=', 'cluster', true],
+  layout: {
+    'icon-size': 0.5,
+    'icon-allow-overlap': true,
+    // https://maplibre.org/maplibre-style-spec/expressions/#case
+    'icon-image': [
+      'case',
+      ['==', ['get', 'type'], 'publique'],
+      'publique.png',
+
+      ['==', ['get', 'type'], 'association'],
+      'association.png',
+
+      ['==', ['get', 'type'], 'privee'],
+      'privee.png',
+
+      'nonDefini.png',
+    ],
+  },
+}
+
 export const structuresCircleLayer: LayerSpecification = {
   id: 'structuresCircle',
   source: 'structures',
   type: 'circle',
   filter: ['!=', 'cluster', true],
   paint: {
-    'circle-color': '#000091',
+    'circle-color': 'transparent',
     'circle-stroke-color': 'white',
     'circle-stroke-width': [
       'case',

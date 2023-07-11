@@ -115,27 +115,23 @@ const CityDetails = ({
             <div className="fr-pl-5w">
               <div className={classNames(styles.row, 'fr-mb-1v')}>
                 <p className="fr-text--sm">Commune</p>
-                <p className=" fr-text--bold">
+                <p className="fr-text--sm">
                   {structuresCount.typologie.commune}
                 </p>
               </div>
               <div className={classNames(styles.row, 'fr-mb-1v')}>
                 <p className="fr-text--sm">EPCI</p>
-                <p className=" fr-text--bold">
-                  {structuresCount.typologie.epci}
-                </p>
+                <p className="fr-text--sm">{structuresCount.typologie.epci}</p>
               </div>
               <div className={classNames(styles.row, 'fr-mb-1v')}>
                 <p className="fr-text--sm">Département</p>
-                <p className=" fr-text--bold">
+                <p className="fr-text--sm">
                   {structuresCount.typologie.departement}
                 </p>
               </div>
               <div className={classNames(styles.row, 'fr-mb-1v')}>
                 <p className="fr-text--sm">Autre</p>
-                <p className=" fr-text--bold">
-                  {structuresCount.typologie.autre}
-                </p>
+                <p className="fr-text--sm">{structuresCount.typologie.autre}</p>
               </div>
             </div>
           )}

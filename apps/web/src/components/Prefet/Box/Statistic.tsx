@@ -47,7 +47,14 @@ const Statistic = ({
             </button>
           )}
         </span>
-        <b className="fr-text--sm fr-mb-0">{value}</b>
+        <span
+          className={classNames(
+            'fr-text--sm fr-mb-0',
+            !isSubStatistic && 'fr-text--bold',
+          )}
+        >
+          {value}
+        </span>
       </div>
       {displayChildren && (
         <div className={classNames('fr-ml-3w', styles.children)}>
