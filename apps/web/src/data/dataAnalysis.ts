@@ -1,5 +1,6 @@
 import {
   getDataInclusionStructures,
+  mapDataInclusionStructuresByAidantsConnectStructureId,
   mapDataInclusionStructuresByCnfsPermanenceId,
   mapDataInclusionStructuresBySiret,
 } from '@app/web/data/dataInclusion'
@@ -30,7 +31,9 @@ export const debugDataInclusion = async () => {
     dataInclusionStructures,
   )
   const byAidantsConnectStructureId =
-    mapDataInclusionStructuresByCnfsPermanenceId(dataInclusionStructures)
+    mapDataInclusionStructuresByAidantsConnectStructureId(
+      dataInclusionStructures,
+    )
 
   const totalCount = dataInclusionStructures.length
   const totalCountWithSiret = dataInclusionInfo.bySiret.size
@@ -83,6 +86,13 @@ export const debugDataInclusion = async () => {
       {
         title: 'Nombre de structures sans typologie ⚠️',
         value: dataInclusionStructures.filter(({ typologie }) => !typologie)
+          .length,
+        stringify: valueToString,
+        percentage: totalCount,
+      },
+      {
+        title: 'Nombre de structures sans code INSEE ⚠️',
+        value: dataInclusionStructures.filter(({ code_insee }) => !code_insee)
           .length,
         stringify: valueToString,
         percentage: totalCount,
@@ -327,8 +337,25 @@ export const debugAidantsConnectStructures = async (
     }))
     .filter(({ dataInclusionStructure }) => dataInclusionStructure)
 
+  const withInclusionStructureId = aidantsConnectStructures
+    .map((structure) => ({
+      structure,
+      dataInclusionStructure:
+        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.ID),
+    }))
+    .filter(({ dataInclusionStructure }) => dataInclusionStructure)
+
+  const withoutInclusionStructureId = aidantsConnectStructures
+    .map((structure) => ({
+      structure,
+      dataInclusionStructure:
+        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.ID),
+    }))
+    .filter(({ dataInclusionStructure }) => !dataInclusionStructure)
+
   return {
     structures: aidantsConnectStructures,
+    withoutInclusionStructureId,
     ...aidantsConnectInfo,
     analysis: [
       {
@@ -365,6 +392,20 @@ export const debugAidantsConnectStructures = async (
         title:
           'Nombre de structures AIDANTSCONNECT non referencée par SIRET dans data inclusion ⚠️',
         value: totalCount - withInclusionStructure.length,
+        stringify: valueToString,
+        percentage: totalCount,
+      },
+      {
+        title:
+          'Nombre de structures AIDANTSCONNECT référencée par ID composite dans data inclusion',
+        value: withInclusionStructureId.length,
+        stringify: valueToString,
+        percentage: totalCount,
+      },
+      {
+        title:
+          'Nombre de structures AIDANTSCONNECT  non referencée par  ID composite dans data inclusion ⚠️',
+        value: totalCount - withInclusionStructureId.length,
         stringify: valueToString,
         percentage: totalCount,
       },
