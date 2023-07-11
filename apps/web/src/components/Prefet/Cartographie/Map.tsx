@@ -9,7 +9,6 @@ import maplibregl, {
   StyleSpecification,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import * as Sentry from '@sentry/nextjs'
 import {
   FilterSpecification,
   GeoJSONSourceSpecification,
@@ -23,10 +22,15 @@ import { DepartementData } from '@app/web/utils/map/departement'
 import {
   structureTypeImage,
   structureTypes,
+  structureTypeSelectedImage,
 } from '@app/web/components/Prefet/structuresTypes'
 import { Spinner } from '@app/web/ui/Spinner'
 import IndiceNumerique from './IndiceNumerique'
-import { addHoverState, addSelectedState } from './MapUtils'
+import {
+  addHoverState,
+  setSelectedDecoupageState,
+  setSelectedStructureState,
+} from './MapUtils'
 import MapPopup from './MapPopup'
 import styles from './Map.module.css'
 import { mapStyle } from './mapStyle'
@@ -112,7 +116,8 @@ const Map = ({
 
   const onMapPopupClose = () => {
     if (map.current) {
-      addSelectedState(map.current, 'communes')
+      setSelectedDecoupageState(map.current, 'communes')
+      setSelectedStructureState(map.current, 'structureIconHover')
     }
     onCitySelected(null)
     onStructureSelected(null)
@@ -186,36 +191,29 @@ const Map = ({
         clusterProperties: { count: ['+', 1] },
       })
 
-      Promise.all(
-        structureTypes.map((type) => {
-          // Load image for each type of structure
-
-          const structureImageFile = structureTypeImage[type]
-
-          return new Promise((resolve, reject) => {
-            map.current.loadImage(structureImageFile, (error, image) => {
-              if (error) {
-                return reject(error)
-              }
-              if (map.current && image) {
-                console.log('ADDING IMAGE', `${type}.png`)
-                map.current.addImage(`${type}.png`, image)
-              }
-              resolve(null)
-            })
-          })
-        }),
-      )
-        .then(() => {
-          // Image loaded
-          // Adding iconLayer
-          map.current.addLayer(structuresIconLayer)
-          return null
+      for (const type of structureTypes) {
+        const structureImageFile = structureTypeImage[type]
+        const structureHoverImageFile = structureTypeSelectedImage[type]
+        map.current?.loadImage(structureImageFile, (error, image) => {
+          if (error) {
+            console.error('Could not load structure image', error)
+            return
+          }
+          if (map.current && image) {
+            map.current.addImage(`structure-${type}`, image)
+          }
         })
-        .catch((error) => {
-          Sentry.captureException(error)
-          console.error('Could not load structure images', error)
+        map.current?.loadImage(structureHoverImageFile, (error, image) => {
+          if (error) {
+            console.error('Could not load structure hover image', error)
+            return
+          }
+          if (map.current && image) {
+            map.current.addImage(`structure-${type}-hover`, image)
+          }
         })
+      }
+      map.current?.addLayer(structuresIconLayer)
 
       map.current.addLayer(structuresCircleLayer)
 
@@ -226,7 +224,7 @@ const Map = ({
       addHoverState(map.current, 'decoupage', 'communesFilled', 'communes')
       addHoverState(map.current, 'decoupage', 'epcisFilled', 'epcis')
       addHoverState(map.current, 'decoupage', 'epcisIFNFilled', 'epcis')
-      addHoverState(map.current, 'structures', 'structuresCircle')
+      addHoverState(map.current, 'structures', 'structureIconHover')
 
       const navControl = new maplibregl.NavigationControl({
         showZoom: true,
@@ -388,7 +386,11 @@ const Map = ({
           event.features.length > 0 &&
           clickedPoint.current !== event.lngLat.toString()
         ) {
-          addSelectedState(map.current, 'communes', event.features[0].id)
+          setSelectedDecoupageState(
+            map.current,
+            'communes',
+            event.features[0].id,
+          )
           onCitySelected(event.features[0].properties.nom as string)
         }
         clickedPoint.current = event.lngLat.toString()
@@ -399,19 +401,27 @@ const Map = ({
           features?: MapGeoJSONFeature[] | undefined
         },
       ) => {
-        console.log('STRUCTURE CLICK', event.features[0])
+        const structureFeature = event.features && event.features[0]
+        if (!structureFeature) {
+          return
+        }
         if (map.current && event.features && event.features.length > 0) {
           onStructureSelected(event.features[0].properties.id as string)
         }
         clickedPoint.current = event.lngLat.toString()
+        if (map.current) {
+          setSelectedStructureState(
+            map.current,
+            'structureIconHover',
+            structureFeature.id,
+          )
+        }
       }
       const onStructureClusterClick = (
         event: MapMouseEvent & {
           features?: MapGeoJSONFeature[] | undefined
         },
       ) => {
-        console.log('STRUCTURE CLUSTER CLICK', event.features[0])
-
         if (map.current) {
           map.current.flyTo({
             zoom: 12.9,
@@ -469,6 +479,9 @@ const Map = ({
     // See https://github.com/mapbox/mapbox-gl-js/issues/2613
 
     const mapStyles = map.current?.getStyle()
+    if (!mapStyles) {
+      return
+    }
 
     const selectedStructureFilter: FilterSpecification = [
       'match',
