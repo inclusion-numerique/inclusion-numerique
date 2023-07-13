@@ -514,6 +514,7 @@ const Map = ({
         city={selectedCity}
         structure={selectedStructure}
         close={onMapPopupClose}
+        viewIndiceFN={viewIndiceFN}
       />
       <IndiceNumerique
         setViewIndiceFN={setViewIndiceFN}
