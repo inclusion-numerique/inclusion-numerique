@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction } from 'react'
+import Link from 'next/link'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import styles from './IndiceNumerique.module.css'
 import { ifnColors } from './Layers/ifn'
-import Link from 'next/link'
 
 const { Component: InformationModal, open: openInformationModal } = createModal(
   {
