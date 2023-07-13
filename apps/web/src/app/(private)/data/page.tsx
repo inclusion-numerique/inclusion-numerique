@@ -252,29 +252,23 @@ const Page = async () => {
             <thead>
               <tr>
                 <th>Id</th>
-                <th>Uuid</th>
-                <th>Data Pass Id</th>
                 <th>Siret</th>
                 <th>Nom</th>
                 <th>Adresse</th>
                 <th>Code postal</th>
-                <th>Commune</th>
                 <th>Code Commune INSEE</th>
               </tr>
             </thead>
             <tbody>
               {aidantsConnectStructures.withoutInclusionStructureId.map(
                 ({ structure }) => (
-                  <tr key={structure.ID}>
-                    <td>{structure.ID}</td>
-                    <td>{structure.UUID}</td>
-                    <td>{structure['Data Pass ID']}</td>
-                    <td>{structure.Siret}</td>
-                    <td>{structure.Name}</td>
-                    <td>{structure.Address}</td>
-                    <td>{structure['Zip Code']}</td>
-                    <td>{structure.City}</td>
-                    <td>{structure['City Insee Code']}</td>
+                  <tr key={structure.id}>
+                    <td>{structure.id}</td>
+                    <td>{structure.siret}</td>
+                    <td>{structure.name}</td>
+                    <td>{structure.address}</td>
+                    <td>{structure.zipCode}</td>
+                    <td>{structure.cityCode}</td>
                   </tr>
                 ),
               )}

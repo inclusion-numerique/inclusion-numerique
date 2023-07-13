@@ -20,7 +20,7 @@ import {
 
 const valueToString = (value: number) => value.toLocaleString('fr-FR')
 export const valueToPercentage = (value: number) =>
-  `${value.toPrecision(2).toLocaleString()}%`
+  `${value.toPrecision(value >= 100 ? 3 : 2).toLocaleString()}%`
 
 export const debugDataInclusion = async () => {
   const dataInclusionStructures = await getDataInclusionStructures()
@@ -333,7 +333,7 @@ export const debugAidantsConnectStructures = async (
   const withInclusionStructure = [...aidantsConnectInfo.bySiret.values()]
     .map((structure) => ({
       structure,
-      dataInclusionStructure: dataInclusionDebug.bySiret.get(structure.Siret),
+      dataInclusionStructure: dataInclusionDebug.bySiret.get(structure.siret),
     }))
     .filter(({ dataInclusionStructure }) => dataInclusionStructure)
 
@@ -341,7 +341,7 @@ export const debugAidantsConnectStructures = async (
     .map((structure) => ({
       structure,
       dataInclusionStructure:
-        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.ID),
+        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.id),
     }))
     .filter(({ dataInclusionStructure }) => dataInclusionStructure)
 
@@ -349,7 +349,7 @@ export const debugAidantsConnectStructures = async (
     .map((structure) => ({
       structure,
       dataInclusionStructure:
-        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.ID),
+        dataInclusionDebug.byAidantsConnectStructureId.byKey.get(structure.id),
     }))
     .filter(({ dataInclusionStructure }) => !dataInclusionStructure)
 

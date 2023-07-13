@@ -28,7 +28,7 @@ const cnfsIdExtract = /conseiller-numerique-([\dA-Fa-f]{3,})/
 /**
  * E.g. "aidants-connect-1539|numi-conseiller-numerique-63d784fce6d6a806f256657a|numinumiconseiller-numerique-63d784fce6d6a806f256657a"
  */
-const aidantsConnectIdExtract = /aidants-connect-([\dA-Fa-f]{3,})/
+const aidantsConnectIdExtract = /aidants-connect-([\dA-Fa-f]*)/
 
 export const extractMetadataFromId = (id: string) => {
   const cnfsPermanenceIdMatch = id.match(cnfsIdExtract)
