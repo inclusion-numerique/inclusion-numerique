@@ -10,7 +10,6 @@ import {
   debugCnfsPermanences,
   debugCnfsStructures,
   debugDataInclusion,
-  valueToPercentage,
 } from '@app/web/data/dataAnalysis'
 import { CartoInclusionLieuxMediation } from '@app/web/data/dataInclusion'
 import { CnfsStructures } from '@app/web/data/cnfsStructures'
@@ -21,6 +20,7 @@ import {
   getDepartementDataQuery,
   queryDonneesEtTerritoires,
 } from '@app/web/data/donneesEtTerritoires'
+import { numberToPercentage } from '@app/web/utils/formatNumber'
 
 export const generateMetadata = async () => {
   const user = await getSessionUser()
@@ -90,7 +90,7 @@ const Page = async () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   {row.percentage
-                    ? valueToPercentage((100 * row.value) / row.percentage)
+                    ? numberToPercentage((100 * row.value) / row.percentage)
                     : null}
                 </td>
               </tr>
@@ -117,7 +117,7 @@ const Page = async () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   {row.percentage
-                    ? valueToPercentage((100 * row.value) / row.percentage)
+                    ? numberToPercentage((100 * row.value) / row.percentage)
                     : null}
                 </td>
               </tr>
@@ -144,7 +144,7 @@ const Page = async () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   {row.percentage
-                    ? valueToPercentage((100 * row.value) / row.percentage)
+                    ? numberToPercentage((100 * row.value) / row.percentage)
                     : null}
                 </td>
               </tr>
@@ -235,7 +235,7 @@ const Page = async () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   {row.percentage
-                    ? valueToPercentage((100 * row.value) / row.percentage)
+                    ? numberToPercentage((100 * row.value) / row.percentage)
                     : null}
                 </td>
               </tr>
