@@ -9,7 +9,7 @@ export const CartoInclusionLieuxMediation = {
   url: 'https://www.data.gouv.fr/fr/datasets/lieux-de-mediation-numerique-sur-le-territoire-national-fournis-par-data-inclusion-1/',
   downloadUrl:
     'https://www.data.gouv.fr/fr/datasets/r/be3323ec-4662-4b3b-b90e-18cf5c97193d',
-  dataFile: 'structures-inclusion-20230710-data-inclusion-sans-doublons.json',
+  dataFile: 'structures-inclusion-20230717-data-inclusion-sans-doublons.json',
 }
 
 export type CartoInclusionLieuxMediationStructure = DataInclusionStructure & {
