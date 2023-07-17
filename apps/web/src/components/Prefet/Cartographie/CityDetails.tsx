@@ -20,10 +20,8 @@ const CityDetails = ({
     conseillersNumeriques,
     habilitesAidantsConnect,
   },
-  viewIndiceFN,
 }: {
   city: City
-  viewIndiceFN: boolean
 }) => {
   // TODO Proper button element for click on title
   const [structuresDetailOpen, setStructuresDetailOpen] = useState(false)
@@ -214,55 +212,45 @@ const CityDetails = ({
         </div>
       )}
 
-      {viewIndiceFN && (
+      <hr className="fr-mt-6v" />
+      <div className={styles.row}>
+        <p className="fr-text--lg fr-text--bold fr-mb-3v">
+          Indicateurs de fragilité numérique
+        </p>
+        <p className="fr-text--lg fr-text--bold fr-mb-3v">
+          {formatIfnScore(ifnTotal)}
+        </p>
+      </div>
+      {ifnTotal === null ? (
+        <p className="fr-text--sm">Indisponible</p>
+      ) : (
         <>
-          <hr className="fr-mt-6v" />
-          <div className={styles.row}>
-            <p className="fr-text--lg fr-text--bold fr-mb-3v">
-              Indicateurs de fragilité numérique
+          <div className={classNames(styles.row, 'fr-mb-1v')}>
+            <p className="fr-text--sm">
+              Taux de non-couverture Très-Haut-Débit
             </p>
-            <p className="fr-text--lg fr-text--bold fr-mb-3v">
-              {formatIfnScore(ifnTotal)}
+            <p className=" fr-text--bold">
+              {formatIfnScore(ifnNoThdCoverageRate)}
             </p>
           </div>
-          {ifnTotal === null ? (
-            <p className="fr-text--sm">Indisponible</p>
-          ) : (
-            <>
-              <div className={classNames(styles.row, 'fr-mb-1v')}>
-                <p className="fr-text--sm">
-                  Taux de non-couverture Très-Haut-Débit
-                </p>
-                <p className=" fr-text--bold">
-                  {formatIfnScore(ifnNoThdCoverageRate)}
-                </p>
-              </div>
-              <div className={classNames(styles.row, 'fr-mb-1v')}>
-                <p className="fr-text--sm">Taux de non-couverture 4G</p>
-                <p className=" fr-text--bold">
-                  {formatIfnScore(ifnNo4gCoverageRate)}
-                </p>
-              </div>
-              <div className={classNames(styles.row, 'fr-mb-1v')}>
-                <p className="fr-text--sm">Part des 65 ans et plus</p>
-                <p className=" fr-text--bold">
-                  {formatIfnScore(ifnOlder65Rate)}
-                </p>
-              </div>
-              <div className={classNames(styles.row, 'fr-mb-1v')}>
-                <p className="fr-text--sm">Part des pas ou peu diplômés</p>
-                <p className=" fr-text--bold">
-                  {formatIfnScore(ifnNscol15pRate)}
-                </p>
-              </div>
-              <div className={classNames(styles.row, 'fr-mb-1v')}>
-                <p className="fr-text--sm">Taux de pauvreté</p>
-                <p className=" fr-text--bold">
-                  {formatIfnScore(ifnPovertyRate)}
-                </p>
-              </div>
-            </>
-          )}
+          <div className={classNames(styles.row, 'fr-mb-1v')}>
+            <p className="fr-text--sm">Taux de non-couverture 4G</p>
+            <p className=" fr-text--bold">
+              {formatIfnScore(ifnNo4gCoverageRate)}
+            </p>
+          </div>
+          <div className={classNames(styles.row, 'fr-mb-1v')}>
+            <p className="fr-text--sm">Part des 65 ans et plus</p>
+            <p className=" fr-text--bold">{formatIfnScore(ifnOlder65Rate)}</p>
+          </div>
+          <div className={classNames(styles.row, 'fr-mb-1v')}>
+            <p className="fr-text--sm">Part des pas ou peu diplômés</p>
+            <p className=" fr-text--bold">{formatIfnScore(ifnNscol15pRate)}</p>
+          </div>
+          <div className={classNames(styles.row, 'fr-mb-1v')}>
+            <p className="fr-text--sm">Taux de pauvreté</p>
+            <p className=" fr-text--bold">{formatIfnScore(ifnPovertyRate)}</p>
+          </div>
         </>
       )}
       <hr className="fr-mt-6v" />
