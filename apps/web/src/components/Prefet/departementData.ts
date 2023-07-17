@@ -1,7 +1,6 @@
 import { DepartementGeoJson } from '@app/web/utils/map/departementGeoJson'
 import { getStructuresData } from '@app/web/components/Prefet/structuresData'
 import { ConumCras, getConumCrasByDepartement } from '@app/web/data/cnfsCra'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 
 export type Statistic = {
   id: string
