@@ -29,10 +29,10 @@ const DepartementDashboard = ({
     <div className="fr-mt-4v fr-pb-20v">
       <DepartementDashboardHeader />
       <div className="fr-grid-row fr-grid-row--gutters fr-mb-10w">
-        <div className="fr-col-5">
+        <div className="fr-col-12 fr-col-md-5">
           <MainStatistics departement={departement} data={data} />
         </div>
-        <div className="fr-col-7">
+        <div className="fr-col-12 fr-col-md-7">
           <DepartementMap departement={departement} />
         </div>
       </div>

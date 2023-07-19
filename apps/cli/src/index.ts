@@ -11,6 +11,8 @@ import { getDatabasePasswordSecret } from '@app/cli/commands/secrets/getDatabase
 import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
+import { reduceCras } from '@app/cli/commands/data/reduceCras'
+import { buildDatabase } from '@app/cli/commands/data/buildDatabase'
 
 const program = new Command()
 
@@ -26,5 +28,7 @@ program.addCommand(updateGithubDeployment)
 program.addCommand(deactivateGithubDeployment)
 program.addCommand(createTfVarsFileFromEnvironment)
 program.addCommand(checkDeploymentStatus)
+program.addCommand(reduceCras)
+program.addCommand(buildDatabase)
 
 program.parse()

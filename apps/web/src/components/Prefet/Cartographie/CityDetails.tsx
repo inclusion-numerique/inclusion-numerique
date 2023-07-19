@@ -42,7 +42,7 @@ const CityDetails = ({
   return (
     <>
       <h6 className="fr-mt-1v">{nom}</h6>
-      <p>Commune de {population} hab.</p>
+      <p className="fr-mb-1v">Commune de {population} hab.</p>
       <p className="fr-hint-text fr-mb-0">
         {codesPostaux.length === 1 ? `Code postal` : `Code postaux`} : 
         {codesPostaux.join(', ')} - INSEE : {code}

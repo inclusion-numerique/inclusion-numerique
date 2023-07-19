@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "jsonProtocol"]
+  previewFeatures = ["fullTextSearch", "jsonProtocol", "postgresqlExtensions", "extendedIndexes"]
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
 }
 
@@ -159,4 +159,162 @@ model Upload {
   image Image?
 
   @@map("uploads")
+}
+
+model Region {
+  // INSEE
+  code         String        @id
+  nom          String
+  departements Departement[]
+
+  @@map("regions")
+}
+
+model Epci {
+  // INSEE
+  code       String    @id
+  nom        String
+  communes   Commune[]
+  geometry   Json?
+  population Int
+
+  @@map("epcis")
+}
+
+model Departement {
+  // INSEE
+  code                           String                           @id
+  nom                            String
+  codeRegion                     String?                          @map("code_region")
+  region                         Region?                          @relation(fields: [codeRegion], references: [code])
+  communes                       Commune[]
+  geometry                       Json?
+  structureCartographieNationale StructureCartographieNationale[]
+
+  @@map("departements")
+}
+
+model Commune {
+  code        String        @id
+  nom         String
+  codePostaux CodePostaux[]
+
+  codeDepartement String?      @map("code_departement")
+  departement     Departement? @relation(fields: [codeDepartement], references: [code])
+
+  population Int
+
+  codeEpci String? @map("code_epci")
+  epci     Epci?   @relation(fields: [codeEpci], references: [code])
+
+  latitude  Float?
+  longitude Float?
+
+  geometry Json?
+
+  structuresCartographieNationale StructureCartographieNationale[]
+
+  @@index([codeDepartement])
+  @@index([codeEpci])
+  @@map("communes")
+}
+
+// Explicit many to many table between Commune and CodePostal
+model CodePostaux {
+  code       String
+  codePostal CodePostal @relation(fields: [code], references: [code])
+
+  codeCommune String  @map("code_commune")
+  commune     Commune @relation(fields: [codeCommune], references: [code], onDelete: Cascade)
+
+  @@id([code, codeCommune])
+  @@map("code_postaux")
+}
+
+// Normalized for easier search with o(1) instead of string[] in Communes
+model CodePostal {
+  code        String        @id
+  codePostaux CodePostaux[]
+
+  @@map("code_postal")
+}
+
+model StructureCartographieNationale {
+  id    String @id
+  nom   String
+  siret String
+
+  type           String
+  sousTypePublic String?
+
+  // Bad data in, bad data out. Missing communes are frequent
+  codeCommune String?  @map("code_commune")
+  commune     Commune? @relation(fields: [codeCommune], references: [code])
+
+  // As data is really bad, as a fallback we need to store the departement code when postal code / name has a typo and no codeCommune is found
+  codeDepartement String?      @map("code_repartement")
+  departement     Departement? @relation(fields: [codeDepartement], references: [code])
+
+  adresse String
+  source  String
+
+  updatedAt DateTime @map("updated_at")
+
+  latitude  Float?
+  longitude Float?
+
+  labelConseillersNumerique Boolean
+  labelFranceServices       Boolean
+  labelAidantsConnect       Boolean
+
+  structureAidantsConnect StructureAidantsConnect?
+
+  permanenceConseillerNumerique PermanenceConseillerNumerique?
+
+  // If we have detected an error in the data (e.g. invalid postal code / commune name) we store the error here
+  errors Json?
+
+  @@map("structures_cartographie_nationale")
+}
+
+model StructureAidantsConnect {
+  id String @id
+
+  structureCartographieNationaleId String?                         @unique @map("structure_cartographie_nationale_id")
+  structureCartographieNationale   StructureCartographieNationale? @relation(fields: [structureCartographieNationaleId], references: [id])
+
+  isActive Boolean
+
+  aidants        Int
+  usagersUniques Int
+
+  totalDemarches Int
+
+  // Nombre de démarches (smaller names for easier data transfer)
+  argent    Int
+  etranger  Int
+  famille   Int
+  justice   Int
+  loisirs   Int
+  papier    Int
+  social    Int
+  transport Int
+  travail   Int
+  logement  Int
+
+  // If we have detected an error in the data (e.g. not found in carto nationale) we store the error here
+  errors Json?
+
+  @@index([structureCartographieNationaleId])
+  @@map("structures_aidants_connect")
+}
+
+model PermanenceConseillerNumerique {
+  id String @id
+
+  structureCartographieNationaleId String?                         @unique @map("structure_cartographie_nationale_id")
+  structureCartographieNationale   StructureCartographieNationale? @relation(fields: [structureCartographieNationaleId], references: [id])
+
+  @@index([structureCartographieNationaleId])
+  @@map("permanences_conseiller_numerique")
 }

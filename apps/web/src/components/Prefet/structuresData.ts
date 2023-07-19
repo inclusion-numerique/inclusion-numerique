@@ -66,7 +66,6 @@ export const getStructuresData = async (
     return memoized
   }
 
-  // TODO We will fetch all this from insitu graphql endpoint instead
   const allDataInclusionStructures = await getDataInclusionStructures()
   const allCnfsPermanences = await getCnfsPermanences()
   const allAidantsConnectStructures = await getAidantsConnectStructures()
