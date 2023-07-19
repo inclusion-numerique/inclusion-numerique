@@ -13,6 +13,7 @@ import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
 import { reduceCras } from '@app/cli/commands/data/reduceCras'
 import { buildDatabase } from '@app/cli/commands/data/buildDatabase'
+import { buildDataset } from '@app/cli/commands/deployment/buildDataset'
 
 const program = new Command()
 
@@ -30,5 +31,6 @@ program.addCommand(createTfVarsFileFromEnvironment)
 program.addCommand(checkDeploymentStatus)
 program.addCommand(reduceCras)
 program.addCommand(buildDatabase)
+program.addCommand(buildDataset)
 
 program.parse()
