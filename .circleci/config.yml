@@ -42,7 +42,7 @@ executors:
 parameters:
   cache_version:
     type: string
-    default: '2023-05-17-01'
+    default: '2023-07-20-01'
   virtual_store_dir:
     type: string
     default: './.pnpm'
@@ -206,9 +206,6 @@ jobs:
       - checkout
       - install_dependencies
       - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - run:
           name: 'Tsc'
           command: pnpm -F '@app/web' tsc
       - run:
@@ -222,9 +219,6 @@ jobs:
     steps:
       - checkout
       - install_dependencies
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - run:
           name: 'Tsc'
           command: pnpm -F '!@app/web' tsc
@@ -257,9 +251,6 @@ jobs:
       - install_dependencies
       - create_dotenv_file
       - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - run:
           name: 'Test all packages except @app/web'
           command: pnpm --silent -F '!@app/web' test
 
@@ -270,9 +261,6 @@ jobs:
       - checkout
       - install_dependencies
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - run:
           name: 'Test @app/web'
           command: pnpm --silent -F @app/web test
@@ -286,9 +274,6 @@ jobs:
           docker_layer_caching: true
       - install_dependencies
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - setup_docker_web_env
       - run:
@@ -327,9 +312,6 @@ jobs:
       - checkout
       - install_dependencies
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - run:
           name: 'Build storybook and deploy on chromatic'
@@ -347,9 +329,6 @@ jobs:
           keys:
             - << pipeline.parameters.cache_version >>-cypress-{{ checksum "<< pipeline.parameters.lockfile >>" }}
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - run:
           name: 'Run Cypress component testing'
@@ -385,9 +364,6 @@ jobs:
             - << pipeline.parameters.cache_version >>-cypress-{{ checksum "<< pipeline.parameters.lockfile >>" }}
       - create_dotenv_file
       - add_secrets_to_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - setup_docker_web_env
       - run:
           name: "Add NEXT_PUBLIC_* env to .env"
@@ -438,9 +414,6 @@ jobs:
       - checkout
       - create_dotenv_file
       - install_dependencies
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - setup_docker_web_env
       - run:
@@ -521,9 +494,6 @@ jobs:
       - install_dependencies
       - install_terraform
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - run:
           name: "Create terraform variables file from environment variables"
@@ -543,9 +513,6 @@ jobs:
       - install_dependencies
       - install_terraform
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - run:
           name: "Create terraform variables file from environment variables"
@@ -564,9 +531,6 @@ jobs:
       - install_dependencies
       - install_terraform
       - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
       - add_secrets_to_dotenv_file
       - run:
           name: "Create terraform variables file from environment variables"
@@ -614,6 +578,9 @@ commands:
       - restore_cache:
           keys:
             - << pipeline.parameters.cache_version >>-pnpm-{{ checksum "<< pipeline.parameters.lockfile >>" }}
+      - run:
+          name: 'Prisma generate'
+          command: pnpm --silent -F @app/web prisma generate
 
   create_dotenv_file:
     steps:
