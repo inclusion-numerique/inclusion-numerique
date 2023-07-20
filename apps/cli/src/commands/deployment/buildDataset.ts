@@ -11,5 +11,5 @@ export const buildDataset = new Command()
     })
 
     const result = await client.post<{ status: string }>('/jobs/build-data')
-    output(result)
+    output(result.data)
   })
