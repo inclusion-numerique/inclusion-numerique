@@ -1,4 +1,14 @@
 import { resolve } from 'node:path'
 
+const webApplicationRoot = () => {
+  const cwd = process.cwd()
+
+  if (cwd.endsWith('apps/web')) {
+    return cwd
+  }
+
+  return resolve(cwd, 'apps/web')
+}
+
 export const getDataFilePath = (fileName: string) =>
-  resolve(__dirname, '../../', 'public/data', fileName)
+  resolve(webApplicationRoot(), 'public/data', fileName)

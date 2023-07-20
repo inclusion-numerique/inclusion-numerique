@@ -1,9 +1,7 @@
-import { createReadStream } from 'node:fs'
 import path from 'node:path'
 import { Command } from '@commander-js/extra-typings'
-
-import csv from 'csv-parser'
 import { getDepartementCodeFromPostalCode } from '@app/web/data/getDepartementCodeFromPostalCode'
+import { parseCsvFileWithMapper } from '@app/web/data/parseCsvFile'
 
 const crasCsvFile = path.resolve(
   __dirname,
@@ -117,18 +115,10 @@ const reduceData = (mapped: Preprocessed[]): ReducedResult => {
 export const reduceCras = new Command()
   .command('data:reduce-cras')
   .action(async () => {
-    const mapped = await new Promise<Preprocessed[]>((resolve, reject) => {
-      const result: Preprocessed[] = []
+    const rows = await parseCsvFileWithMapper(crasCsvFile, preprocessData)
 
-      createReadStream(crasCsvFile)
-        .pipe(csv())
-        .on('data', (data: CrasCsvRow) => {
-          result.push(preprocessData(data))
-        })
-        .on('end', () => {
-          resolve(result)
-        })
-        .on('error', reject)
-    })
-    console.log('COUNT', mapped.length)
+    const reduced = reduceData(rows)
+
+    console.log('COUNT', rows.length)
+    console.log('REDUCED', reduced.size)
   })

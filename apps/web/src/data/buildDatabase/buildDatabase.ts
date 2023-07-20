@@ -21,7 +21,7 @@ export const buildDatabase = async () => {
   await buildEpcis()
 
   output('Building communes...')
-  const communes = await buildCommunes({ departements, persist: false })
+  const communes = await buildCommunes({ departements })
 
   output('Building structures cartographie nationale...')
   const structuresCartographieNationale =

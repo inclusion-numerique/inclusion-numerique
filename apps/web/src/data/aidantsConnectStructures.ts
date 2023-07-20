@@ -114,7 +114,6 @@ export const getAidantsConnectStructures = () =>
   parseCsvFileWithMapper(
     getDataFilePath(AidantsConnectStructures.dataFile),
     (row: AidantsConnectCsvRow): AidantsConnectStructure => {
-      console.log('ROW', row)
       const {
         cityCode,
         isActive,
