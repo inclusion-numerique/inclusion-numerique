@@ -169,7 +169,7 @@ jobs:
       - checkout
       - skip/skip_unchanged:
           paths: pnpm-lock.yaml
-      - install_dependencies
+      - restore_dependencies_cache
       - run:
           name: 'Fetch dependencies'
           command: pnpm install --virtual-store-dir << pipeline.parameters.virtual_store_dir >> --frozen-lockfile
@@ -572,12 +572,16 @@ commands:
             echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
             sudo apt update && sudo apt install terraform
 
-  install_dependencies:
+  restore_dependencies_cache:
     steps:
       - install_pnpm
       - restore_cache:
           keys:
             - << pipeline.parameters.cache_version >>-pnpm-{{ checksum "<< pipeline.parameters.lockfile >>" }}
+
+  install_dependencies:
+    steps:
+      - restore_dependencies_cache
       - run:
           name: 'Prisma generate'
           command: pnpm --silent -F @app/web prisma generate
