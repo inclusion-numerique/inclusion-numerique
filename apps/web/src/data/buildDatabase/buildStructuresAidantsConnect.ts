@@ -1,6 +1,5 @@
 import { output } from '@app/cli/output'
 import type { Prisma } from '@prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import { getAidantsConnectStructures } from '@app/web/data/aidantsConnectStructures'
 import { BuildStructuresCartographieNationaleOutput } from '@app/web/data/buildDatabase/buildStructuresCartographieNationale'
 
@@ -53,11 +52,7 @@ export const buildStructuresAidantsConnect = async ({
     })
   }
 
-  output('-- Inserting data...')
-  await prismaClient.$transaction([
-    prismaClient.structureAidantsConnect.deleteMany(),
-    prismaClient.structureAidantsConnect.createMany({ data }),
-  ])
+  return { data }
 }
 
 export type BuildStructuresAidantsConnect = Awaited<

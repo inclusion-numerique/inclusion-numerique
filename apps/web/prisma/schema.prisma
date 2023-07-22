@@ -189,7 +189,9 @@ model Departement {
   codeRegion                     String?                                @map("code_region")
   region                         Region?                                @relation(fields: [codeRegion], references: [code])
   communes                       Commune[]
-  geometry                       Json?
+  geometry                       Json
+  // north east [[lat,long], southwest [lat,long]]
+  bounds                         Json
   structureCartographieNationale StructureCartographieNationale[]
   craConseillerNumerique         CraConseillerNumeriqueParDepartement[]
 

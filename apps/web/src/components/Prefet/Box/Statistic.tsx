@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react'
 import classNames from 'classnames'
-import { Statistic as StatisticType } from '../departementData'
+import { numberToString } from '@app/web/utils/formatNumber'
+import type { StatisticData as StatisticType } from '@app/web/app/(prefet)/prefet/[codeDepartement]/getDepartementDashboardData'
 import styles from './Statistic.module.css'
 
 type StatisticProps = {
@@ -53,7 +54,7 @@ const Statistic = ({
             !isSubStatistic && 'fr-text--bold',
           )}
         >
-          {value}
+          {numberToString(value)}
         </span>
       </div>
       {displayChildren && (

@@ -1,5 +1,6 @@
 import { LngLatBounds, LngLatBoundsLike } from 'maplibre-gl'
 import { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+import { DepartementGeoFeatures } from '@app/web/data/departements'
 import dataFile from './departements.json'
 
 type JsonDataFeature = {
@@ -14,14 +15,6 @@ type JsonDataFeature = {
 const data = dataFile as {
   type: 'FeatureCollection'
   features: JsonDataFeature[]
-}
-
-export type DepartementGeoJson = {
-  code: string
-  name: string
-  // north East and south West coordinates
-  bounds: [[number, number], [number, number]]
-  source: GeoJSONSourceSpecification & { data: JsonDataFeature }
 }
 
 /*
@@ -58,7 +51,7 @@ const constructIndexedDepartementGeoJson = () => {
 
     return {
       code: departementFeature.properties.DDEP_C_COD,
-      name: departementFeature.properties.DDEP_L_LIB,
+      nom: departementFeature.properties.DDEP_L_LIB,
       bounds,
       source,
     }
@@ -68,7 +61,7 @@ const constructIndexedDepartementGeoJson = () => {
     departements.map((departement) => [departement.code, departement]),
   )
   const byName = new Map(
-    departements.map((departement) => [departement.name, departement]),
+    departements.map((departement) => [departement.nom, departement]),
   )
 
   return { departements, byCode, byName }
@@ -84,7 +77,7 @@ export const getDepartementGeoJson = (
   departement:
     | { code: string; name?: undefined }
     | { name: string; code?: undefined },
-): DepartementGeoJson | null => {
+): DepartementGeoFeatures => {
   if (!departementsGeoJson) {
     departementsGeoJson = constructIndexedDepartementGeoJson()
   }
@@ -95,7 +88,7 @@ export const getDepartementGeoJson = (
       : departementsGeoJson.byCode.get(departement.code)
 
   if (!result) {
-    return null
+    throw new Error('Departement not found')
   }
 
   return result

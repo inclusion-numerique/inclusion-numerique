@@ -2,73 +2,68 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { City } from '@app/web/types/City'
-import {
-  Structure,
-  StructuresData,
-} from '@app/web/components/Prefet/structuresData'
-import { DepartementData } from '@app/web/utils/map/departement'
 import {
   applyStructureFilter,
   StructureFilters,
 } from '@app/web/components/Prefet/Cartographie/structureFilters'
+import {
+  DepartementCartographieData,
+  DepartementCartographieDataCommune,
+  DepartementCartographieDataStructure,
+} from '@app/web/app/(cartographie)/prefet/[codeDepartement]/cartographie/getDepartementCartographieData'
 import styles from './Page.module.css'
 import Legend from './Legend'
 import Map from './Map'
 
 const Cartographie = ({
-  departement,
-  structuresData,
+  data: { departement, structures, count, communes, epcis },
 }: {
-  departement: DepartementData
-  structuresData: StructuresData
+  data: DepartementCartographieData
 }) => {
-  const [selectedCity, setSelectedCity] = useState<City | null | undefined>()
+  const [selectedCommune, setSelectedCommune] = useState<
+    DepartementCartographieDataCommune | null | undefined
+  >()
   const [selectedStructure, setSelectedStructure] = useState<
-    Structure | null | undefined
+    DepartementCartographieDataStructure | null | undefined
   >()
 
-  const { cities, code } = departement
   const router = useRouter()
 
-  const onCitySelected = useCallback(
-    (city: string | undefined | null) => {
-      if (city) {
+  const onCommuneSelected = useCallback(
+    (codeCommune: string | undefined | null) => {
+      if (codeCommune) {
         setSelectedStructure(null)
-        setSelectedCity(cities.find((c) => c.nom === city))
+        setSelectedCommune(communes.find((c) => c.code === codeCommune))
       } else {
-        setSelectedCity(null)
+        setSelectedCommune(null)
       }
     },
-    [cities],
+    [communes],
   )
 
   const onStructureSelected = useCallback(
     (structure: string | undefined | null) => {
       if (structure) {
-        setSelectedCity(null)
+        setSelectedCommune(null)
         setSelectedStructure(
-          structuresData.structures.find(
-            (item) => item.properties.id === structure,
-          ),
+          structures.find((item) => item.properties.id === structure),
         )
       } else {
         setSelectedStructure(null)
       }
     },
-    [cities],
+    [structures],
   )
 
+  // Prefetch dashboard page
   useEffect(() => {
-    router.prefetch(`/prefet/${code}`)
-  }, [router, code])
+    router.prefetch(`/prefet/${departement.code}`)
+  }, [router, departement.code])
 
-  const [filteredStructures, setFilteredStructures] = useState(
-    structuresData.structures,
-  )
+  const [filteredStructures, setFilteredStructures] = useState(structures)
   const onFilter = (filters: StructureFilters) => {
     setFilteredStructures(
-      structuresData.structures.filter((structure) =>
+      structures.filter((structure) =>
         applyStructureFilter(structure, filters),
       ),
     )
@@ -77,20 +72,23 @@ const Cartographie = ({
   return (
     <div className={styles.container}>
       <Legend
-        cities={cities}
+        count={count}
+        structures={structures}
+        communes={communes}
         departement={departement}
-        structuresData={structuresData}
-        selectedCity={selectedCity}
-        onCitySelected={onCitySelected}
+        selectedCommune={selectedCommune}
+        onCommuneSelected={onCommuneSelected}
         selectedStructure={selectedStructure}
         onStructureSelected={onStructureSelected}
         onFilter={onFilter}
       />
       <Map
         departement={departement}
-        structuresData={structuresData}
-        selectedCity={selectedCity}
-        onCitySelected={onCitySelected}
+        communes={communes}
+        epcis={epcis}
+        structures={structures}
+        selectedCommune={selectedCommune}
+        onCommuneSelected={onCommuneSelected}
         selectedStructure={selectedStructure}
         onStructureSelected={onStructureSelected}
         filteredStructures={filteredStructures}

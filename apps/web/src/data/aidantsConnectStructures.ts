@@ -76,6 +76,19 @@ export const stringBooleanToBoolean = (value: StringBoolean) => {
   }
 }
 
+export const AidantsConnectDemarcheLabels = {
+  argent: 'Argent',
+  etranger: 'Étranger',
+  famille: 'Famille',
+  justice: 'Justice',
+  loisirs: 'Loisirs',
+  papier: 'Papier',
+  social: 'Social',
+  transport: 'Transport',
+  travail: 'Travail',
+  logement: 'Logement',
+} as const
+
 export type AidantsConnectStructure = {
   id: string
   name: string

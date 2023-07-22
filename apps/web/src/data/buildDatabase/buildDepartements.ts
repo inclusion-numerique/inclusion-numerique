@@ -1,7 +1,7 @@
 import { output } from '@app/cli/output'
 import axios from 'axios'
 import { getGeoDepartements } from '@app/web/data/geoDepartements'
-import { prismaClient } from '@app/web/prismaClient'
+import { getBounds } from '@app/web/data/geometry'
 
 export const buildDepartements = async () => {
   output('-- Downloading from https://geo.api.gouv.fr...')
@@ -26,12 +26,15 @@ export const buildDepartements = async () => {
   const data = departementsGeometry.features.map((feature) => {
     const code = feature.properties.DDEP_C_COD
 
+    const bounds = getBounds(feature.geometry.coordinates)
+
     const geoApiDepartement = byCode.get(code)
 
     if (geoApiDepartement) {
       return {
         ...geoApiDepartement,
         geometry: feature.geometry,
+        bounds,
       }
     }
 
@@ -40,18 +43,12 @@ export const buildDepartements = async () => {
       nom: feature.properties.DDEP_L_LIB,
       codeRegion: null,
       geometry: feature.geometry,
+      bounds,
     }
   })
-  output('-- Inserting data...')
+  output(`-- Inserting data (${data.length})...`)
 
-  await prismaClient.$transaction([
-    prismaClient.departement.deleteMany(),
-    prismaClient.departement.createMany({
-      data,
-    }),
-  ])
-
-  return { codes: new Set(data.map(({ code }) => code)) }
+  return { codes: new Set(data.map(({ code }) => code)), data }
 }
 
 export type BuildDepartementsOutput = Awaited<

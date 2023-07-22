@@ -1,13 +1,17 @@
-import { DepartementGeoJson } from '@app/web/utils/map/departementGeoJson'
-import { getStructuresData } from '@app/web/components/Prefet/structuresData'
-import { ConumCras, getConumCrasByDepartement } from '@app/web/data/cnfsCra'
+/* eslint no-plusplus: 0 */
+import { ConumCras } from '@app/web/data/cnfsCra'
+import { prismaClient } from '@app/web/prismaClient'
+import { countStructuresForDepartementDashboard } from '@app/web/components/Prefet/Cartographie/countStructures'
+import { getTopCrasTypes } from '@app/web/components/Prefet/Cartographie/getTopCrasTypes'
+import { getDepartementGeoFeatures } from '@app/web/data/departements'
+import { createWhereStructureInDepartement } from '@app/web/data/query/whereStructureInDepartement'
 
-export type Statistic = {
+export type StatisticData = {
   id: string
   label: string
   value: number
   collapsable?: boolean
-  statistics?: Statistic[]
+  statistics?: StatisticData[]
 }
 
 type SourcedStatistic = {
@@ -21,49 +25,107 @@ type SourcedStatistic = {
 type Category = {
   id: string
   label?: string
-  statistics: Statistic[]
+  statistics: StatisticData[]
 }
 
-export type StatisticBox = {
+export type StatisticBoxData = {
   id: string
   label: string
   value: number
-  statistics: (SourcedStatistic | Category | Statistic)[]
+  statistics: (SourcedStatistic | Category | StatisticData)[]
   withDescription?: boolean
 }
 
-export type PercentageBox = {
+export type PercentageBoxData = {
   id: string
   label: string
   updated: Date
   source: string
-  statistics: Statistic[]
+  statistics: StatisticData[]
 }
 
-export type Box = StatisticBox | PercentageBox
+export type BoxData = StatisticBoxData | PercentageBoxData
 
-export type Boxes = {
+export type BoxesData = {
   id?: string
   label?: string
   description?: string
-  boxes: Box[]
+  boxes: BoxData[]
 }
 
 const memoizedDepartementsData = new Map<string, DepartementDashboardData>()
 
-const computeDepartementData = async (departement: DepartementGeoJson) => {
-  const structuresData = await getStructuresData(departement)
-  const allConumCras = await getConumCrasByDepartement()
-  const conumCras = allConumCras[departement.code]
-  if (!conumCras) {
-    throw new Error(`No conum CRAs for departement ${departement.code}`)
-  }
+const listStructures = (codeDepartement: string) =>
+  prismaClient.structureCartographieNationale.findMany({
+    where: createWhereStructureInDepartement(codeDepartement),
+    select: {
+      id: true,
+      type: true,
+      sousTypePublic: true,
+      labelAidantsConnect: true,
+      labelFranceServices: true,
+      labelConseillersNumerique: true,
+      structureAidantsConnect: true,
+    },
+  })
+
+export type DepartementDashboardStructureItem = Awaited<
+  ReturnType<typeof listStructures>
+>[number]
+
+const computeDepartementDashboardData = async (codeDepartement: string) => {
+  const whereInDepartement = createWhereStructureInDepartement(codeDepartement)
+
+  /**
+   * We are using basic prisma queries and counting programmatically to provide type safety.
+   * It would be more performant and less verbose to use SQL COUNT with filters.
+   * But the query would be less readable.
+   */
+  const [departement, structures, conumCras, conums] = await Promise.all([
+    prismaClient.departement.findUniqueOrThrow({
+      where: { code: codeDepartement },
+      select: {
+        nom: true,
+        code: true,
+        geometry: true,
+        bounds: true,
+      },
+    }),
+    prismaClient.structureCartographieNationale.findMany({
+      where: whereInDepartement,
+      select: {
+        id: true,
+        type: true,
+        sousTypePublic: true,
+        labelAidantsConnect: true,
+        labelFranceServices: true,
+        labelConseillersNumerique: true,
+        structureAidantsConnect: true,
+      },
+    }),
+    prismaClient.craConseillerNumeriqueParDepartement.findUnique({
+      where: { codeDepartement },
+    }),
+    prismaClient.conseillerNumerique.count({
+      where: {
+        enPermanence: {
+          some: {
+            permanence: {
+              structureCartographieNationale: whereInDepartement,
+            },
+          },
+        },
+      },
+    }),
+  ])
+
+  const structuresCount = countStructuresForDepartementDashboard(structures)
 
   const inclusionLocations = {
     id: 'lieux-d-inclusion-numérique',
     label: "Lieux d'Inclusion Numérique",
     withDescription: true,
-    value: structuresData.count.total,
+    value: structuresCount.structures.total,
     statistics: [
       {
         id: 'typologie-de-structures',
@@ -72,45 +134,45 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: 'public',
             label: 'Public',
-            value: structuresData.count.typologie.publique,
+            value: structuresCount.structures.type.publique,
             collapsable: true,
             statistics: [
               {
                 id: 'Commune',
                 label: 'Commune',
-                value: structuresData.count.typologie.commune,
+                value: structuresCount.structures.sousTypePublic.commune,
               },
               {
                 id: 'EPCI',
                 label: 'EPCI',
-                value: structuresData.count.typologie.epci,
+                value: structuresCount.structures.sousTypePublic.epci,
               },
               {
                 id: 'Departement',
                 label: 'Departement',
-                value: structuresData.count.typologie.departement,
+                value: structuresCount.structures.sousTypePublic.departement,
               },
               {
                 id: 'Autre',
                 label: 'Autre',
-                value: structuresData.count.typologie.autre,
+                value: structuresCount.structures.sousTypePublic.autre,
               },
             ],
           },
           {
             id: 'Associations',
             label: 'Associations',
-            value: structuresData.count.typologie.association,
+            value: structuresCount.structures.type.association,
           },
           {
             id: 'Autres acteurs privés',
             label: 'Autres acteurs privés',
-            value: structuresData.count.typologie.privee,
+            value: structuresCount.structures.type.privee,
           },
           {
             id: 'Non défini',
             label: 'Non défini',
-            value: structuresData.count.typologie.nonDefini,
+            value: structuresCount.structures.type.nonDefini,
           },
         ],
       },
@@ -120,18 +182,18 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
         statistics: [
           {
             id: 'structures-accueillant-des-cnfs',
-            label: 'Structures accueillant des CNFS',
-            value: structuresData.count.labels.conseillerNumerique,
+            label: 'Structures accueillant des Conseillers Numérique',
+            value: structuresCount.structures.label.conseillerNumerique,
           },
           {
             id: 'structures-labellisées-france-services',
             label: 'Structures labellisées France Services',
-            value: structuresData.count.labels.franceServices,
+            value: structuresCount.structures.label.franceServices,
           },
           {
             id: 'structures-habilitées-aidants-connect',
             label: 'Structures habilitées Aidants Connect',
-            value: structuresData.count.labels.aidantConnect,
+            value: structuresCount.structures.label.aidantsConnect,
           },
         ],
       },
@@ -142,23 +204,22 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: 'structures-en-quartier-prioritaire-de-la-ville-qpv',
             label: 'Structures en quartier prioritaire de la ville (QPV)',
-            value: structuresData.count.territoiresPrioritaires.qpv,
+            value: structuresCount.structures.territoire.qpv,
           },
           {
             id: 'structures-en-zone-de-revitalisation-rurale-zrr',
             label: 'Structures en zone de revitalisation rurale (ZRR)',
-            value: structuresData.count.territoiresPrioritaires.zrr,
+            value: structuresCount.structures.territoire.zrr,
           },
         ],
       },
     ],
-  } satisfies Box
+  } satisfies BoxData
 
   const aidantConnectLocations = {
     id: 'aidants-numériques-identifiés',
     label: 'Aidants Numériques identifiés',
-    // TODO
-    value: 0,
+    value: conums + structuresCount.aidantsConnect.aidants,
     statistics: [
       {
         id: 'conseillers',
@@ -166,8 +227,7 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: 'conseillers-numériques',
             label: 'Conseillers Numériques',
-            // TODO
-            value: 0,
+            value: conums,
             statistics: [
               {
                 id: 'dont-conseillers-coordinateurs',
@@ -180,48 +240,53 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: 'aidants-habilités-à-aidant-connect',
             label: 'Aidants habilités à Aidant connect',
-            // TODO
-            value: 0,
+            value: structuresCount.aidantsConnect.aidants,
           },
         ],
       },
     ],
-  } satisfies Box
+  } satisfies BoxData
 
   const main = { inclusionLocations, aidantConnectLocations }
 
-  // TODO base total?
-  const totalCras =
-    conumCras.moins12ans +
-    conumCras.de12a18ans +
-    conumCras.de18a35ans +
-    conumCras.de35a60ans +
-    conumCras.plus60ans
+  const totalAccompagnementsConum = conumCras
+    ? conumCras.ageMoins12ans +
+      conumCras.age12a18ans +
+      conumCras.age18a35ans +
+      conumCras.age35a60ans +
+      conumCras.agePlus60ans
+    : 0
+
+  const accompagnementConumPercentage = (value?: number) => {
+    if (!conumCras) {
+      return 0
+    }
+    return (100 * (value ?? 0)) / totalAccompagnementsConum
+  }
 
   const publicsAccompagnes = {
     id: 'publics-accompagnés',
-    label: `Publics accompagnés - ${departement.name}`,
+    label: `Publics accompagnés`,
     description: 'Données incomplètes',
     boxes: [
       {
         id: 'usagers-accompagnés',
         label: 'Usagers accompagnés',
-        // TODO usagers pas CRA, total ?
-        value: totalCras,
+        value:
+          (conumCras?.participants ?? 0) +
+          structuresCount.aidantsConnect.usagersUniques,
         statistics: [
           {
             id: 'par-des-conseillers-numériques',
             label: 'Par des Conseillers Numériques',
-            // TODO usagers pas CRA
-            value: totalCras,
+            value: conumCras?.participants ?? 0,
             updated: new Date(ConumCras.updated),
             source: 'conseiller-numerique.gouv.fr',
           },
           {
             id: 'par-des-aidants-habilités-à-aidants-connect',
             label: 'Par des Aidants habilités à Aidants Connect',
-            // TODO
-            value: 0,
+            value: structuresCount.aidantsConnect.usagersUniques,
             updated: new Date(ConumCras.updated),
             source: 'aidantsconnect.beta.gouv.fr',
           },
@@ -236,27 +301,27 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: '60',
             label: '60 ans et plus',
-            value: (100 * conumCras.plus60ans) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.agePlus60ans),
           },
           {
             id: '30',
             label: '35-60 ans',
-            value: (100 * conumCras.de35a60ans) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.age35a60ans),
           },
           {
             id: '18',
             label: '18-35 ans',
-            value: (100 * conumCras.de18a35ans) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.age18a35ans),
           },
           {
             id: '12',
             label: '12-18 ans',
-            value: (100 * conumCras.de12a18ans) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.age12a18ans),
           },
           {
             id: '-12',
             label: 'Moins de 12 ans',
-            value: (100 * conumCras.moins12ans) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.ageMoins12ans),
           },
         ],
       },
@@ -269,63 +334,58 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           {
             id: 'nr',
             label: 'Non renseigné',
-            value: (100 * conumCras.heterogene) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.statutHeterogene),
           },
           {
             id: 'retraite',
             label: 'Retraité',
-            value: (100 * conumCras.retraite) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.statutRetraite),
           },
           {
             id: 'en-emploi',
             label: 'En emploi',
-            value: (100 * conumCras.enEmploi) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.statutEnEmploi),
           },
           {
             id: 'sans-emploi',
             label: 'Sans emploi',
-            value: (100 * conumCras.sansEmploi) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.statutSansEmploi),
           },
           {
             id: 'scolarisee',
             label: 'Scolarisé(e)',
-            value: (100 * conumCras.etudiant) / totalCras,
+            value: accompagnementConumPercentage(conumCras?.statutEtudiant),
           },
         ],
       },
     ],
-  } satisfies Boxes
+  } satisfies BoxesData
+
+  const top3CraThemes = getTopCrasTypes(conumCras)
 
   const accompagnements = {
     id: 'accompagnements',
-    label: `Accompagnements - ${departement.name}`,
+    label: `Accompagnements`,
     description: 'Données incomplètes',
     boxes: [
       {
         id: 'accompagnement',
         label: 'Accompagnement',
         value:
-          conumCras.de12a18ans +
-          conumCras.de18a35ans +
-          conumCras.de35a60ans +
-          conumCras.plus60ans,
+          (conumCras?.participants ?? 0) +
+          structuresCount.aidantsConnect.totalDemarches,
         statistics: [
           {
             id: 'accompagnements-de-médiation-numérique',
             label: 'Accompagnements de médiation numérique',
-            value:
-              conumCras.de12a18ans +
-              conumCras.de18a35ans +
-              conumCras.de35a60ans +
-              conumCras.plus60ans,
+            value: conumCras?.participants ?? 0,
             updated: new Date(ConumCras.updated),
             source: 'conseiller-numerique.gouv.fr',
           },
           {
             id: 'accompagnements-pour-réaliser-des-démarches-en-lignes',
             label: 'Accompagnements pour réaliser des démarches en lignes',
-            // TODO
-            value: 0,
+            value: structuresCount.aidantsConnect.totalDemarches,
             updated: new Date('2021-09-04'),
             source: 'aidantsconnect.beta.gouv.fr',
           },
@@ -337,32 +397,11 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           'Les 3 principaux thèmes d’accompagnements de médiation numérique',
         updated: new Date(ConumCras.updated),
         source: 'conseiller-numerique.gouv.fr',
-        statistics: [
-          {
-            id: 'prise-en-main',
-            label: 'Prendre en main du matériel',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'naviguation',
-            label: 'Naviguer sur internet',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'courriels',
-            label: 'Courriels',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'autres',
-            label: 'Autres thématiques',
-            // TODO
-            value: 100,
-          },
-        ],
+        statistics: top3CraThemes.top3.map(({ label, count }) => ({
+          id: label,
+          label,
+          value: (100 * count) / top3CraThemes.total,
+        })),
       },
       {
         id: 'réaliser-des-démarches-en-lignes',
@@ -370,52 +409,34 @@ const computeDepartementData = async (departement: DepartementGeoJson) => {
           'Les 3 principaux thèmes d’accompagnements pour réaliser des démarches en lignes',
         updated: new Date('2021-09-04'),
         source: 'aidantsconnect.beta.gouv.fr',
-        statistics: [
-          {
-            id: 'social',
-            label: 'Social',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'travail',
-            label: 'Travail',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'argent',
-            label: 'Argent',
-            // TODO
-            value: 0,
-          },
-          {
-            id: 'autres',
-            label: 'Autres thématiques',
-            // TODO
-            value: 100,
-          },
-        ],
+        statistics: structuresCount.aidantsConnect.top3AndOther.map(
+          ({ label, count }) => ({
+            id: label,
+            label,
+            value:
+              (100 * count) / structuresCount.aidantsConnect.totalDemarches,
+          }),
+        ),
       },
     ],
-  } satisfies Boxes
+  } satisfies BoxesData
 
   const detailed = { publicsAccompagnes, accompagnements }
 
-  return { main, detailed }
+  return { main, detailed, departement: getDepartementGeoFeatures(departement) }
 }
 
-export const getDepartementData = async (departement: DepartementGeoJson) => {
-  const memoized = memoizedDepartementsData.get(departement.code)
+export const getDepartementDashboardData = async (codeDepartement: string) => {
+  const memoized = memoizedDepartementsData.get(codeDepartement)
   if (memoized) {
     return memoized
   }
 
-  const data = await computeDepartementData(departement)
-  memoizedDepartementsData.set(departement.code, data)
+  const data = await computeDepartementDashboardData(codeDepartement)
+  memoizedDepartementsData.set(codeDepartement, data)
   return data
 }
 
 export type DepartementDashboardData = Awaited<
-  ReturnType<typeof computeDepartementData>
+  ReturnType<typeof computeDepartementDashboardData>
 >

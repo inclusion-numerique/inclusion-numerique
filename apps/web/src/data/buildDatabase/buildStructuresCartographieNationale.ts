@@ -8,7 +8,6 @@ import {
 import { getCommuneCode } from '@app/web/data/getCommuneCode'
 import { getDepartementCodeFromPostalCode } from '@app/web/data/getDepartementCodeFromPostalCode'
 import { titleCase } from '@app/web/utils/titleCase'
-import { prismaClient } from '@app/web/prismaClient'
 import { BuildCommunesOutput } from '@app/web/data/buildDatabase/buildCommunes'
 
 /**
@@ -127,13 +126,7 @@ export const buildStructuresCartographieNationale = async ({
     })
   }
 
-  output('-- Inserting data...')
-  await prismaClient.$transaction([
-    prismaClient.structureCartographieNationale.deleteMany(),
-    prismaClient.structureCartographieNationale.createMany({ data }),
-  ])
-
-  return { reconstructedCodes, byAidantsConnectId, byConumPermanenceId }
+  return { reconstructedCodes, byAidantsConnectId, byConumPermanenceId, data }
 }
 
 export type BuildStructuresCartographieNationaleOutput = Awaited<

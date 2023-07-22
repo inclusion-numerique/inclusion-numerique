@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import { output } from '@app/cli/output'
 import { getConumCrasByDepartement } from '@app/web/data/conumCras'
-import { prismaClient } from '@app/web/prismaClient'
 import type { BuildDepartementsOutput } from '@app/web/data/buildDatabase/buildDepartements'
 
 export const buildConumCras = async ({
@@ -75,13 +74,7 @@ export const buildConumCras = async ({
     })
   }
 
-  output('-- Inserting data...')
-  await prismaClient.$transaction([
-    prismaClient.craConseillerNumeriqueParDepartement.deleteMany(),
-    prismaClient.craConseillerNumeriqueParDepartement.createMany({
-      data,
-    }),
-  ])
+  return { data }
 }
 
 export type BuildConumCrasOutput = Awaited<ReturnType<typeof buildConumCras>>

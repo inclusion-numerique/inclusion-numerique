@@ -1,6 +1,19 @@
-import { GeoApiCity } from '@app/web/types/City'
-
-export const districts: Record<string, Omit<GeoApiCity, 'codeEpci'>[]> = {
+/**
+ * Special cases for city districts that are not in geo api
+ */
+export const districts: Record<
+  string,
+  {
+    centre: {
+      type: 'Point'
+      coordinates: [number, number]
+    }
+    population: number
+    codesPostaux: string[]
+    nom: string
+    code: string
+  }[]
+> = {
   paris: [
     {
       centre: {

@@ -1,6 +1,5 @@
 import { output } from '@app/cli/output'
 import type { Prisma } from '@prisma/client'
-import { prismaClient } from '@app/web/prismaClient'
 import { BuildStructuresCartographieNationaleOutput } from '@app/web/data/buildDatabase/buildStructuresCartographieNationale'
 import { getCnfsPermanences } from '@app/web/data/cnfsPermanences'
 
@@ -69,21 +68,11 @@ export const buildPermanencesConum = async ({
     }
   }
 
-  output('-- Inserting data...')
-  await prismaClient.$transaction([
-    prismaClient.conseillerNumeriqueEnPermanence.deleteMany(),
-    prismaClient.conseillerNumerique.deleteMany(),
-    prismaClient.permanenceConseillerNumerique.deleteMany(),
-    prismaClient.permanenceConseillerNumerique.createMany({
-      data: permanenceData,
-    }),
-    prismaClient.conseillerNumerique.createMany({
-      data: [...conseillerNumeriqueData.values()],
-    }),
-    prismaClient.conseillerNumeriqueEnPermanence.createMany({
-      data: conseillersEnPermanenceData,
-    }),
-  ])
+  return {
+    permanenceData,
+    conseillerNumeriqueData: [...conseillerNumeriqueData.values()],
+    conseillersEnPermanenceData,
+  }
 }
 
 export type BuildPermanencesConum = Awaited<

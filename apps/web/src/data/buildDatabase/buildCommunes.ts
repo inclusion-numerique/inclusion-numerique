@@ -2,16 +2,13 @@ import { output } from '@app/cli/output'
 import axios from 'axios'
 import type { Prisma } from '@prisma/client'
 import { createCodePostalIndex } from '@app/web/data/getCommuneCode'
-import { districts } from '@app/web/utils/map/districts'
-import { prismaClient } from '@app/web/prismaClient'
 import { BuildDepartementsOutput } from '@app/web/data/buildDatabase/buildDepartements'
+import { districts } from '@app/web/data/districts'
 
 export const buildCommunes = async ({
   departements,
-  persist = true,
 }: {
   departements: BuildDepartementsOutput
-  persist?: boolean
 }) => {
   output('-- Downloading from https://geo.api.gouv.fr...')
 
@@ -103,24 +100,12 @@ export const buildCommunes = async ({
     ...new Set<string>(codePostaux.map(({ code }) => code)),
   ].map((code) => ({ code }))
 
-  output('-- Inserting data...')
-
-  if (persist) {
-    await prismaClient.$transaction([
-      prismaClient.codePostaux.deleteMany(),
-      prismaClient.codePostal.deleteMany(),
-      prismaClient.commune.deleteMany(),
-      prismaClient.codePostal.createMany({ data: uniqueCodePostaux }),
-      prismaClient.commune.createMany({
-        data: communesData,
-      }),
-      prismaClient.codePostaux.createMany({ data: codePostaux }),
-    ])
-  }
-
   return {
     codes: new Set(communesData.map(({ code }) => code)),
     codePostalIndex,
+    codePostalData: uniqueCodePostaux,
+    communesData,
+    codePostauxData: codePostaux,
   }
 }
 

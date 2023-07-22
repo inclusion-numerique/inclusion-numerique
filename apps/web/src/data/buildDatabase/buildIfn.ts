@@ -6,8 +6,20 @@ import { BuildCommunesOutput } from '@app/web/data/buildDatabase/buildCommunes'
 import { BuildEpcisOutput } from '@app/web/data/buildDatabase/buildEpcis'
 import { parseCsvFileWithMapper } from '@app/web/data/parseCsvFile'
 import { getDataFilePath } from '@app/web/data/dataFiles'
-import { IFNResponse } from '@app/web/types/City'
-import { prismaClient } from '@app/web/prismaClient'
+
+export type IFNResponse = Record<
+  string,
+  {
+    score: {
+      total: number
+      no_thd_coverage_rate: number
+      no_4g_coverage_rate: number
+      poverty_rate: number
+      older_65_rate: number
+      nscol15p_rate: number
+    }
+  }
+>
 
 const useApiForCommunes = false
 
@@ -137,20 +149,11 @@ export const buildIfn = async ({
     })
   }
 
-  output('-- Inserting data...')
-
-  await prismaClient.$transaction([
-    prismaClient.ifnCommune.deleteMany(),
-    prismaClient.ifnEpci.deleteMany(),
-    prismaClient.ifnCommune.createMany({
-      data: communesData,
-    }),
-    prismaClient.ifnEpci.createMany({
-      data: epcisData,
-    }),
-  ])
-
-  return { invalidIfnCommunes }
+  return {
+    invalidIfnCommunes,
+    ifnCommuneData: communesData,
+    ifnEpciData: epcisData,
+  }
 }
 
 export type BuildIfnOutput = Awaited<ReturnType<typeof buildIfn>>

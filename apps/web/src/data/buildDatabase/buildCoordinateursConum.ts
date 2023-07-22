@@ -77,6 +77,8 @@ export const buildCoordinateursConum = async () => {
   //     data: conseillersEnPermanenceData,
   //   }),
   // ])
+
+  return { data: [] }
 }
 
 export type BuildCoordinateursConumOutput = Awaited<
