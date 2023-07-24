@@ -89,6 +89,11 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
         code: true,
         geometry: true,
         bounds: true,
+        _count: {
+          select: {
+            coordinateursConseillerNumerique: true,
+          },
+        },
       },
     }),
     prismaClient.structureCartographieNationale.findMany({
@@ -232,8 +237,8 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
               {
                 id: 'dont-conseillers-coordinateurs',
                 label: 'dont Conseillers Coordinateurs',
-                // TODO
-                value: 0,
+                // eslint-disable-next-line no-underscore-dangle
+                value: departement._count.coordinateursConseillerNumerique,
               },
             ],
           },
