@@ -46,7 +46,6 @@ export const buildDepartements = async () => {
       bounds,
     }
   })
-  output(`-- Inserting data (${data.length})...`)
 
   return { codes: new Set(data.map(({ code }) => code)), data }
 }
