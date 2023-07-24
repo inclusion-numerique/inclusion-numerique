@@ -1,9 +1,7 @@
-import { readFile } from 'node:fs/promises'
-import { getDataFilePath } from '@app/web/data/dataFiles'
+import axios from 'axios'
 
 export const ConumCoordinateurs = {
   url: 'https://api.conseiller-numerique.gouv.fr/coordinateurs',
-  dataFile: '2023-07-20 - conum - coordinations.json',
 }
 
 export type ConumCoordinateur = {
@@ -23,11 +21,7 @@ export type ConumCoordinateur = {
   longitude: number
 }
 
-export const getConumCoordinateurs = async () => {
-  const data = await readFile(
-    getDataFilePath(ConumCoordinateurs.dataFile),
-    'utf8',
-  )
-
-  return JSON.parse(data) as ConumCoordinateur[]
-}
+export const getConumCoordinateurs = () =>
+  axios
+    .get<ConumCoordinateur[]>(ConumCoordinateurs.url)
+    .then((response) => response.data)

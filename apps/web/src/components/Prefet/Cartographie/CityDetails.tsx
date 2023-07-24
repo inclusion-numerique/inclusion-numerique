@@ -7,7 +7,7 @@ import { DepartementCartographieDataCommune } from '@app/web/app/(cartographie)/
 import styles from './CityDetails.module.css'
 
 const CityDetails = ({
-  commune: { nom, population, count, ifn, codePostaux, code },
+  commune: { nom, population, count, ifn, codesPostaux, code },
 }: {
   commune: DepartementCartographieDataCommune
 }) => {
@@ -30,8 +30,8 @@ const CityDetails = ({
       <h6 className="fr-mt-1v">{nom}</h6>
       <p className="fr-mb-1v">Commune de {population} hab.</p>
       <p className="fr-hint-text fr-mb-0">
-        {codePostaux.length === 1 ? `Code postal` : `Code postaux`} :
-        {codePostaux.join(', ')} - INSEE : {code}
+        {codesPostaux.length === 1 ? `Code postal` : `Code postaux`} :
+        {codesPostaux.join(', ')} - INSEE : {code}
       </p>
       <p className="fr-hint-text">
         Source&nbsp;:{' '}

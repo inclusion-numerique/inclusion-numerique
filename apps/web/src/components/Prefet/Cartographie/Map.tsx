@@ -86,6 +86,7 @@ const Map = ({
   onCommuneSelected: (commune: string | null | undefined) => void
   selectedStructure?: DepartementCartographieDataStructure | null
   filteredStructures: DepartementCartographieDataStructure[]
+  // Argument is the map auto generated id (sequencial) of structure
   onStructureSelected: (structure: string | null | undefined) => void
 }) => {
   const { bounds, code: departementCode } = departement
@@ -191,7 +192,7 @@ const Map = ({
       placesLayer.map((placeLayer) => map.current?.addLayer(placeLayer))
       map.current.addSource('structures', {
         type: 'geojson',
-        generateId: true,
+        promoteId: 'id',
         data: {
           type: 'FeatureCollection',
           features: structures,
@@ -202,31 +203,58 @@ const Map = ({
         clusterProperties: { count: ['+', 1] },
       })
 
-      for (const type of structureTypes) {
-        const structureImageFile = structureTypeImage[type]
-        const structureHoverImageFile = structureTypeSelectedImage[type]
-        map.current?.loadImage(structureImageFile, (error, image) => {
-          if (error) {
-            console.error('Could not load structure image', error)
+      // Load images, THEN add structure layers to avoid missing image error in UI
+      new Promise((resolve) => {
+        if (!map.current) {
+          // Do not hang on edge cases
+          resolve(null)
+          return
+        }
+        let imagesToLoad = structureTypes.length * 2
+        for (const type of structureTypes) {
+          const structureImageFile = structureTypeImage[type]
+          const structureHoverImageFile = structureTypeSelectedImage[type]
+          if (!map.current) {
+            imagesToLoad -= 1
             return
           }
-          if (map.current && image) {
-            map.current.addImage(`structure-${type}`, image)
-          }
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
+          map.current.loadImage(structureImageFile, (error, image) => {
+            if (error) {
+              console.error('Could not load structure image', error)
+              return
+            }
+            if (map.current && image) {
+              map.current.addImage(`structure-${type}`, image)
+            }
+            imagesToLoad -= 1
+            if (imagesToLoad === 0) resolve(null)
+          })
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
+          map.current.loadImage(structureHoverImageFile, (error, image) => {
+            if (error) {
+              console.error('Could not load structure hover image', error)
+              return
+            }
+            if (map.current && image) {
+              map.current.addImage(`structure-${type}-hover`, image)
+            }
+            imagesToLoad -= 1
+            if (imagesToLoad === 0) resolve(null)
+          })
+        }
+      })
+        .catch((error) => {
+          console.error('Could not load structure images', error)
         })
-        map.current?.loadImage(structureHoverImageFile, (error, image) => {
-          if (error) {
-            console.error('Could not load structure hover image', error)
-            return
-          }
-          if (map.current && image) {
-            map.current.addImage(`structure-${type}-hover`, image)
-          }
+        .then(() => {
+          map.current?.addLayer(structuresIconLayer)
+          map.current?.addLayer(structuresIconHoverLayer)
+          return null
         })
-      }
-      map.current?.addLayer(structuresIconLayer)
-
-      map.current.addLayer(structuresIconHoverLayer)
+        .catch((error) => {
+          console.error('Could not load structure layers', error)
+        })
 
       map.current.addLayer(structuresClusterCircleLayer)
       map.current.addLayer(structuresClusterSymbolLayer)
@@ -297,9 +325,15 @@ const Map = ({
     }
   }, [map, selectedCommune, selectedStructure])
 
-  // Fly to selected structure
+  // Fly to and update selected style to selected structure
   useEffect(() => {
-    if (selectedCommune) {
+    // No structure selected, deselecting
+    console.log('STRUCTURE EFFECT', selectedStructure)
+    if (!selectedStructure && map.current) {
+      // Remove selected layer state
+
+      console.log('Removing selected')
+      setSelectedStructureState(map.current, 'structureIconHover')
       return
     }
     if (map.current && map.current.isStyleLoaded() && selectedStructure) {
@@ -308,8 +342,16 @@ const Map = ({
         zoom: 12.9,
         padding: { left: mapPopupWidthWithMargin },
       })
+      console.log('Set selected structure state')
+      setSelectedDecoupageState(map.current, 'baseCommunesBorder')
+      setSelectedStructureState(map.current, 'structureIconHover')
+      setSelectedStructureState(
+        map.current,
+        'structureIconHover',
+        selectedStructure.properties.id,
+      )
     }
-  }, [map, selectedCommune, selectedStructure])
+  }, [map, selectedStructure])
 
   useEffect(() => {
     if (map.current && map.current.isStyleLoaded()) {
@@ -394,7 +436,7 @@ const Map = ({
           'visible',
         )
         map.current.setLayoutProperty(
-          'ifnHoverCommunesBorderLayer',
+          'ifnHoverCommunesBorder',
           'visibility',
           'none',
         )
@@ -433,7 +475,10 @@ const Map = ({
             'baseCommunesBorder',
             event.features[0].id,
           )
-          onCommuneSelected(event.features[0].properties.code)
+          setSelectedStructureState(map.current, 'structureIconHover')
+          onCommuneSelected(
+            event.features[0]?.properties.code as string | undefined,
+          )
         }
         clickedPoint.current = event.lngLat.toString()
       }
@@ -460,7 +505,7 @@ const Map = ({
                 }
               ).coordinates,
             )
-            .setHTML(`<b>${event.features[0].properties.nom}</b>`)
+            .setHTML(`<b>${event.features[0]?.properties.nom as string}</b>`)
             .addTo(map.current)
         }
       }
@@ -481,17 +526,12 @@ const Map = ({
         if (!structureFeature) {
           return
         }
+        console.log('STRUCTURE CLICK', structureFeature)
+
         if (map.current && event.features && event.features.length > 0) {
-          onStructureSelected(event.features[0].properties.id as string)
+          onStructureSelected(event.features[0].id as string)
         }
         clickedPoint.current = event.lngLat.toString()
-        if (map.current) {
-          setSelectedStructureState(
-            map.current,
-            'structureIconHover',
-            structureFeature.id,
-          )
-        }
       }
       const onStructureClusterClick = (
         event: MapMouseEvent & {

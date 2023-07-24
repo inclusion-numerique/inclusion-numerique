@@ -184,24 +184,25 @@ model Epci {
 
 model Departement {
   // INSEE
-  code                           String                                 @id
-  nom                            String
-  codeRegion                     String?                                @map("code_region")
-  region                         Region?                                @relation(fields: [codeRegion], references: [code])
-  communes                       Commune[]
-  geometry                       Json
+  code                             String                                @id
+  nom                              String
+  codeRegion                       String?                               @map("code_region")
+  region                           Region?                               @relation(fields: [codeRegion], references: [code])
+  communes                         Commune[]
+  geometry                         Json
   // north east [[lat,long], southwest [lat,long]]
-  bounds                         Json
-  structureCartographieNationale StructureCartographieNationale[]
-  craConseillerNumerique         CraConseillerNumeriqueParDepartement[]
+  bounds                           Json
+  structuresCartographieNationale  StructureCartographieNationale[]
+  craConseillerNumerique           CraConseillerNumeriqueParDepartement?
+  coordinateursConseillerNumerique CoordinateurConseillerNumerique[]
 
   @@map("departements")
 }
 
 model Commune {
-  code        String        @id
-  nom         String
-  codePostaux CodePostaux[]
+  code         String         @id
+  nom          String
+  codesPostaux CodesPostaux[]
 
   codeDepartement String?      @map("code_departement")
   departement     Departement? @relation(fields: [codeDepartement], references: [code])
@@ -225,7 +226,7 @@ model Commune {
 }
 
 // Explicit many to many table between Commune and CodePostal
-model CodePostaux {
+model CodesPostaux {
   code       String
   codePostal CodePostal @relation(fields: [code], references: [code])
 
@@ -238,8 +239,8 @@ model CodePostaux {
 
 // Normalized for easier search with o(1) instead of string[] in Communes
 model CodePostal {
-  code        String        @id
-  codePostaux CodePostaux[]
+  code         String         @id
+  codesPostaux CodesPostaux[]
 
   @@map("code_postal")
 }
@@ -261,7 +262,10 @@ model StructureCartographieNationale {
   departement     Departement? @relation(fields: [codeDepartement], references: [code])
 
   adresse String
-  source  String
+
+  // This is not clean. Only used for displaying address. Use Commune relation for strict data.
+  codePostal String @map("code_postal")
+  source     String
 
   updatedAt DateTime @map("updated_at")
 
@@ -342,6 +346,16 @@ model ConseillerNumeriqueEnPermanence {
   @@map("conseillers_numeriques_en_permanence")
 }
 
+model CoordinateurConseillerNumerique {
+  id                               String      @id
+  codeDepartement                  String      @map("code_departement")
+  departement                      Departement @relation(fields: [codeDepartement], references: [code])
+  conseillersNumeriquesCoordonnees Int         @map("conseillers_numeriques_coordonnees")
+  structuresCoordonnees            Int         @map("structures_coordonnees")
+
+  @@map("coordinateur_conseiller_numerique")
+}
+
 model ConseillerNumerique {
   id String @id
 
@@ -350,14 +364,8 @@ model ConseillerNumerique {
   @@map("conseiller_numerique")
 }
 
-// moins12ans: number
-// de12a18ans: number
-// de18a35ans: number
-// de35a60ans: number
-// plus60ans: number
-
 model CraConseillerNumeriqueParDepartement {
-  codeDepartement String      @id @map("code_repartement")
+  codeDepartement String      @id @unique @map("code_repartement")
   departement     Departement @relation(fields: [codeDepartement], references: [code])
 
   participants Int

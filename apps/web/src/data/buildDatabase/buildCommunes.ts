@@ -29,7 +29,7 @@ export const buildCommunes = async ({
   )
   output('-- Preparing data...')
 
-  const codePostaux: { code: string; codeCommune: string }[] = []
+  const codesPostaux: { code: string; codeCommune: string }[] = []
 
   const communesData: Prisma.CommuneCreateManyInput[] = []
 
@@ -50,7 +50,7 @@ export const buildCommunes = async ({
     // We add districts (arrondissements) for Paris, Lyon and Marseille, not the main commune
     if (arrondissements) {
       for (const arrondissement of arrondissements) {
-        codePostaux.push({
+        codesPostaux.push({
           code: arrondissement.codesPostaux[0],
           codeCommune: arrondissement.code,
         })
@@ -78,7 +78,7 @@ export const buildCommunes = async ({
     }
 
     for (const codePostal of commune.codesPostaux) {
-      codePostaux.push({
+      codesPostaux.push({
         code: codePostal,
         codeCommune: commune.code,
       })
@@ -96,16 +96,16 @@ export const buildCommunes = async ({
     })
   }
 
-  const uniqueCodePostaux = [
-    ...new Set<string>(codePostaux.map(({ code }) => code)),
+  const uniqueCodesPostaux = [
+    ...new Set<string>(codesPostaux.map(({ code }) => code)),
   ].map((code) => ({ code }))
 
   return {
     codes: new Set(communesData.map(({ code }) => code)),
     codePostalIndex,
-    codePostalData: uniqueCodePostaux,
+    codePostalData: uniqueCodesPostaux,
     communesData,
-    codePostauxData: codePostaux,
+    codesPostauxData: codesPostaux,
   }
 }
 

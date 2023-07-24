@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
-import Cartographie from '@app/web/components/Prefet/Cartographie/Page'
+import CartographiePage from '@app/web/components/Prefet/Cartographie/Page'
 import { hasAccessToDepartementDashboard } from '@app/web/security/securityRules'
 import { prismaClient } from '@app/web/prismaClient'
 import { getDepartementCartographieData } from '@app/web/app/(cartographie)/prefet/[codeDepartement]/cartographie/getDepartementCartographieData'
@@ -46,7 +46,7 @@ const Page = async ({
   // Security has been checked in metadata
   const data = await getDepartementCartographieData(codeDepartement)
 
-  return <Cartographie data={data} />
+  return <CartographiePage data={data} />
 }
 
 export default Page

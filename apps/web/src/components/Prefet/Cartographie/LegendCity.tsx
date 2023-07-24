@@ -8,7 +8,7 @@ const LegendCity = ({
   commune: DepartementCartographieDataCommune
 }) => (
   <div className={styles.city}>
-    {commune.nom} {commune.codePostaux.join(' ')}
+    {commune.nom} {commune.codesPostaux.join(' ')}
   </div>
 )
 

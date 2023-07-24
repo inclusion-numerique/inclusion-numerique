@@ -49,7 +49,7 @@ export const buildDatabase = async () => {
   const conumCras = await buildConumCras({ departements })
 
   output('Building coordination conums...')
-  await buildCoordinateursConum()
+  const coordinateursConum = await buildCoordinateursConum()
 
   const transactionStart = Date.now()
   output('Starting transaction...')
@@ -59,14 +59,14 @@ export const buildDatabase = async () => {
     prismaClient.craConseillerNumeriqueParDepartement.deleteMany(),
     prismaClient.ifnCommune.deleteMany(),
     prismaClient.ifnEpci.deleteMany(),
-    // prismaClient.coordinateurConseillerNumerique.deleteMany(),
+    prismaClient.coordinateurConseillerNumerique.deleteMany(),
     prismaClient.conseillerNumeriqueEnPermanence.deleteMany(),
     prismaClient.conseillerNumerique.deleteMany(),
     prismaClient.permanenceConseillerNumerique.deleteMany(),
     prismaClient.structureAidantsConnect.deleteMany(),
     prismaClient.permanenceConseillerNumerique.deleteMany(),
     prismaClient.structureCartographieNationale.deleteMany(),
-    prismaClient.codePostaux.deleteMany(),
+    prismaClient.codesPostaux.deleteMany(),
     prismaClient.codePostal.deleteMany(),
     prismaClient.commune.deleteMany(),
     prismaClient.epci.deleteMany(),
@@ -78,7 +78,7 @@ export const buildDatabase = async () => {
     prismaClient.epci.createMany({ data: epcis.data }),
     prismaClient.codePostal.createMany({ data: communes.codePostalData }),
     prismaClient.commune.createMany({ data: communes.communesData }),
-    prismaClient.codePostaux.createMany({ data: communes.codePostauxData }),
+    prismaClient.codesPostaux.createMany({ data: communes.codesPostauxData }),
     prismaClient.structureCartographieNationale.createMany({
       data: structuresCartographieNationale.data,
     }),
@@ -87,6 +87,9 @@ export const buildDatabase = async () => {
     }),
     prismaClient.conseillerNumerique.createMany({
       data: permanencesConum.conseillerNumeriqueData,
+    }),
+    prismaClient.coordinateurConseillerNumerique.createMany({
+      data: coordinateursConum.data,
     }),
     prismaClient.permanenceConseillerNumerique.createMany({
       data: permanencesConum.permanenceData,

@@ -29,6 +29,7 @@ const listStructures = (codeDepartement: string) =>
       longitude: true,
       adresse: true,
       codeCommune: true,
+      codePostal: true,
       sousTypePublic: true,
       labelAidantsConnect: true,
       labelFranceServices: true,
@@ -76,7 +77,7 @@ const getDepartement = (codeDepartement: string) =>
               older65Rate: true,
             },
           },
-          codePostaux: {
+          codesPostaux: {
             select: {
               codePostal: {
                 select: { code: true },
@@ -170,6 +171,7 @@ const computeDepartementCartographieData = async (codeDepartement: string) => {
     codeCommune,
     sousTypePublic,
     latitude,
+    codePostal,
     structureAidantsConnect,
     longitude,
     permanenceConseillerNumerique,
@@ -188,8 +190,7 @@ const computeDepartementCartographieData = async (codeDepartement: string) => {
       sousTypePublic,
       nom: titleCase(nom),
       adresse,
-      // TODO Add code postal to structure schema
-      codePostal: '',
+      codePostal,
       codeCommune: commune.code,
       commune: commune.nom,
 
@@ -226,7 +227,7 @@ const computeDepartementCartographieData = async (codeDepartement: string) => {
     ifn,
     longitude,
     latitude,
-    codePostaux,
+    codesPostaux,
     population,
   } of departement.communes) {
     const communeStructures = structuresByCommuneCode.get(code) ?? []
@@ -240,7 +241,7 @@ const computeDepartementCartographieData = async (codeDepartement: string) => {
         coordinates: [latitude, longitude],
       },
       population,
-      codePostaux: codePostaux.map(({ codePostal }) => codePostal.code),
+      codesPostaux: codesPostaux.map(({ codePostal }) => codePostal.code),
       count: countStructuresForCommuneSummary(communeStructures),
     })
   }

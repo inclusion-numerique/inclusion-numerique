@@ -112,6 +112,7 @@ export const buildStructuresCartographieNationale = async ({
       codeDepartement,
       codeCommune,
       adresse: structure.adresse,
+      codePostal: structure.code_postal,
       source: structure.source,
       updatedAt: structure.date_maj,
       latitude: structure.latitude,

@@ -88,8 +88,8 @@ const Legend = ({
       {
         name: 'Communes',
         options: communes.map((commune) => ({
-          name: `${commune.nom} ${commune.codePostaux.join(' ')}`,
-          value: `commune#${commune.nom}`,
+          name: `${commune.nom} ${commune.codesPostaux.join(' ')}`,
+          value: `commune#${commune.code}`,
           component: <LegendCity commune={commune} />,
         })),
         limit: 4,
