@@ -80,8 +80,6 @@ const CartographiePage = ({
     [filteredStructures, structures],
   )
 
-  console.log('FILTERED OUT STRUCTURE', filteredOutSelectedStructure)
-
   // Prefetch dashboard page
   useEffect(() => {
     router.prefetch(`/prefet/${departement.code}`)

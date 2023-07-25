@@ -28,6 +28,7 @@
 
 .filters {
   color: var(--text-title-grey);
+
   label {
     font-size: 14px;
   }

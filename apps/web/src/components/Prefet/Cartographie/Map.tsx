@@ -29,7 +29,7 @@ import IndiceNumerique from './IndiceNumerique'
 import {
   addHoverState,
   setSelectedDecoupageState,
-  setSelectedStructureState,
+  setStructureSelectedState,
 } from './MapUtils'
 import MapPopup from './MapPopup'
 import styles from './Map.module.css'
@@ -125,7 +125,7 @@ const Map = ({
   const onMapPopupClose = () => {
     if (map.current) {
       setSelectedDecoupageState(map.current, 'baseCommunesBorder')
-      setSelectedStructureState(map.current, 'structureIconHover')
+      setStructureSelectedState(map.current, null)
     }
     onCommuneSelected(null)
     onStructureSelected(null)
@@ -327,14 +327,9 @@ const Map = ({
 
   // Fly to and update selected style to selected structure
   useEffect(() => {
-    // No structure selected, deselecting
-    console.log('STRUCTURE EFFECT', selectedStructure)
-    if (!selectedStructure && map.current) {
-      // Remove selected layer state
-
-      console.log('Removing selected')
-      setSelectedStructureState(map.current, 'structureIconHover')
-      return
+    if (map.current && selectedStructure) {
+      setStructureSelectedState(map.current, selectedStructure.properties.id)
+      setSelectedDecoupageState(map.current, 'baseCommunesBorder')
     }
     if (map.current && map.current.isStyleLoaded() && selectedStructure) {
       map.current.flyTo({
@@ -343,13 +338,6 @@ const Map = ({
         padding: { left: mapPopupWidthWithMargin },
       })
       console.log('Set selected structure state')
-      setSelectedDecoupageState(map.current, 'baseCommunesBorder')
-      setSelectedStructureState(map.current, 'structureIconHover')
-      setSelectedStructureState(
-        map.current,
-        'structureIconHover',
-        selectedStructure.properties.id,
-      )
     }
   }, [map, selectedStructure])
 
@@ -475,7 +463,6 @@ const Map = ({
             'baseCommunesBorder',
             event.features[0].id,
           )
-          setSelectedStructureState(map.current, 'structureIconHover')
           onCommuneSelected(
             event.features[0]?.properties.code as string | undefined,
           )
@@ -526,7 +513,6 @@ const Map = ({
         if (!structureFeature) {
           return
         }
-        console.log('STRUCTURE CLICK', structureFeature)
 
         if (map.current && event.features && event.features.length > 0) {
           onStructureSelected(event.features[0].id as string)
