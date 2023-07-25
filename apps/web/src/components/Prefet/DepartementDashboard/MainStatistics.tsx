@@ -10,8 +10,8 @@ const MainStatistics = ({
   data: DepartementDashboardData
 }) => (
   <>
-    <Box className="fr-mb-3w" {...inclusionLocations} />
-    <Box {...aidantConnectLocations} />
+    <Box className="fr-mb-3w fr-text-title--grey" {...inclusionLocations} />
+    <Box className="fr-text-title--grey" {...aidantConnectLocations} />
   </>
 )
 

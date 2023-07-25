@@ -45,9 +45,9 @@ const StatisticBox = ({
           </div>
         ) : (
           <>
-            <div className="fr-text--lg fr-mt-3w fr-mb-2w">
-              {boxStatistic.label && <b>{boxStatistic.label}</b>}
-            </div>
+            <p className="fr-text--lg fr-mt-3w fr-mb-2w fr-text--bold">
+              {boxStatistic.label}
+            </p>
             {boxStatistic.statistics &&
               boxStatistic.statistics.map((statistic) => (
                 <Statistic key={statistic.id} {...statistic}>

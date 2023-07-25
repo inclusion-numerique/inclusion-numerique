@@ -11,7 +11,7 @@ const StatisticsWrapper = ({
   boxes,
   description,
 }: PropsWithChildren<BoxesData>) => (
-  <div key={id} className="fr-mb-10w">
+  <div key={id} className="fr-mb-10w fr-text-title--grey">
     <h2 className="fr-mb-2w">{label}</h2>
     {description && <p className="fr-mb-4w">{description}</p>}
     <div className="fr-grid-row fr-grid-row--gutters">
