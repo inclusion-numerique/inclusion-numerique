@@ -17,7 +17,7 @@ const Header = ({
   prefet?: boolean
 }) => {
   const baseLinkProps = prefet
-    ? { href: '/prefet', title: "Les données de l'Inclusion Numérique" }
+    ? { href: '/prefet', title: 'France Numérique Ensemble' }
     : {
         href: '/',
         title: PublicWebAppConfig.projectTitle,

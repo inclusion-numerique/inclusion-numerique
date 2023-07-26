@@ -19,7 +19,7 @@ const DepartementDashboard = ({ data }: { data: DepartementDashboardData }) => (
         },
       ]}
     />
-    <div className="fr-mt-4v fr-pb-20v">
+    <div className="fr-mt-4v fr-pb-14v">
       <DepartementDashboardHeader />
       <div className="fr-grid-row fr-grid-row--gutters fr-mb-10w">
         <div className="fr-col-12 fr-col-md-5">

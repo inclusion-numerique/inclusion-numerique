@@ -128,13 +128,13 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
 
   const inclusionLocations = {
     id: 'lieux-d-inclusion-numérique',
-    label: "Lieux d'Inclusion Numérique",
+    label: "Lieux d'inclusion numérique",
     withDescription: true,
     value: structuresCount.structures.total,
     statistics: [
       {
         id: 'typologie-de-structures',
-        label: 'Typologie de structures',
+        label: 'Typologie',
         statistics: [
           {
             id: 'public',
@@ -186,18 +186,18 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
         label: 'Labels',
         statistics: [
           {
-            id: 'structures-accueillant-des-cnfs',
-            label: 'Structures accueillant des Conseillers Numérique',
+            id: 'lieux-accueillant-des-conseillers-numerique',
+            label: 'Lieux accueillant des conseillers numérique',
             value: structuresCount.structures.label.conseillerNumerique,
           },
           {
-            id: 'structures-labellisées-france-services',
-            label: 'Structures labellisées France Services',
+            id: 'points-d-accueil-numerique-labellises-france-services',
+            label: 'Points d’accueil numérique labellisés France services',
             value: structuresCount.structures.label.franceServices,
           },
           {
-            id: 'structures-habilitées-aidants-connect',
-            label: 'Structures habilitées Aidants Connect',
+            id: 'points-d-accueil-habilites-aidants-connect',
+            label: 'Points d’accueil habilités Aidants Connect',
             value: structuresCount.structures.label.aidantsConnect,
           },
         ],
@@ -272,7 +272,6 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
   const publicsAccompagnes = {
     id: 'publics-accompagnés',
     label: `Publics accompagnés`,
-    description: 'Données incomplètes',
     boxes: [
       {
         id: 'usagers-accompagnés',
@@ -371,7 +370,6 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
   const accompagnements = {
     id: 'accompagnements',
     label: `Accompagnements`,
-    description: 'Données incomplètes',
     boxes: [
       {
         id: 'accompagnement',
