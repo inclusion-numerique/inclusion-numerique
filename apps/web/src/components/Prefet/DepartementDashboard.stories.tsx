@@ -13,13 +13,13 @@ const getFakeData = (
 ): DepartementDashboardData => {
   const inclusionLocations = {
     id: 'lieux-d-inclusion-numérique',
-    label: "Lieux d'Inclusion Numérique",
+    label: "Lieux d'inclusion numérique",
     value: 123,
     withDescription: true,
     statistics: [
       {
         id: 'typologie-de-structures',
-        label: 'Typologie de structures',
+        label: 'Typologie',
         statistics: [
           {
             id: 'public',

@@ -85,7 +85,7 @@ const DepartementMap = ({
           <div>
             <div className="fr-text--sm fr-mb-2w">
               Découvrez le déploiement à l’échelle communale des acteurs de
-              l’Inclusion Numérique sur votre territoire à l’aide de cette
+              l’inclusion numérique sur votre territoire à l’aide de cette
               cartographie.
             </div>
             <Link

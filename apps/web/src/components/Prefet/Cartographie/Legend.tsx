@@ -238,7 +238,7 @@ const Legend = ({
             limit={undefined}
           />
           <h6 className={styles.legendTitle}>
-            Les acteurs de l&lsquo;Inclusion Numérique
+            Les acteurs de l&lsquo;inclusion numérique
           </h6>
           <p className="fr-text--xs fr-hint-text fr-mb-3w">
             Source :{' '}

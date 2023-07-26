@@ -18,7 +18,7 @@ const Page = async () => {
       roleNotice = (
         <Alert
           severity="info"
-          title="Vous êtes connecté à Inclusion Numérique avec un rôle administrateur"
+          title="Vous êtes connecté à France Numérique Ensemble avec un rôle administrateur"
         />
       )
       break
@@ -28,7 +28,7 @@ const Page = async () => {
       roleNotice = (
         <Alert
           severity="info"
-          title="Vous êtes connecté à Inclusion Numérique avec un rôle de démonstration vous permettant d'accéder à toutes les fonctionnalités"
+          title="Vous êtes connecté à France Numérique Ensemble avec un rôle de démonstration vous permettant d'accéder à toutes les fonctionnalités"
           description={
             <Link href="/prefet/69">Accéder au tableau de bord Préfet</Link>
           }
@@ -40,7 +40,7 @@ const Page = async () => {
       roleNotice = (
         <Alert
           severity="info"
-          title="Vous êtes connecté à Inclusion Numérique avec un rôle 'préfecture' vous permettant d'accéder à toutes les fonctionnalités concernant votre département"
+          title="Vous êtes connecté à France Numérique Ensemble avec un rôle 'préfecture' vous permettant d'accéder à toutes les fonctionnalités concernant votre département"
           description={<Link href="/prefet">Accéder au tableau de bord</Link>}
         />
       )
