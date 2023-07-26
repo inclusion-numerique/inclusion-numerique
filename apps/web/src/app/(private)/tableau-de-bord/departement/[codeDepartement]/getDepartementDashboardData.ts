@@ -134,7 +134,7 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
     statistics: [
       {
         id: 'typologie-de-structures',
-        label: 'Typologie',
+        label: 'Typologie des lieux d’inclusion numérique',
         statistics: [
           {
             id: 'public',
@@ -171,7 +171,7 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
           },
           {
             id: 'Autres acteurs privés',
-            label: 'Autres acteurs privés',
+            label: 'Autre acteurs privés',
             value: structuresCount.structures.type.privee,
           },
           {
@@ -208,12 +208,12 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
         statistics: [
           {
             id: 'structures-en-quartier-prioritaire-de-la-ville-qpv',
-            label: 'Structures en quartier prioritaire de la ville (QPV)',
+            label: 'Lieux situés en quartier prioritaire de la ville (QPV)',
             value: structuresCount.structures.territoire.qpv,
           },
           {
             id: 'structures-en-zone-de-revitalisation-rurale-zrr',
-            label: 'Structures en zone de revitalisation rurale (ZRR)',
+            label: 'Lieux situés en zone de revitalisation rurale (ZRR)',
             value: structuresCount.structures.territoire.zrr,
           },
         ],

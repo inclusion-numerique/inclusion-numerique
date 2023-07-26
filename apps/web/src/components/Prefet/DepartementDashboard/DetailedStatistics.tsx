@@ -3,7 +3,7 @@ import Box from '@app/web/components/Prefet/Box/Box'
 import {
   BoxesData,
   DepartementDashboardData,
-} from '@app/web/app/(prefet)/prefet/[codeDepartement]/getDepartementDashboardData'
+} from '@app/web/app/(private)/tableau-de-bord/departement/[codeDepartement]/getDepartementDashboardData'
 
 const StatisticsWrapper = ({
   id,

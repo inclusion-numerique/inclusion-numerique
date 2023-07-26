@@ -3,7 +3,7 @@ import Breadcrumb from '@codegouvfr/react-dsfr/Breadcrumb'
 import MainStatistics from '@app/web/components/Prefet/DepartementDashboard/MainStatistics'
 import DetailedStatistics from '@app/web/components/Prefet/DepartementDashboard/DetailedStatistics'
 import DepartementDashboardHeader from '@app/web/components/Prefet/DepartementDashboardHeader'
-import { DepartementDashboardData } from '@app/web/app/(prefet)/prefet/[codeDepartement]/getDepartementDashboardData'
+import type { DepartementDashboardData } from '@app/web/app/(private)/tableau-de-bord/departement/[codeDepartement]/getDepartementDashboardData'
 import DepartementMap from './DepartementMap'
 
 const DepartementDashboard = ({ data }: { data: DepartementDashboardData }) => (

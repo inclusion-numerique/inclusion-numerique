@@ -41,7 +41,7 @@ const HomePage = () => (
       </p>
       <Button
         className="fr-mt-12v"
-        linkProps={{ href: '/prefet' }}
+        linkProps={{ href: '/tableau-de-bord/departement' }}
         iconPosition="left"
         iconId="fr-icon-account-circle-line"
         data-testid="prefet-button"

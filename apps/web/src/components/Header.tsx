@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import classNames from 'classnames'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import HeaderBackLink from '@app/web/components/HeaderBackLink'
 import { HeaderUserMenu } from '@app/web/components/HeaderUserMenu'
@@ -9,31 +10,32 @@ const Header = ({
   user,
   backLink,
   backLinkHref,
-  prefet,
+  fullWidth,
+  hideFlag,
 }: {
   user?: SessionUser | null
   backLink?: string
   backLinkHref?: string
-  prefet?: boolean
+  fullWidth?: boolean
+  hideFlag?: boolean
 }) => {
-  const baseLinkProps = prefet
-    ? { href: '/prefet', title: 'France Numérique Ensemble' }
-    : {
-        href: '/',
-        title: PublicWebAppConfig.projectTitle,
-      }
+  const baseLinkProps = {
+    href: '/',
+    title: PublicWebAppConfig.projectTitle,
+  }
 
   return (
     <header role="banner" className="fr-header">
       <div className="fr-header__body">
-        <div className="fr-container">
+        {/* TODO Header container css style with media lg query */}
+        <div className={fullWidth ? 'fr-px-2w fr-px-lg-12v' : 'fr-container'}>
           <div className="fr-header__body-row">
             <div className="fr-header__brand fr-enlarge-link">
               <div className="fr-header__brand-top">
                 {backLink ? (
                   <HeaderBackLink backLink={backLink} href={backLinkHref} />
                 ) : (
-                  !prefet && (
+                  !hideFlag && (
                     <div className="fr-header__logo">
                       <Link
                         aria-current="page"
@@ -74,7 +76,12 @@ const Header = ({
                 </div>
               )}
             </div>
-            <div className="fr-header__tools">
+            <div
+              className={classNames(
+                'fr-header__tools',
+                fullWidth && 'fr-pr-lg-0',
+              )}
+            >
               <div className="fr-header__tools-links">
                 <ul className="fr-btns-group">
                   <li style={{ position: 'relative' }}>
@@ -82,10 +89,10 @@ const Header = ({
                       <HeaderUserMenu user={user} />
                     ) : (
                       <Link
-                        href="/connexion?suivant=/prefet"
+                        href="/connexion"
                         className="fr-btn fr-icon-user-setting-line"
                       >
-                        Espace Préfet
+                        Se connecter
                       </Link>
                     )}
                   </li>
