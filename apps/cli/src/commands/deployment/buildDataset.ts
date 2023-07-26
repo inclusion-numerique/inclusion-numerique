@@ -15,6 +15,14 @@ export const buildDataset = new Command()
     axiosRetry(client, {
       retries: 3,
       retryDelay: (retryCount) => retryCount * 5000,
+      retryCondition: () => true,
+      onRetry: (retryCount, error) => {
+        output(error.message)
+
+        output(
+          `Scheduling retry ${retryCount} after error in ${retryCount * 5}s`,
+        )
+      },
     })
 
     try {
@@ -22,7 +30,7 @@ export const buildDataset = new Command()
       output(result.data)
     } catch (error) {
       if (error instanceof AxiosError) {
-        output(error.response?.data)
+        output(error.message)
       } else {
         output(error)
       }
