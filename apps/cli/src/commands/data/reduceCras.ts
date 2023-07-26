@@ -14,7 +14,7 @@ import {
 const crasCsvFile = path.resolve(
   __dirname,
   '../../../../../var',
-  'cras_2023-07-26T07_38_13.873208283Z.csv',
+  'cras_2023-07-26T08_53_21.237230614Z.csv',
 )
 
 type CrasCsvRow = {
