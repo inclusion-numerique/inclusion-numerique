@@ -1,5 +1,15 @@
 .section {
     max-width: 996px;
+
+    :global a.fr-btn {
+        width: 100%;
+        text-align: center;
+        display: block;
+
+        @media (min-width: 48em) {
+            width: fit-content;
+        }
+    }
 }
 
 .hero {
@@ -31,8 +41,6 @@
     > h2 {
         text-align: center;
         margin-bottom: 48px;
-        font-size: 24px;
-        line-height: 32px;
     }
 
 }
