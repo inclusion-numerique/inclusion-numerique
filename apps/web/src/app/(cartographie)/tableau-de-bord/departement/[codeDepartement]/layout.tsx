@@ -29,7 +29,6 @@ const PublicLayout = async ({
       <Header
         user={user}
         fullWidth
-        hideFlag
         backLink={`Retour au tableau de bord ${department.nom}`}
         backLinkHref={`/tableau-de-bord/departement/${department.code}`}
       />

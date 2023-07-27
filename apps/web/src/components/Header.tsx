@@ -5,6 +5,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import HeaderBackLink from '@app/web/components/HeaderBackLink'
 import { HeaderUserMenu } from '@app/web/components/HeaderUserMenu'
 import { PublicWebAppConfig } from '@app/web/webAppConfig'
+import styles from './Header.module.css'
 
 const Header = ({
   user,
@@ -27,8 +28,7 @@ const Header = ({
   return (
     <header role="banner" className="fr-header">
       <div className="fr-header__body">
-        {/* TODO Header container css style with media lg query */}
-        <div className={fullWidth ? 'fr-px-2w fr-px-lg-12v' : 'fr-container'}>
+        <div className={fullWidth ? styles.headerContainer : 'fr-container'}>
           <div className="fr-header__body-row">
             <div className="fr-header__brand fr-enlarge-link">
               <div className="fr-header__brand-top">

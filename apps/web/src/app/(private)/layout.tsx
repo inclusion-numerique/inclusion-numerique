@@ -14,7 +14,7 @@ const PrivateLayout = async ({ children }: PropsWithChildren) => {
     <div
       style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
     >
-      <Header user={user} hideFlag />
+      <Header user={user} />
       <div style={{ flex: 1 }}>
         <div className="fr-container">{children}</div>
       </div>

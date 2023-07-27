@@ -9,7 +9,7 @@ import DepartementMap from './DepartementMap'
 const DepartementDashboard = ({ data }: { data: DepartementDashboardData }) => (
   <>
     <Breadcrumb
-      currentPageLabel={data.departement.nom}
+      currentPageLabel="Tableau de bord"
       segments={[
         {
           label: "Page d'accueil",
