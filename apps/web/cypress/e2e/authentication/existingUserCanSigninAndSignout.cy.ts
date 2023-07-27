@@ -22,8 +22,8 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
 
   it('Préliminaire - Les pages de connexions sont accessibles', () => {
     cy.visit('/')
-    cy.get('.fr-header__tools').contains('Espace Préfet').click()
-    cy.url().should('equal', appUrl('/connexion?suivant=/prefet'))
+    cy.get('.fr-header__tools').contains('Se connecter').click()
+    cy.url().should('equal', appUrl('/connexion'))
   })
 
   it('Acceptation 0 - La connexion redirige vers la création de compte pour un nouvel utilisateur', () => {
@@ -108,7 +108,7 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
     cy.contains('Êtes-vous sur de vouloir vous déconnecter ?')
     cy.get('main').contains('Se déconnecter').click()
     cy.url().should('equal', appUrl('/'))
-    cy.get('.fr-header__tools').contains('Espace Préfet')
+    cy.get('.fr-header__tools').contains('Se connecter')
   })
 
   it.skip('Acceptation 3 - Connexion avec Mon Compte Pro', () => {
