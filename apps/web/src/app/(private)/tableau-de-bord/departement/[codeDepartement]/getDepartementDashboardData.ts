@@ -233,14 +233,12 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
             id: 'conseillers-numériques',
             label: 'Conseillers Numériques',
             value: conums,
-            statistics: [
-              {
-                id: 'dont-conseillers-coordinateurs',
-                label: 'dont Conseillers Coordinateurs',
-                // eslint-disable-next-line no-underscore-dangle
-                value: departement._count.coordinateursConseillerNumerique,
-              },
-            ],
+          },
+          {
+            id: 'dont Conseillers Coordinateurs',
+            label: 'dont Conseillers Coordinateurs',
+            // eslint-disable-next-line no-underscore-dangle
+            value: departement._count.coordinateursConseillerNumerique,
           },
           {
             id: 'aidants-habilités-à-aidant-connect',

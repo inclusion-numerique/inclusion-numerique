@@ -98,13 +98,11 @@ const getFakeData = (
             id: 'conseillers-numériques',
             label: 'Conseillers Numériques',
             value: 43,
-            statistics: [
-              {
-                id: 'dont-conseillers-coordinateurs',
-                label: 'dont Conseillers Coordinateurs',
-                value: 2,
-              },
-            ],
+          },
+          {
+            id: 'dont-conseillers-coordinateurs',
+            label: 'dont Conseillers Coordinateurs',
+            value: 2,
           },
           {
             id: 'aidants-habilités-à-aidant-connect',
