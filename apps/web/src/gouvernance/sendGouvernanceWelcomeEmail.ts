@@ -1,21 +1,44 @@
 import type { User } from '@prisma/client'
-import { GouvernancePersonaId } from '@app/web/app/(public)/gouvernance/gouvernancePersona'
+import { createTransport } from 'nodemailer'
+import { compileMjml } from '@app/emails/mjml'
+import { gouvernanceWelcome } from '@app/emails/templates/gouvernanceWelcome'
+import Sentry from '@sentry/nextjs'
+import { ServerWebAppConfig } from '@app/web/webAppConfig'
+import {
+  GouvernancePersonaId,
+  gouvernancePersonas,
+} from '@app/web/app/(public)/gouvernance/gouvernancePersona'
+import { prismaClient } from '@app/web/prismaClient'
 
 export const sendGouvernanceWelcomeEmail = async ({
   user,
 }: {
   user: User & { gouvernancePersona: GouvernancePersonaId }
 }): Promise<true> => {
-  console.log('Sending welcome email to', user.email)
+  const transport = createTransport(ServerWebAppConfig.Smtp.connectionString)
+  const gouvernancePersona = gouvernancePersonas[user.gouvernancePersona]
+  const result = await transport.sendMail({
+    to: user.email,
+    from: ServerWebAppConfig.Smtp.from,
+    subject: `Inscription confirmée`,
+    text: gouvernanceWelcome.text(),
+    html: compileMjml(gouvernanceWelcome.mjml({ gouvernancePersona })),
+  })
+  const failed = [...result.rejected].filter(Boolean)
+  if (failed.length > 0) {
+    const errorMessage = `Gouvernance welcome email(s) (${failed.join(
+      ', ',
+    )}) could not be sent`
+    console.error(errorMessage)
+    Sentry.captureException(new Error(errorMessage))
+    return true
+  }
 
-  // TODO compute and send email
-  // TODO mutate user by adding sent date
-  await new Promise((resolve) =>
-    // eslint-disable-next-line no-promise-executor-return
-    setTimeout(() => {
-      resolve(null)
-    }, 1000),
-  )
+  await prismaClient.user.update({
+    where: { id: user.id },
+    data: { gouvernanceSignupEmailSent: new Date() },
+  })
+
   return true
 }
 

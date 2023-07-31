@@ -108,8 +108,6 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     session: ({ session, user }) => {
-      console.log('SESSION CALLBACK', { user })
-
       if (session.user) {
         // eslint-disable-next-line no-param-reassign
         session.user.id = user.id

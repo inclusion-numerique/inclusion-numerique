@@ -87,8 +87,6 @@ const Page = async ({
           choices: gouvernancePersonaIds,
         }
 
-  console.log({ user, formulaireGouvernance, isMismatch, choices, changer })
-
   return (
     <div className="fr-container">
       <Breadcrumbs
