@@ -104,8 +104,12 @@ const Page = async () => {
         <p>
           Adresse email&nbsp;: <strong>{user.email}</strong>
           <br />
-          Nom&nbsp;: <strong>{user.name}</strong>
-          <br />
+          {!!user.name && (
+            <>
+              Nom&nbsp;: <strong>{user.name}</strong>
+              <br />
+            </>
+          )}
         </p>
         {roleNotice}
         <br />
