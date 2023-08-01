@@ -92,21 +92,21 @@ const Page = async ({
         </p>
       </ContainerCard>
 
-      <div className="fr-container fr-container--narrow">
-        {canAccessDevelopmentPreview && (
+      {canAccessDevelopmentPreview && (
+        <div className="fr-container fr-container--narrow">
           <Notice title="Vous avez été autorisé(e) à accéder aux formulaires en cours de développement" />
-        )}
-        <Button
-          className="fr-mt-8v fr-mb-20v"
-          priority="secondary"
-          iconId="fr-icon-arrow-right-line"
-          linkProps={{
-            href: `/formulaires-feuilles-de-routes-territoriales/${gouvernancePersonaId}/formulaire`,
-          }}
-        >
-          Accéder au formulaire en cours de développement
-        </Button>
-      </div>
+          <Button
+            className="fr-mt-8v fr-mb-20v"
+            priority="secondary"
+            iconId="fr-icon-arrow-right-line"
+            linkProps={{
+              href: `/formulaires-feuilles-de-routes-territoriales/${gouvernancePersonaId}/formulaire`,
+            }}
+          >
+            Accéder au formulaire en cours de développement
+          </Button>
+        </div>
+      )}
     </>
   )
 }
