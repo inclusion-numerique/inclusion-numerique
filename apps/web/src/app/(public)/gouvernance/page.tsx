@@ -33,7 +33,7 @@ const GouvernanceCtaPage = () => (
         feuille de route.
       </p>
       <Notice title="Les informations récoltés seront mises à disposition des préfectures pour organiser la gouvernance d’Inclusion Numérique sur leur territoire." />
-      <p className="fr-mt-8v fr-mb-8v">
+      <p className="fr-text--lg fr-mt-8v fr-mb-8v">
         Retrouvez, par type de collectivité ou d’acteur territorial, les
         informations qui vous seront demandées :
       </p>
