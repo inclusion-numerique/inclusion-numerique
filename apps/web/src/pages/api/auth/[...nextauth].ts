@@ -14,6 +14,9 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { PublicWebAppConfig, ServerWebAppConfig } from '@app/web/webAppConfig'
 import { sendGouvernanceWelcomeEmailIfNeeded } from '@app/web/gouvernance/sendGouvernanceWelcomeEmail'
 
+console.log('authconfig', ServerWebAppConfig.MonComptePro)
+console.log('public auth config', PublicWebAppConfig.MonComptePro)
+
 export const authOptions: NextAuthOptions = {
   // debug: process.env.NODE_ENV !== 'production',
   adapter: nextAuthAdapter,
