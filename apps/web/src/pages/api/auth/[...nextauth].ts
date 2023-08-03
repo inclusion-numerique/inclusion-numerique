@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
     KeycloakProvider({
       allowDangerousEmailAccountLinking: true,
       id: monCompteProConnectProviderId,
-      name: 'Moncomptepro Connect',
+      name: 'MonComptePro',
       clientId: PublicWebAppConfig.MonComptePro.clientId,
       clientSecret: ServerWebAppConfig.MonComptePro.clientSecret,
       authorization: {

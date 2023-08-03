@@ -26,7 +26,7 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
 
     cy.log('Check that the signup CTA is linked correctly')
     cy.contains('Créer un compte').click()
-    cy.url().should('equal', appUrl('/creer-un-compte'))
+    cy.url().should('equal', appUrl('/creer-un-compte?suivant=/profil'))
 
     cy.log('Check that the signin CTA is linked correctly')
     cy.findByRole('main')
