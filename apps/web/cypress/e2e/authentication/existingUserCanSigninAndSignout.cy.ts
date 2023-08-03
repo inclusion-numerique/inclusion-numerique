@@ -103,7 +103,7 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
 
     // With a valid magic link we should be automatically redirected to homepage, logged in
     cy.log('User should now be signed in')
-    cy.url().should('eq', appUrl('/'))
+    cy.url().should('eq', appUrl('/profil'))
     cy.get('.fr-header__tools').contains(firstName).contains(lastName)
 
     cy.get('.fr-header__tools').should('not.contain', 'Se connecter')
@@ -158,7 +158,7 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter'
 
     cy.get('input[name="password"]').type(`${monCompteProUser.password}{enter}`)
 
-    cy.url().should('equal', appUrl('/'))
+    cy.url().should('equal', appUrl('/profil'))
 
     cy.get('.fr-header__tools').should('not.contain', 'Se connecter')
 
