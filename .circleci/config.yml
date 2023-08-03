@@ -389,6 +389,10 @@ jobs:
           name: 'Create CI database schema'
           command: |
             pnpm --silent -F @app/web prisma db push --skip-generate --accept-data-loss
+      - run:
+          name: 'Build dataset'
+          command: |
+            pnpm cli data:build
       - restore_cache:
           key: << pipeline.id >>-web-build
       - add_dotenv_vars_to_bash_env
