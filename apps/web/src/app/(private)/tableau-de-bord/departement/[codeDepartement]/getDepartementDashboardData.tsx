@@ -68,6 +68,8 @@ const listStructures = (codeDepartement: string) =>
       labelFranceServices: true,
       labelConseillersNumerique: true,
       structureAidantsConnect: true,
+      zrr: true,
+      qpv: true,
     },
   })
 
@@ -108,6 +110,8 @@ const computeDepartementDashboardData = async (codeDepartement: string) => {
         labelFranceServices: true,
         labelConseillersNumerique: true,
         structureAidantsConnect: true,
+        zrr: true,
+        qpv: true,
       },
     }),
     prismaClient.craConseillerNumeriqueParDepartement.findUnique({
