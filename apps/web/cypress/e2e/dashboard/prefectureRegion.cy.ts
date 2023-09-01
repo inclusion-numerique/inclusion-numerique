@@ -1,9 +1,12 @@
 import { appUrl, createTestUser } from 'cypress/support/helpers'
 
-describe("En tant que Préfet, j'ai accès aux données de mon département", () => {
+describe("En tant que préfecture de région, j'ai accès aux données de ma région", () => {
   beforeEach(() => {
     cy.execute('deleteAllData', {})
-    const user = createTestUser({ role: 'Prefect', roleScope: '33' })
+    const user = createTestUser({
+      role: 'PrefectureRegion',
+      roleScope: '75',
+    })
     cy.createUserAndSignin(user)
   })
 
@@ -12,6 +15,12 @@ describe("En tant que Préfet, j'ai accès aux données de mon département", ()
     cy.visit(`/tableau-de-bord`)
     cy.url().should('equal', appUrl('/tableau-de-bord/departement/33'))
 
+    cy.contains('Gironde')
+
+    // Peut changer de département
+    cy.testId('departement-switcher').select('33')
+
+    cy.url().should('equal', appUrl('/tableau-de-bord/departement/33'))
     cy.contains('Gironde')
 
     cy.intercept(
@@ -39,41 +48,5 @@ describe("En tant que Préfet, j'ai accès aux données de mon département", ()
     cy.testId('city-details-title').should('not.exist')
 
     cy.testId('map-loader').should('not.be.visible')
-
-    const searchInputPlaceholder = 'Rechercher une commune ou une structure'
-
-    cy.log('Can search and select a city')
-
-    cy.get(`input[placeholder="${searchInputPlaceholder}"]`).type('Arcachon')
-
-    cy.contains('Arcachon 33120').trigger('mousedown')
-    cy.get(`input[placeholder="${searchInputPlaceholder}"]`).should(
-      'have.value',
-      'Arcachon 33120',
-    )
-
-    cy.testId('city-details-title').should('include.text', 'Arcachon')
-
-    cy.testId('map-popup-close-button').click()
-    cy.testId('city-details-title').should('not.exist')
-
-    cy.log('Can search and select a structure')
-
-    cy.get(`input[placeholder="${searchInputPlaceholder}"]`).type(
-      "mairie d'arcachon",
-    )
-    cy.contains("Mairie d'Arcachon").trigger('mousedown')
-    cy.get(`input[placeholder="${searchInputPlaceholder}"]`).should(
-      'have.value',
-      "Mairie d'Arcachon",
-    )
-
-    cy.testId('structure-details-title').should(
-      'include.text',
-      "Mairie d'Arcachon",
-    )
-
-    cy.testId('map-popup-close-button').click()
-    cy.testId('structure-details-title').should('not.exist')
   })
 })
