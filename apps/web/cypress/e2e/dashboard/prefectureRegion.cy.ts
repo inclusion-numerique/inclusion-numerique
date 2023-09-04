@@ -10,12 +10,12 @@ describe("En tant que préfecture de région, j'ai accès aux données de ma ré
     cy.createUserAndSignin(user)
   })
 
-  it('Should access dashboard and see detailed map informations', () => {
+  it('Should access dashboard and switch departements from own region', () => {
     cy.log('Redirect to scoped dashboard')
     cy.visit(`/tableau-de-bord`)
-    cy.url().should('equal', appUrl('/tableau-de-bord/departement/33'))
+    cy.url().should('equal', appUrl('/tableau-de-bord/departement/16'))
 
-    cy.contains('Gironde')
+    cy.contains('Charente')
 
     // Peut changer de département
     cy.testId('departement-switcher').select('33')
