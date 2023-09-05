@@ -12,6 +12,7 @@ import {
   StructureFilters,
 } from '@app/web/components/Prefet/Cartographie/structureFilters'
 import ErrorBoundary from '@app/web/components/ErrorBoundary'
+import Filters from '@app/web/components/Prefet/Cartographie/Filters'
 import styles from './Page.module.css'
 import Legend from './Legend'
 import Map from './Map'
@@ -116,6 +117,7 @@ const CartographiePage = ({
           }
         />
       </ErrorBoundary>
+      <Filters onFilter={onFilter} />
     </div>
   )
 }

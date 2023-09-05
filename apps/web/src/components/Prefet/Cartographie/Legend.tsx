@@ -52,7 +52,6 @@ const Legend = ({
   selectedCommune: _selectedCommune,
   onCommuneSelected,
   selectedStructure: _selectedStructure,
-  onFilter,
   count,
 }: {
   count: DepartementCartographieDataCount
@@ -63,36 +62,8 @@ const Legend = ({
   onCommuneSelected: (commune: string | null | undefined) => void
   selectedStructure?: DepartementCartographieDataStructure | null
   onStructureSelected: (structure: string | null | undefined) => void
-  onFilter: (filters: StructureFilters) => void
 }) => {
   const [legendCollapsed, setLegendCollapsed] = useState(false)
-
-  const filterForm = useForm<StructureFilters>({
-    defaultValues: {
-      typologie: {
-        publique: true,
-        association: true,
-        privee: true,
-        nonDefini: true,
-        // Subtypes of public
-        commune: true,
-        epci: true,
-        departement: true,
-        autre: true,
-      },
-      labels: {
-        conseillerNumerique: true,
-        franceServices: true,
-        aidantConnect: true,
-        aucun: true,
-      },
-      territoiresPrioritaires: {
-        zrr: true,
-        qpv: true,
-        aucun: true,
-      },
-    },
-  })
 
   const categories = useMemo(
     () => [
@@ -143,65 +114,6 @@ const Legend = ({
       const cleanValue = value.replace(/^structure#/, '')
       onStructureSelected(cleanValue)
     }
-  }
-
-  filterForm.watch((values) => {
-    onFilter(values as StructureFilters)
-  })
-
-  /**
-   * There is a wierd integration bug with DSFR for managing the state of the checkbox
-   * For each checkbox that are controlled programmatically, we need to explicitly
-   * re-render using the key prop because the state is not updated otherwise IF the user
-   * has already interacted with the checkbox.
-   */
-  const programmaticallyCheckedKeys = {
-    publique: filterForm.watch('typologie.publique')
-      ? 'publiqueon'
-      : 'publiqueoff',
-    commune: filterForm.watch('typologie.commune') ? 'communeon' : 'communeoff',
-    epci: filterForm.watch('typologie.epci') ? 'epcion' : 'epcioff',
-    departement: filterForm.watch('typologie.departement')
-      ? 'departementon'
-      : 'departementoff',
-    autre: filterForm.watch('typologie.autre') ? 'autreon' : 'autreoff',
-  }
-
-  // Check publique checkbox if all subtypes are checked
-  // Uncheck publique checkbox if all subtypes are unchecked
-  const onSubtypeChange = () => {
-    const {
-      typologie: {
-        publique,
-        commune,
-        epci,
-        departement: departementValue,
-        autre,
-      },
-    } = filterForm.getValues()
-    if (publique && !commune && !epci && !departementValue && !autre) {
-      filterForm.setValue('typologie.publique', false)
-      return
-    }
-    if (!publique && commune && epci && departementValue && autre) {
-      filterForm.setValue('typologie.publique', true)
-    }
-  }
-
-  // Check all subtypes if publique is checked
-  // Uncheck all subtypes if publique is unchecked
-  const onPubliqueChange = (value: boolean) => {
-    if (value) {
-      filterForm.setValue('typologie.commune', true)
-      filterForm.setValue('typologie.epci', true)
-      filterForm.setValue('typologie.departement', true)
-      filterForm.setValue('typologie.autre', true)
-      return
-    }
-    filterForm.setValue('typologie.commune', false)
-    filterForm.setValue('typologie.epci', false)
-    filterForm.setValue('typologie.departement', false)
-    filterForm.setValue('typologie.autre', false)
   }
 
   return (
