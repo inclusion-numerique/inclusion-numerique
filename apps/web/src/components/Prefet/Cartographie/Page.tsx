@@ -9,6 +9,7 @@ import {
 } from '@app/web/app/(cartographie)/tableau-de-bord/departement/[codeDepartement]/cartographie/getDepartementCartographieData'
 import {
   applyStructureFilter,
+  isFilterEmpty,
   StructureFilters,
 } from '@app/web/components/Prefet/Cartographie/structureFilters'
 import ErrorBoundary from '@app/web/components/ErrorBoundary'
@@ -36,9 +37,11 @@ const CartographiePage = ({
 
   const onFilter = (filters: StructureFilters) => {
     setFilteredStructures(
-      structures.filter((structure) =>
-        applyStructureFilter(structure, filters),
-      ),
+      isFilterEmpty(filters)
+        ? structures
+        : structures.filter((structure) =>
+            applyStructureFilter(structure, filters),
+          ),
     )
   }
 
@@ -98,7 +101,6 @@ const CartographiePage = ({
         onCommuneSelected={onCommuneSelected}
         selectedStructure={selectedStructure}
         onStructureSelected={onStructureSelected}
-        onFilter={onFilter}
       />
       <ErrorBoundary>
         <Map

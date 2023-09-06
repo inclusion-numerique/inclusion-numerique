@@ -6,8 +6,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Breadcrumb from '@codegouvfr/react-dsfr/Breadcrumb'
 import SearchableSelect from '@app/ui/components/SearchableSelect/SearchableSelect'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import {
   DepartementCartographieDataCommune,
@@ -15,7 +13,6 @@ import {
   DepartementCartographieDataStructure,
 } from '@app/web/app/(cartographie)/tableau-de-bord/departement/[codeDepartement]/cartographie/getDepartementCartographieData'
 import LegendStructure from '@app/web/components/Prefet/Cartographie/LegendStructure'
-import { StructureFilters } from '@app/web/components/Prefet/Cartographie/structureFilters'
 import InfoButton from '@app/web/components/InfoButton'
 import {
   TerritoiresPrioritairesInformationModal,
@@ -29,7 +26,7 @@ const StructuresInformationModal = createModal({
   isOpenedByDefault: false,
 })
 
-const LegendCheckboxLabel = ({
+const StructureLegendWithCount = ({
   label,
   count,
   subtype,
@@ -38,7 +35,7 @@ const LegendCheckboxLabel = ({
   count: number
   subtype?: boolean
 }) => (
-  <span className={styles.legendCheckboxLabel}>
+  <span className={styles.structureLegendWithCount}>
     <span>{label}</span>
     <span className={subtype ? styles.labelSubtypeCount : ''}>{count}</span>
   </span>
@@ -202,176 +199,82 @@ const Legend = ({
               <p className="fr-text--lg fr-text--bold fr-mb-3v">
                 Typologie des lieux d’inclusion numérique
               </p>
-              <CheckboxFormField
-                key={programmaticallyCheckedKeys.publique}
-                control={filterForm.control}
-                small
-                path="typologie.publique"
-                onChange={onPubliqueChange}
+              <StructureLegendWithCount
                 label={
-                  <LegendCheckboxLabel
-                    label={
-                      <>
-                        <span className="fr-icon-government-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
-                        Public
-                      </>
-                    }
-                    count={count.type.publique}
-                  />
+                  <>
+                    <span className="fr-icon-government-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
+                    Public
+                  </>
                 }
+                count={count.type.publique}
               />
               <div className="fr-pl-3w">
-                <CheckboxFormField
-                  key={programmaticallyCheckedKeys.commune}
-                  control={filterForm.control}
-                  small
-                  path="typologie.commune"
-                  onChange={onSubtypeChange}
-                  label={
-                    <LegendCheckboxLabel
-                      label="Commune"
-                      count={count.sousTypePublic.commune}
-                      subtype
-                    />
-                  }
+                <StructureLegendWithCount
+                  label="Commune"
+                  count={count.sousTypePublic.commune}
+                  subtype
                 />
-                <CheckboxFormField
-                  key={programmaticallyCheckedKeys.epci}
-                  control={filterForm.control}
-                  small
-                  path="typologie.epci"
-                  onChange={onSubtypeChange}
-                  label={
-                    <LegendCheckboxLabel
-                      label="EPCI"
-                      count={count.sousTypePublic.epci}
-                      subtype
-                    />
-                  }
+                <StructureLegendWithCount
+                  label="EPCI"
+                  count={count.sousTypePublic.epci}
+                  subtype
                 />
-                <CheckboxFormField
-                  key={programmaticallyCheckedKeys.departement}
-                  control={filterForm.control}
-                  small
-                  path="typologie.departement"
-                  onChange={onSubtypeChange}
-                  label={
-                    <LegendCheckboxLabel
-                      label="Département"
-                      count={count.sousTypePublic.departement}
-                      subtype
-                    />
-                  }
+                <StructureLegendWithCount
+                  label="Département"
+                  count={count.sousTypePublic.departement}
+                  subtype
                 />
-                <CheckboxFormField
-                  key={programmaticallyCheckedKeys.autre}
-                  control={filterForm.control}
-                  small
-                  path="typologie.autre"
-                  onChange={onSubtypeChange}
-                  label={
-                    <LegendCheckboxLabel
-                      label="Autre"
-                      count={count.sousTypePublic.autre}
-                      subtype
-                    />
-                  }
+                <StructureLegendWithCount
+                  label="Autre"
+                  count={count.sousTypePublic.autre}
+                  subtype
                 />
               </div>
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="typologie.association"
+              <StructureLegendWithCount
                 label={
-                  <LegendCheckboxLabel
-                    label={
-                      <>
-                        <span className="fr-icon-team-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
-                        Associations
-                      </>
-                    }
-                    count={count.type.association}
-                  />
+                  <>
+                    <span className="fr-icon-team-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
+                    Associations
+                  </>
                 }
+                count={count.type.association}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="typologie.privee"
+              <StructureLegendWithCount
                 label={
-                  <LegendCheckboxLabel
-                    label={
-                      <>
-                        <span className="fr-icon-building-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
-                        Autres acteurs privés
-                      </>
-                    }
-                    count={count.type.privee}
-                  />
+                  <>
+                    <span className="fr-icon-building-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
+                    Autres acteurs privés
+                  </>
                 }
+                count={count.type.privee}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="typologie.nonDefini"
+              <StructureLegendWithCount
                 label={
-                  <LegendCheckboxLabel
-                    label={
-                      <>
-                        <span className="fr-icon-map-pin-2-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
-                        Non défini
-                      </>
-                    }
-                    count={count.type.nonDefini}
-                  />
+                  <>
+                    <span className="fr-icon-map-pin-2-fill fr-icon--sm fr-text-title--blue-france fr-mr-1w" />
+                    Non défini
+                  </>
                 }
+                count={count.type.nonDefini}
               />
               <p className="fr-text--lg fr-text--bold fr-mt-6v fr-mb-3v">
                 Labels
               </p>
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="labels.conseillerNumerique"
-                label={
-                  <LegendCheckboxLabel
-                    label="Lieux accueillant des conseillers numérique"
-                    count={count.label.conseillerNumerique}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Lieux accueillant des conseillers numérique"
+                count={count.label.conseillerNumerique}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="labels.franceServices"
-                label={
-                  <LegendCheckboxLabel
-                    label="Points d’accueil numérique labellisés France Services"
-                    count={count.label.franceServices}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Points d’accueil numérique labellisés France Services"
+                count={count.label.franceServices}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="labels.aidantConnect"
-                label={
-                  <LegendCheckboxLabel
-                    label="Points d’accueil habilités Aidants Connect"
-                    count={count.label.aidantsConnect}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Points d’accueil habilités Aidants Connect"
+                count={count.label.aidantsConnect}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="labels.aucun"
-                label={
-                  <LegendCheckboxLabel
-                    label="Aucun"
-                    count={count.label.aucun}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Aucun"
+                count={count.label.aucun}
               />
               <p className="fr-text--lg fr-text--bold fr-mt-6v fr-mb-3v">
                 Territoires prioritaires{' '}
@@ -381,38 +284,17 @@ const Legend = ({
                   onClick={TerritoiresPrioritairesInformationModal.open}
                 />
               </p>
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="territoiresPrioritaires.qpv"
-                label={
-                  <LegendCheckboxLabel
-                    label="Lieux situés en quartier prioritaire de la ville (QPV)"
-                    count={count.territoire.qpv}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Structures en quartier prioritaire de la ville (QPV)"
+                count={count.territoire.qpv}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="territoiresPrioritaires.zrr"
-                label={
-                  <LegendCheckboxLabel
-                    label="Lieux situés en zone de revitalisation rurale (ZRR)"
-                    count={count.territoire.zrr}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Structures en zone de revitalisation rurale (ZRR)"
+                count={count.territoire.zrr}
               />
-              <CheckboxFormField
-                control={filterForm.control}
-                small
-                path="territoiresPrioritaires.aucun"
-                label={
-                  <LegendCheckboxLabel
-                    label="Aucun"
-                    count={count.territoire.aucun}
-                  />
-                }
+              <StructureLegendWithCount
+                label="Aucun"
+                count={count.territoire.aucun}
               />
             </form>
           </div>

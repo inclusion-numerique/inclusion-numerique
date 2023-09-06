@@ -1,6 +1,4 @@
 import React from 'react'
-import Accordion from '@codegouvfr/react-dsfr/Accordion'
-import Button from '@codegouvfr/react-dsfr/Button'
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import {
   getPageFormulaireData,
@@ -8,12 +6,8 @@ import {
 } from '@app/web/app/(private)/formulaires-feuilles-de-routes-territoriales/pageFormulaireData'
 import BackLink from '@app/web/components/BackLink'
 import Progress from '@app/web/app/(private-no-footer)/formulaires-feuilles-de-routes-territoriales/Progress'
-import { communeNameWithCodePostaux } from '@app/web/data/communeNameWithCodePostaux'
-import { GouvernancePersonaId } from '@app/web/app/(public)/gouvernance/gouvernancePersona'
 import Recapitulatif from '@app/web/app/(private-no-footer)/formulaires-feuilles-de-routes-territoriales/[gouvernancePersonaId]/recapitulatif/Recapitulatif'
 import { getEtapeInfo } from '@app/web/app/(private)/formulaires-feuilles-de-routes-territoriales/etapeFormulaireGouvernance'
-import InfoLabelValue from '@app/web/components/Gouvernance/InfoLabelValue'
-import ContactInfo from '@app/web/components/Gouvernance/ContactInfo'
 import RecapitulatifSection from '@app/web/app/(private-no-footer)/formulaires-feuilles-de-routes-territoriales/[gouvernancePersonaId]/recapitulatif/RecapitulatifSection'
 
 export const dynamic = 'force-dynamic'

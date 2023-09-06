@@ -59,14 +59,14 @@ const InfoContact = ({
 const RecapitulatifSection = ({
   formulaireGouvernance,
   persona,
-  totalConcats,
+  totalContacts,
   totalCollectivites,
   missingContacts,
 }: {
   formulaireGouvernance: GouvernanceFormulaireForForm
   persona: GouvernancePersona
   missingContacts: number
-  totalConcats: number
+  totalContacts: number
   totalCollectivites: number
 }) => {
   const participantName = formulaireGouvernance.region

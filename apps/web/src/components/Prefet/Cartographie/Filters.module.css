@@ -33,6 +33,17 @@
     z-index: 1000;
     text-wrap: none;
     white-space: nowrap;
+    :global .fr-fieldset__element {
+        margin-bottom: 0;
+    }
+    :global .fr-fieldset {
+        margin-bottom: 0;
+        margin-top: 4px;
+    }
+    label {
+        font-size: 14px;
+        line-height: 24px;
+    }
 
 }
 
@@ -44,6 +55,8 @@
     margin-left: 8px;
     background: var(--background-active-blue-france);
     border-radius: 12px;
+    font-size: 14px;
+    line-height: 24px;
     padding: 0 8px;
     color: white;
 }
