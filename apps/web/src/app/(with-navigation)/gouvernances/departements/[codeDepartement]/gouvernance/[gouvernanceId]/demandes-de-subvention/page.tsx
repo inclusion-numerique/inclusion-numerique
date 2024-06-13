@@ -3,7 +3,6 @@ import Breadcrumb from '@codegouvfr/react-dsfr/Breadcrumb'
 import { notFound } from 'next/navigation'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
-import Link from 'next/link'
 import { getDemandesSubventionsForForm } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/getGouvernanceForForm'
 import { generateDepartementMetadata } from '@app/web/app/(with-navigation)/gouvernances/departements/generateDepartementMetadata'
 import {
@@ -133,14 +132,15 @@ const Page = async ({
           à remplir un formulaire par action que vous souhaitez faire financer.
           Une note précisant le contexte dans lequel ces demandes de subventions
           s’inscrivent vous est demandée.{' '}
-          <Link
+          <a
             className="fr-link"
-            href="https://lesbases.anct.gouv.fr/ressources/pas-a-pas-espace-france-numerique-ensemble"
+            href="https://lesbases.anct.gouv.fr/download/user/de7145de-4fb8-4b31-b4f5-7445d89d7f0c/a_sAGkyQ_HSEoMvMbWBg-_Guide-Remplissage-Formulaires-FNE.pdf"
+            rel="external noopener noreferrer"
             target="_blank"
           >
             Vous pouvez retrouver ici un guide qui vous aidera à remplir vos
             formulaires de demande de subvention
-          </Link>
+          </a>
           .
         </p>
         <div className="fr-border fr-p-8v fr-pb-10v">
