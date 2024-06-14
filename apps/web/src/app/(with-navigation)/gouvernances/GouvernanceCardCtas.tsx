@@ -3,6 +3,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import {
+  limiteDeploiementDeFeuillesDeRoute,
   limiteModicitaionDesDemandesDeSubvention,
   limiteModificationDesGouvernances,
 } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
@@ -220,6 +221,21 @@ const GouvernanceCardCtas = ({
           <hr className="fr-separator-8v" />
           <div className={styles.cardCtaContainer}>
             <div className="fr-flex-grow-1">
+              {!subventionsCompleted && (
+                <>
+                  <Badge small severity="new">
+                    À renseigner avant le{' '}
+                    {dateAsDay(limiteModicitaionDesDemandesDeSubvention)} pour
+                    l’élaboration de feuilles de route
+                  </Badge>
+                  <br />
+                  <Badge small severity="new">
+                    À renseigner avant le{' '}
+                    {dateAsDay(limiteDeploiementDeFeuillesDeRoute)} pour le
+                    déploiement de feuilles de route
+                  </Badge>
+                </>
+              )}
               <h6 className="fr-mb-0">Actions & demandes de subventions</h6>
               {subventionsCompleted ? (
                 <p className="fr-mb-0 fr-text--sm fr-text-mention--grey">
@@ -229,22 +245,13 @@ const GouvernanceCardCtas = ({
                 </p>
               ) : null}
             </div>
-            {subventionsCompleted ? (
+            {subventionsCompleted && (
               <Badge
                 className="fr-my-4v fr-ml-md-6w fr-mr-md-3w"
                 small
                 severity="success"
               >
                 Complétées
-              </Badge>
-            ) : (
-              <Badge
-                className="fr-my-4v fr-ml-md-6w fr-mr-md-3w"
-                small
-                severity="new"
-              >
-                À&nbsp;renseigner&nbsp;avant&nbsp;le&nbsp;
-                {dateAsDay(limiteModicitaionDesDemandesDeSubvention)}
               </Badge>
             )}
             {subventionsCompleted ? (

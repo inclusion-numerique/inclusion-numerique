@@ -10,7 +10,8 @@ export const PublicWebAppConfig = {
     appId: process.env.CHROMATIC_APP_ID ?? '',
   },
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
-  supportUrl: 'https://support.inclusion-numerique.anct.gouv.fr',
+  supportUrl:
+    'https://support.inclusion-numerique.anct.gouv.fr/fr/category/france-numerique-ensemble-1lj2akl/',
   projectTitle,
   mainLiveUrl,
   repository: repositoryUrl,

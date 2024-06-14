@@ -93,13 +93,14 @@ const Header = ({
               <div className="fr-header__tools-links">
                 <ul className="fr-btns-group">
                   <li>
-                    <Link
-                      href={PublicWebAppConfig.supportUrl}
-                      target="_blank"
+                    <a
                       className="fr-btn fr-icon-question-line fr-btn--no-after"
+                      href={PublicWebAppConfig.supportUrl}
+                      rel="external noopener noreferrer"
+                      target="_blank"
                     >
                       Foire&nbsp;aux&nbsp;questions
-                    </Link>
+                    </a>
                   </li>
                   <li className="fr-hidden fr-unhidden-lg fr-px-1w fr-py-1w">
                     <span
