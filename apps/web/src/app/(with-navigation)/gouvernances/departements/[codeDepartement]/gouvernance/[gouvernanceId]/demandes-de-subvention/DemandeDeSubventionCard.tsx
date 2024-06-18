@@ -5,7 +5,7 @@ import { DemandeSubventionForForm } from '@app/web/app/(with-navigation)/gouvern
 import ValiderEtEnvoyerDemandeDeSubventionButton from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/[gouvernanceId]/demandes-de-subvention/ValiderEtEnvoyerDemandeDeSubventionButton'
 import { gouvernanceDemandesDeSubventionPath } from '@app/web/app/(with-navigation)/gouvernances/gouvernancePaths'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { limiteModicitaionDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
+import { limiteModificationDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import { nameOrEmail } from '@app/web/utils/nameOrEmail'
 import InfoLabelValue from '@app/web/components/Gouvernance/InfoLabelValue'
 import { besoinSubventionLabel } from '@app/web/gouvernance/besoinSubvention'
@@ -146,7 +146,7 @@ const DemandeDeSubventionCard = ({
             <span className="fr-flex fr-width-full fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v">
               <span>
                 Validez votre formulaire avant le{' '}
-                {dateAsDay(limiteModicitaionDesDemandesDeSubvention)} pour que
+                {dateAsDay(limiteModificationDesDemandesDeSubvention)} pour que
                 votre demande soit instruite. Vous ne pourrez ensuite plus le
                 modifier.
               </span>

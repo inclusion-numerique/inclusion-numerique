@@ -11,7 +11,10 @@ import { getGouvernanceScopeTitle } from '@app/web/app/(with-navigation)/gouvern
 import { checkAccessControl } from '@app/web/app/checkAccessControl'
 import { checkGouvernanceScopeWriteAccess } from '@app/web/app/(with-navigation)/gouvernances/checkGouvernanceScopeWriteAccess'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { limiteModicitaionDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
+import {
+  limiteDeploiementDeFeuillesDeRoute,
+  limiteModificationDesDemandesDeSubvention,
+} from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import { numberToEuros } from '@app/web/utils/formatNumber'
 import {
   getDemandesDeSubventionsForGouvernance,
@@ -194,9 +197,14 @@ const Page = async ({
       </div>
 
       <div className="fr-border fr-p-8v fr-pb-10v fr-mt-4v">
-        <Badge className="fr-mb-4v" small severity="new">
-          À&nbsp;renseigner&nbsp;avant&nbsp;le&nbsp;
-          {dateAsDay(limiteModicitaionDesDemandesDeSubvention)}
+        <Badge small severity="new">
+          À renseigner avant le{' '}
+          {dateAsDay(limiteModificationDesDemandesDeSubvention)} pour
+          l’élaboration de feuilles de route
+        </Badge>
+        <Badge small severity="new">
+          À renseigner avant le {dateAsDay(limiteDeploiementDeFeuillesDeRoute)}{' '}
+          pour le déploiement de feuilles de route
         </Badge>
         <h2 className="fr-h5 fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-3v fr-mb-0">
           <span>

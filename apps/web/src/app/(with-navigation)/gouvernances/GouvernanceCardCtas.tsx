@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import {
   limiteDeploiementDeFeuillesDeRoute,
-  limiteModicitaionDesDemandesDeSubvention,
+  limiteModificationDesDemandesDeSubvention,
   limiteModificationDesGouvernances,
 } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import { ListeGouvernanceItem } from '@app/web/app/(with-navigation)/gouvernances/getListeGouvernances'
@@ -225,7 +225,7 @@ const GouvernanceCardCtas = ({
                 <>
                   <Badge small severity="new">
                     À renseigner avant le{' '}
-                    {dateAsDay(limiteModicitaionDesDemandesDeSubvention)} pour
+                    {dateAsDay(limiteModificationDesDemandesDeSubvention)} pour
                     l’élaboration de feuilles de route
                   </Badge>
                   <br />

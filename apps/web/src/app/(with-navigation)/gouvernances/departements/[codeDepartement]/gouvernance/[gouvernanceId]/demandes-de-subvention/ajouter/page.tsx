@@ -5,7 +5,7 @@ import { gouvernanceDemandesDeSubventionPath } from '@app/web/app/(with-navigati
 import BackLink from '@app/web/components/BackLink'
 import RedAsterisk from '@app/web/ui/RedAsterisk'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { limiteModicitaionDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
+import { limiteModificationDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import DemandeDeSubventionForm from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/[gouvernanceId]/demandes-de-subvention/DemandeDeSubventionForm'
 import { getDemandesDeSubventionFormContext } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/[gouvernanceId]/demandes-de-subvention/getDemandesDeSubventionFormContext'
 
@@ -59,7 +59,7 @@ const Page = async ({
             <span>
               Proposition modifiable jusqu’au{' '}
               <strong>
-                {dateAsDay(limiteModicitaionDesDemandesDeSubvention)}
+                {dateAsDay(limiteModificationDesDemandesDeSubvention)}
               </strong>
             </span>
           }
