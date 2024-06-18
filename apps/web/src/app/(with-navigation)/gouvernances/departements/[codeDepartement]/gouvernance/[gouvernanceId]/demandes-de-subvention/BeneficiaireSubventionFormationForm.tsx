@@ -23,7 +23,7 @@ import { numberToEuros } from '@app/web/utils/formatNumber'
 import { dotationFormation202406 } from '@app/web/gouvernance/dotationFormation202406'
 import InfoLabelValue from '@app/web/components/Gouvernance/InfoLabelValue'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { limiteModicitaionDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
+import { limiteModificationDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import { isBrowser } from '@app/web/utils/isBrowser'
 import FindMemberNotice from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/FindMemberNotice'
 
@@ -326,7 +326,7 @@ const BeneficiaireSubventionFormationForm = ({
             <span className="fr-flex fr-width-full fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v">
               <span>
                 Validez votre formulaire avant le{' '}
-                {dateAsDay(limiteModicitaionDesDemandesDeSubvention)} pour que
+                {dateAsDay(limiteModificationDesDemandesDeSubvention)} pour que
                 votre demande soit instruite. Vous ne pourrez ensuite plus le
                 modifier.
               </span>
