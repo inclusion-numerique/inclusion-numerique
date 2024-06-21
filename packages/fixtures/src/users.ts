@@ -220,6 +220,15 @@ export const users = [
     role: 'Administrator',
     emailVerified: new Date(),
   },
+  {
+    id: '55e5137d-7e9b-4c1e-a922-2bf8f9ca2570',
+    firstName: 'Namizata',
+    lastName: 'Coulibaly',
+    name: 'Namizata Coulibaly',
+    email: 'coulibaly.namizata.prestataire@anct.gouv.fr',
+    role: 'Administrator',
+    emailVerified: new Date(),
+  },
 ] satisfies AppPrisma.UserCreateInput[]
 
 export const randomUsers: (random: number) => AppPrisma.UserCreateInput[] = (
