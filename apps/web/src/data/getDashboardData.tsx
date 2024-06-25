@@ -479,7 +479,9 @@ const computeDashboardData = async (scope: GouvernanceScope) => {
         statistics: top4CraThemes.top4.map(({ label, count }) => ({
           id: label,
           label,
-          value: (100 * count) / top4CraThemes.total,
+          value:
+            (100 * count) /
+            (top4CraThemes.total === 0 ? 1 : top4CraThemes.total),
         })),
       },
       {
@@ -493,7 +495,10 @@ const computeDashboardData = async (scope: GouvernanceScope) => {
             id: label,
             label,
             value:
-              (100 * count) / structuresCount.aidantsConnect.totalDemarches,
+              (100 * count) /
+              (structuresCount.aidantsConnect.totalDemarches === 0
+                ? 1
+                : structuresCount.aidantsConnect.totalDemarches),
           }),
         ),
       },
