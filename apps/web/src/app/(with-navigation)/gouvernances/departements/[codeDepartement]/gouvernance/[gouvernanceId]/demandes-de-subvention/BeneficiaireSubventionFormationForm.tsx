@@ -23,7 +23,7 @@ import { numberToEuros } from '@app/web/utils/formatNumber'
 import { dotationFormation202406 } from '@app/web/gouvernance/dotationFormation202406'
 import InfoLabelValue from '@app/web/components/Gouvernance/InfoLabelValue'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { limiteModificationDesDemandesDeSubvention } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
+import { limiteDeploiementDeFeuillesDeRoute } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceMetadata'
 import { isBrowser } from '@app/web/utils/isBrowser'
 import FindMemberNotice from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/FindMemberNotice'
 
@@ -156,50 +156,64 @@ const BeneficiaireSubventionFormationForm = ({
 
   const title = (
     <h2 className="fr-h5 fr-flex fr-mb-0 fr-justify-content-space-between fr-flex-gap-4v">
-      <span>Dotation formation Aidants Connect</span>
+      <span>Dotation formation Aidants Numériques / Aidants Connect</span>
       <span>{numberToEuros(dotationFormation202406)}</span>
     </h2>
   )
 
   const hintContent = (
     <span className="fr-text--sm">
-      Afin de déployer le dispositif{' '}
-      <a
-        href="https://aidantsconnect.beta.gouv.fr"
-        target="_blank"
-        className="fr-link fr-link--sm"
-      >
-        Aidants Connect
-      </a>{' '}
-      sur son territoire, une dotation de 20&nbsp;000€ dédiée à la formation
-      d’agents publics est attribuée à votre territoire.
+      Une dotation de 20 000 € est dédiée à la formation des professionnels du
+      territoire.
       <br />
       <br />
-      Cette dotation doit être fléchée vers un destinataire unique&nbsp;:
+      Cette dotation doit être fléchée vers un destinataire unique :
+      <br />
       <ul>
         <li>
-          Il est préconisé que le destinataire de ces fonds soit le Conseil
-          Départemental
+          Il est préconisé que le destinataire de ces fonds soit la collectivité
+          co-porteuse de la gouvernance locale (Conseil Départemental notamment)
+          ;
         </li>
         <li>
-          Les fonds doivent être destinés à la formation d’agents publics
-          non-conseillers numériques
+          A titre dérogatoire, ils pourront être fléchés vers un membre de la
+          gouvernance, hors organismes de formation ;
         </li>
         <li>
-          La structure destinataire des fonds peut se servir des fonds pour
-          former ses propres agents publics et/ou des agents publics appartenant
-          à une autre structure.
+          Les fonds doivent être destinés à la formation de professionnels
+          non-conseillers numériques et non-affiliés à l’OPCO Uniformation ;
         </li>
         <li>
-          La formation financée est la formation Aidants Connect de 7 heures
+          Les professionnels formés peuvent appartenir à la structure qui
+          perçoit et gère la dotation, ou à d’autres structures du territoire ;
         </li>
         <li>
-          Le coût d’une formation étant de 322€ par agent, la dotation de
-          20&nbsp;000€ permet de financer la formation de 62 agents
+          Ces crédits doivent permettre de financer la formation d’un minimum de
+          60 professionnels ;
         </li>
         <li>
-          Les informations sur la mise en œuvre de ces formations Aidants
-          Connect vont seront communiquées prochainement (mail et webinaire)
+          Les formations financées peuvent porter sur les enjeux de l’inclusion
+          numérique pour les aidants professionnels et/ou sur la formation à{' '}
+          <a
+            href="https://aidantsconnect.beta.gouv.fr"
+            target="_blank"
+            className="fr-link fr-link--sm"
+          >
+            Aidants Connect
+          </a>{' '}
+          ;
+        </li>
+        <li>
+          Des informations détaillées sur la mise en œuvre de ces formations
+          sont disponibles à cette{' '}
+          <a
+            href="https://lesbases.anct.gouv.fr/ressources/comment-financer-les-feuilles-de-routes"
+            target="_blank"
+            className="fr-link fr-link--sm"
+          >
+            adresse
+          </a>
+          .
         </li>
       </ul>
     </span>
@@ -326,9 +340,9 @@ const BeneficiaireSubventionFormationForm = ({
             <span className="fr-flex fr-width-full fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v">
               <span>
                 Validez votre formulaire avant le{' '}
-                {dateAsDay(limiteModificationDesDemandesDeSubvention)} pour que
-                votre demande soit instruite. Vous ne pourrez ensuite plus le
-                modifier.
+                {dateAsDay(limiteDeploiementDeFeuillesDeRoute)} pour que vos
+                demandes de crédits de formations et d’ingéniérie soit
+                instruite. Vous ne pourrez ensuite plus le modifier.
               </span>
               <Button
                 {...buttonLoadingClassname(isLoading)}
