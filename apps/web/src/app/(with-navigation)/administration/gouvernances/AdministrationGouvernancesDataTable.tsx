@@ -186,13 +186,25 @@ export const AdministrationGouvernancesDataTable = {
         ),
     },
     {
-      name: 'montant',
-      header: 'Montant demandé',
-      csvHeaders: ['Montant demandé'],
+      name: 'montant_ingenierie',
+      header: 'Montant demandé ingenierie',
+      csvHeaders: ['Montant demandé ingenierie'],
       csvValues: ({ montantDemande }) => [montantDemande.toNumber()],
       cellClassName: 'fr-text--right',
       cell: ({ montantDemande }) =>
         montantDemande.gt(0) ? numberToEuros(montantDemande) : null,
+      sortable: (a, b) => a.montantDemande.sub(b.montantDemande).toNumber(),
+    },
+    {
+      name: 'montant_formation',
+      header: 'Montant demandé formation',
+      csvHeaders: ['Montant demandé formation'],
+      csvValues: ({ deduplicatedBeneficiairesCount }) => [
+        deduplicatedBeneficiairesCount > 0 ? 20_000 : 0,
+      ],
+      cellClassName: 'fr-text--right',
+      cell: ({ deduplicatedBeneficiairesCount }) =>
+        deduplicatedBeneficiairesCount > 0 ? '20 000 €' : null,
       sortable: (a, b) => a.montantDemande.sub(b.montantDemande).toNumber(),
     },
     {
