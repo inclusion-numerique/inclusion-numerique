@@ -53,10 +53,11 @@ export const buildStructuresCartographieNationale = async ({
   const byConumPermanenceId = new Map<string, string>()
 
   // https://www.data.gouv.fr/fr/datasets/lieux-de-mediation-numerique-sur-le-territoire-national-fournis-par-data-inclusion-1/
+  // structures-inclusion-20240712-data-inclusion.json
   const { data: allDataInclusionStructures } = await axios.get<
     DataInclusionStructure[]
   >(
-    'https://www.data.gouv.fr/fr/datasets/r/be3323ec-4662-4b3b-b90e-18cf5c97193d',
+    'https://www.data.gouv.fr/fr/datasets/r/f1ade74a-9ddf-473f-b1be-4e58e2ef4355',
   )
   const data: Prisma.StructureCartographieNationaleCreateManyInput[] = []
   const reconstructedCodes = []
