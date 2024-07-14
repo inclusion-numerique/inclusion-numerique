@@ -781,6 +781,9 @@ model Gouvernance {
   besoinsEnIngenierieFinanciereId String?                        @unique @map("besoins_en_ingenierie_financiere_id") @db.Uuid
   besoinsEnIngenierieFinanciere   BesoinsEnIngenierieFinanciere? @relation(fields: [besoinsEnIngenierieFinanciereId], references: [id])
 
+  commentaireSuivi String @default("") @map("commentaire_suivi")
+  problemeIdentifie String @default("") @map("probleme_identifie")
+
   @@map("gouvernances")
 }
 
