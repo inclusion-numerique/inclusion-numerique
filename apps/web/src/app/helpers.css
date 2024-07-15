@@ -564,7 +564,7 @@
 }
 
 .fr-table--nowrap {
-    * {
+    td, th {
         white-space: nowrap !important;
     }
 }

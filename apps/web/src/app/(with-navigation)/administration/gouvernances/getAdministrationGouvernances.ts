@@ -47,6 +47,8 @@ export const getAdministrationGouvernancesData = async () => {
           beneficiaireDotationFormation: {
             select: membreSelect.select,
           },
+          commentaireSuivi: true,
+          problemeIdentifie: true,
         },
       },
     },

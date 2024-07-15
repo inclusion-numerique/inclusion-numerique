@@ -1,5 +1,5 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import Button from '@codegouvfr/react-dsfr/Button'
 import {
   DataTableConfiguration,
@@ -20,6 +20,7 @@ import {
   statutsMetadata,
 } from '@app/web/gouvernance/statutDemandesSubvention'
 import { compareFromArrayIndex } from '@app/web/utils/compareFromArrayIndex'
+import AdministrationGouvernancesModale from './AdministrationGouvernancesModale'
 
 export const AdministrationGouvernancesDataTable = {
   csvFilename: () => `fne-${dateAsIsoDay(new Date())}-gouvernances`,
@@ -301,6 +302,116 @@ export const AdministrationGouvernancesDataTable = {
           ),
           a.demandesCounts.total - b.demandesCounts.total,
         ),
+    },
+    {
+      name: 'probleme_identifie',
+      header: 'Problème identifié',
+      csvHeaders: ['Problème identifié'],
+      csvValues: ({ departement: { gouvernancesRemontees } }) => [
+        gouvernancesRemontees.length > 0
+          ? gouvernancesRemontees[0].problemeIdentifie
+          : '',
+      ],
+      cell: ({
+        departement: { code, gouvernancesRemontees, nom },
+        gouvernance,
+      }) => {
+        const hasGouvernancesRemontees = gouvernancesRemontees.length > 0
+
+        if (hasGouvernancesRemontees) {
+          const isProblemeIdentifieVide =
+            gouvernancesRemontees[0].problemeIdentifie
+          const ancienCommentaireSuivi =
+            gouvernancesRemontees[0].commentaireSuivi
+          const ancienProblemeIdentifie =
+            gouvernancesRemontees[0].problemeIdentifie
+          let label: ReactNode = 'Rédiger le problème'
+          let text: ReactNode = ''
+
+          if (isProblemeIdentifieVide !== '') {
+            label = <span className="fr-icon-pencil-line" aria-hidden="true" />
+            text = (
+              <span title={gouvernancesRemontees[0].problemeIdentifie}>
+                {gouvernancesRemontees[0].problemeIdentifie
+                  .slice(0, 30)
+                  // eslint-disable-next-line unicorn/prefer-spread
+                  .concat('...')}
+              </span>
+            )
+          }
+
+          return (
+            <>
+              {text}
+              <AdministrationGouvernancesModale
+                ancienCommentaireSuivi={ancienCommentaireSuivi}
+                ancienProblemeIdentifie={ancienProblemeIdentifie}
+                code={code}
+                idGouvernance={gouvernance.id}
+                label={label}
+                nom={nom}
+              />
+            </>
+          )
+        }
+
+        return 'N/A'
+      },
+    },
+    {
+      name: 'commentaire_suivi',
+      header: 'Suivi',
+      csvHeaders: ['Suivi'],
+      csvValues: ({ departement: { gouvernancesRemontees } }) => [
+        gouvernancesRemontees.length > 0
+          ? gouvernancesRemontees[0].commentaireSuivi
+          : '',
+      ],
+      cell: ({
+        departement: { code, gouvernancesRemontees, nom },
+        gouvernance,
+      }) => {
+        const hasGouvernancesRemontees = gouvernancesRemontees.length > 0
+
+        if (hasGouvernancesRemontees) {
+          const isCommentaireSuiviVide =
+            gouvernancesRemontees[0].commentaireSuivi
+          const ancienCommentaireSuivi =
+            gouvernancesRemontees[0].commentaireSuivi
+          const ancienProblemeIdentifie =
+            gouvernancesRemontees[0].problemeIdentifie
+          let label: ReactNode = 'Commenter'
+          let text: ReactNode = ''
+
+          if (isCommentaireSuiviVide !== '') {
+            label = <span className="fr-icon-pencil-line" aria-hidden="true" />
+            text = (
+              <span title={gouvernancesRemontees[0].commentaireSuivi}>
+                {gouvernancesRemontees[0].commentaireSuivi
+                  .slice(0, 30)
+                  // eslint-disable-next-line unicorn/prefer-spread
+                  .concat('...')}
+              </span>
+            )
+          }
+
+          return (
+            <>
+              {text}
+              <AdministrationGouvernancesModale
+                ancienCommentaireSuivi={ancienCommentaireSuivi}
+                ancienProblemeIdentifie={ancienProblemeIdentifie}
+                code={code}
+                idGouvernance={gouvernance.id}
+                label={label}
+                nom={nom}
+              />
+            </>
+          )
+        }
+
+        return 'N/A'
+      },
     },
     {
       name: 'lien-instruire',
