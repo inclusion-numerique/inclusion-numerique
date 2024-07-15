@@ -21,10 +21,6 @@ html {
   }
 }
 
-textarea {
-  resize: none;
-}
-
 .formulaire-gouvernance-no-footer-margin-bottom {
   margin-bottom: 200px;
 }
