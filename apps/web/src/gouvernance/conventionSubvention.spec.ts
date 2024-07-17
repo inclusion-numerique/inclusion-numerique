@@ -54,6 +54,14 @@ const conventionDataMock = {
             'RedigerLaFeuilleDeRoute',
             'StructurerUneFiliereDeReconditionnement',
           ],
+          description: 'une description test',
+          // @ts-expect-error relou
+          feuilleDeRoute: {
+            nom: 'Dupont',
+          },
+          budgetGlobal: new Decimal(17_456),
+          subventionDemandee: new Decimal(17_456),
+          pourcentage: 100,
         },
       },
       {
@@ -68,6 +76,14 @@ const conventionDataMock = {
             'StructurerUneFiliereDeReconditionnement',
             'SensibiliserLesActeursAuxOutilsExistants',
           ],
+          description: 'une description test',
+          // @ts-expect-error relou
+          feuilleDeRoute: {
+            nom: 'Dupond',
+          },
+          budgetGlobal: new Decimal(14_987),
+          subventionDemandee: new Decimal(14_987),
+          pourcentage: 100,
         },
       },
     ],
@@ -81,6 +97,7 @@ const conventionDataMock = {
 } satisfies MembreBeneficiaireDataForConvention
 
 const processedDataMock =
+  // @ts-expect-error relou
   postProcessMembreBeneficiaireDataForConvention(conventionDataMock)
 
 describe('generateConventionSubvention', () => {
