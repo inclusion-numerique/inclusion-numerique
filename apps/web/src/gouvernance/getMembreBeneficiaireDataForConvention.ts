@@ -35,6 +35,10 @@ export const getMembreBeneficiaireDataForConvention = async (
               nomAction: true,
               contexte: true,
               besoins: true,
+              description: true,
+              feuilleDeRoute: true,
+              budgetGlobal: true,
+              subventionDemandee: true,
               id: true,
             },
           },
@@ -113,12 +117,27 @@ export const postProcessMembreBeneficiaireDataForConvention = (
   // Actions and besoins for convention
   const demandesDeSubvention = data.membre.beneficiaireSubventions
     .map((beneficiaire) => beneficiaire.demandeDeSubvention)
-    .map(({ nomAction, contexte, besoins }) => ({
-      nomAction,
-      // contexte: htmlToOdf(contexte),
-      contexte: stripHtmlTags(contexte),
-      besoins,
-    }))
+    .map(
+      ({
+        nomAction,
+        contexte,
+        besoins,
+        description,
+        feuilleDeRoute,
+        budgetGlobal,
+        subventionDemandee,
+      }) => ({
+        nomAction,
+        // contexte: htmlToOdf(contexte),
+        contexte: stripHtmlTags(contexte),
+        besoins,
+        description: stripHtmlTags(description).replaceAll('&nbsp;', ' '),
+        feuilleDeRoute,
+        budgetGlobalActionWords: decimalToWords(budgetGlobal),
+        subventionDemandee,
+        pourcentage: subventionDemandee.div(budgetGlobal).times(100),
+      }),
+    )
 
   const besoins = [...new Set(demandesDeSubvention.flatMap((d) => d.besoins))]
     .map((besoin) => besoinSubventionLabel[besoin])
