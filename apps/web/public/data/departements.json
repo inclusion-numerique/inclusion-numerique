@@ -46317,7 +46317,7 @@
       "type": "Feature",
       "properties": {
         "DDEP_C_COD": "977",
-        "DDEP_L_LIB": "Saint-Barthélemy"
+        "DDEP_L_LIB": "Saint-Barthélemy / Saint-Martin"
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -50635,19 +50635,7 @@
               [-62.8110315, 17.8708591],
               [-62.810877, 17.8708183]
             ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "DDEP_C_COD": "978",
-        "DDEP_L_LIB": "Saint-Martin"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
+          ],
           [
             [
               [-63.0451706, 18.1191638],
