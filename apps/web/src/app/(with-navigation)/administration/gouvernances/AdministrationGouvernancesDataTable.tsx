@@ -200,12 +200,12 @@ export const AdministrationGouvernancesDataTable = {
       name: 'montant_formation',
       header: 'Montant demandé formation',
       csvHeaders: ['Montant demandé formation'],
-      csvValues: ({ deduplicatedBeneficiairesCount }) => [
-        deduplicatedBeneficiairesCount > 0 ? 20_000 : 0,
+      csvValues: ({ statutBeneficiaireFormation }) => [
+        statutBeneficiaireFormation === 'Non renseigné' ? null : 20_000,
       ],
       cellClassName: 'fr-text--right',
-      cell: ({ deduplicatedBeneficiairesCount }) =>
-        deduplicatedBeneficiairesCount > 0 ? '20 000 €' : null,
+      cell: ({ statutBeneficiaireFormation }) =>
+        statutBeneficiaireFormation === 'Non renseigné' ? null : '20 000 €',
       sortable: (a, b) => a.montantDemande.sub(b.montantDemande).toNumber(),
     },
     {
