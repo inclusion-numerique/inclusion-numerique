@@ -8,11 +8,13 @@ import { OptionTuples } from '@app/web/utils/options'
  */
 const Dashboard = ({
   departementOptions,
+  displayBreadcrumb = true,
   departement,
   national,
   children,
 }: PropsWithChildren<
   {
+    displayBreadcrumb?: boolean
     departementOptions: OptionTuples
   } & (
     | { departement: { code: string; nom: string }; national?: undefined }
@@ -25,18 +27,20 @@ const Dashboard = ({
   <>
     <div className="fr-background-alt--blue-france fr-pt-4v fr-pb-6v fr-pb-md-14v">
       <div className="fr-container">
-        <Breadcrumb
-          className="fr-mb-6v fr-mt-0"
-          currentPageLabel={`Données · ${national ? 'National' : departement.nom}`}
-          segments={[
-            {
-              label: 'Page d’accueil',
-              linkProps: {
-                href: '/',
+        {displayBreadcrumb && (
+          <Breadcrumb
+            className="fr-mb-6v fr-mt-0"
+            currentPageLabel={`Données · ${national ? 'National' : departement.nom}`}
+            segments={[
+              {
+                label: 'Page d’accueil',
+                linkProps: {
+                  href: '/',
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
+        )}
         <DashboardHeader
           currentCodeDepartement={national ? 'national' : departement.code}
           departementOptions={departementOptions}
