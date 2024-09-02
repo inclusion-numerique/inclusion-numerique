@@ -6,6 +6,7 @@
     "dev": "pnpm --silent with-env next dev",
     "build": "pnpm --silent with-env next build",
     "build:analyze": "ANALYZE=true pnpm --silent with-env next build",
+    "data:import": "./import-data-postgre.sh",
     "modclean": "modclean -Pr",
     "modclean:root": "modclean -Pr -p ./../..",
     "start": "next start",

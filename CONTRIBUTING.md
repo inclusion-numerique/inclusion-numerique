@@ -122,6 +122,10 @@ Utilise Docker pour réinitialiser la base de données.
 
 Charge un ensemble de données prédéfinies par les [fixtures](packages/fixtures) dans la base. Il faut que la base de données soit accessible avant de lancer cette commande. \
 
+### `pnpm data:import [CHEMIN_DU_DUMP]`
+
+Charge un ensemble de données provenant d'un dump dans la base. Il faut que la base de données soit accessible avant de lancer cette commande. \
+
 ### `pnpm prisma:generate-migration nom_de_la_migration`
 
 Pour modifier le schéma de base de données, il faut d'abord faire les modifications nécessaires dans le [schema.prisma](apps/web/prisma/schema.prisma). \
@@ -171,7 +175,7 @@ Certaines mises à jour / nouveaux composants peuvent vous intéresser. Certains
 Pour récupérer les mises à jour de ce dépôt, il faut ajouter le dépôt comme remote de votre projet :
 
 ```bash
-git remote add stack git@github.com:inclusion-numerique/stack.git 
+git remote add stack git@github.com:inclusion-numerique/stack.git
 ```
 
 Cela vous permettra de voir facilement les changements entre votre projet et le dépôt stack.
@@ -202,6 +206,7 @@ Une fois cette PR fusionnée (utilisez bien un merge classique pour ne pas avoir
 ### Signature
 
 La branche main, ainsi que l'ensemble des branches de travail avec un préfixe valide requièrent que les commits soient signés :
+
 - La documentation de GitHub indique comment configurer la signature des commits
 - Les utilisateurs de keybase peuvent signer leurs commits avec leur clé GPG sur Keybase
 

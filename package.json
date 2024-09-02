@@ -12,6 +12,7 @@
     "cli": "dotenv -- ./apps/cli/node_modules/.bin/ts-node -r tsconfig-paths/register apps/cli/src/index.ts",
     "clean": "rm -rf node_modules",
     "clean:workspaces": "turbo clean",
+    "data:import": "pnpm -F web data:import",
     "dev": "turbo dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
     "lint": "turbo lint",
