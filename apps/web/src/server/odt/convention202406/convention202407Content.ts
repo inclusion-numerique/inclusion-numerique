@@ -9,7 +9,7 @@ export const convention202407Content = ({
   subventionFormation,
   subventionIngenierie,
   subventionTotal,
-  subventionTotalWords,
+  subventionIngenierieWords,
 }: MembreBeneficiaireDataForConventionPostProcessed) => `<?xml version="1.0" encoding="UTF-8"?>
 <office:document-content xmlns:officeooo="http://openoffice.org/2009/office"
   xmlns:css3t="http://www.w3.org/TR/css3-text/"
@@ -1885,7 +1885,7 @@ Montant de la participation financière<text:bookmark-end text:name="_Toc1625302
 
       <text:p text:style-name="P16"/>
       <text:p text:style-name="P48">
-        <text:span text:style-name="T18">Au titre de l’exercice 2024 de l’ANCT, la contribution financière globale de l’ANCT en ingénierie de projet s’élève ainsi à ${subventionTotalWords} (${subventionTotal.toString()}) euros TTC.</text:span>
+        <text:span text:style-name="T18">Au titre de l’exercice 2024 de l’ANCT, la contribution financière globale de l’ANCT en ingénierie de projet s’élève ainsi à ${subventionIngenierieWords} (${subventionIngenierie.toString()}) euros TTC.</text:span>
       </text:p>
       <text:p text:style-name="P16"/>
       <text:p text:style-name="P16">L’ANCT se réserve le droit de réévaluer ce montant par la voie d’un avenant, notamment si le bénéficiaire n’est pas en mesure de justifier de l’emploi de la subvention conformément à la présente convention.</text:p>

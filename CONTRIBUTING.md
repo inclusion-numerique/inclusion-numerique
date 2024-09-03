@@ -124,7 +124,7 @@ Charge un ensemble de données prédéfinies par les [fixtures](packages/fixture
 
 ### `pnpm data:import [CHEMIN_DU_DUMP]`
 
-Charge un ensemble de données provenant d'un dump dans la base. Il faut que la base de données soit accessible avant de lancer cette commande. \
+Charge un ensemble de données provenant d'un [dump](https://console.scaleway.com/rdb/instances) dans la base. Il faut que la base de données soit accessible avant de lancer cette commande. \
 
 ### `pnpm prisma:generate-migration nom_de_la_migration`
 
