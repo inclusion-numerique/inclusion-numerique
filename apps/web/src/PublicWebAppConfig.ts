@@ -11,7 +11,7 @@ export const PublicWebAppConfig = {
   },
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
   supportUrl:
-    'https://support.inclusion-numerique.anct.gouv.fr/fr/category/france-numerique-ensemble-1lj2akl/',
+    'https://aide.conseiller-numerique.gouv.fr/fr/category/france-numerique-ensemble-mwjf3l/',
   projectTitle,
   mainLiveUrl,
   repository: repositoryUrl,
