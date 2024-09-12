@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js'
 import { prismaClient } from '@app/web/prismaClient'
 import { membreSelect } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/getGouvernanceForForm'
 import { getMembreGouvernanceStringName } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/[gouvernanceId]/demandes-de-subvention/getMembreGouvernanceStringName'
@@ -111,9 +112,33 @@ export type MembreBeneficiaireDataForConvention = Exclude<
   null
 >
 
+type DemandeDeSubvention = Readonly<{
+  feuillesDeRoute: ReadonlyArray<{
+    demandesDeSubvention: ReadonlyArray<{
+      nomAction: string
+      subventionDemandee: Decimal
+    }>
+  }>
+  departement: {
+    dotation202406: Decimal
+  }
+}>
+
 export const postProcessMembreBeneficiaireDataForConvention = (
   data: MembreBeneficiaireDataForConvention,
+  demandesDeSubvention2: DemandeDeSubvention | null,
 ) => {
+  const dotationsIngenieries =
+    demandesDeSubvention2?.feuillesDeRoute[0].demandesDeSubvention.map(
+      (feuilleDeRoute) => ({
+        nomAction: feuilleDeRoute.nomAction,
+        montant: feuilleDeRoute.subventionDemandee,
+        pourcentage: feuilleDeRoute.subventionDemandee
+          .div(demandesDeSubvention2.departement.dotation202406)
+          .times(100),
+      }),
+    )
+
   // Actions and besoins for convention
   const demandesDeSubvention = data.membre.beneficiaireSubventions
     .map((beneficiaire) => beneficiaire.demandeDeSubvention)
@@ -160,6 +185,11 @@ export const postProcessMembreBeneficiaireDataForConvention = (
 
     besoins,
     demandesDeSubvention,
+    dotationsIngenieries,
+    dotationIngenierieGlobal: demandesDeSubvention2?.departement.dotation202406,
+    dotationIngenierieGlobalWords: demandesDeSubvention2
+      ? decimalToWords(demandesDeSubvention2.departement.dotation202406)
+      : '',
   }
 }
 

@@ -11,13 +11,25 @@ import imageD from '@app/web/server/odt/convention202406/Pictures/10000000000004
 import { convention202407Content } from '../server/odt/convention202406/convention202407Content'
 import { convention202407Styles } from '../server/odt/convention202406/convention202407Styles'
 import { convention202407Manifest } from '../server/odt/convention202406/convention202407Manifest'
+import { getDemandesSubventionsForForm } from '../app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/getGouvernanceForForm'
 
 export const generateConventionSubvention = async (
   data: MembreBeneficiaireDataForConvention,
-) =>
-  createOdtFile({
+) => {
+  const demandesDeSubvention2 = data.membre.beneficiaireSubventions[0]
+    ? await getDemandesSubventionsForForm({
+        gouvernanceId:
+          data.membre.beneficiaireSubventions[0].demandeDeSubvention
+            .feuilleDeRoute.gouvernanceId,
+      })
+    : null
+
+  return createOdtFile({
     content: convention202407Content(
-      postProcessMembreBeneficiaireDataForConvention(data),
+      postProcessMembreBeneficiaireDataForConvention(
+        data,
+        demandesDeSubvention2,
+      ),
     ),
     styles: convention202407Styles,
     manifest: convention202407Manifest,
@@ -41,3 +53,4 @@ export const generateConventionSubvention = async (
       },
     ],
   })
+}
