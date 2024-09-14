@@ -20,7 +20,7 @@ const contentSecurityPolicy = `
   } https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.net https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://openmaptiles.geo.data.gouv.fr https://wxs.ign.fr https://geo.api.gouv.fr;
   worker-src 'self' blob:;
   font-src 'self' https: data:;
-  frame-ancestors 'self' https://matomo.incubateur.anct.gouv.fr https://metabase.inclusion-numerique.anct.gouv.fr;
+  frame-ancestors 'self' http://localhost:* *.gouv.fr;
   form-action 'self';
   base-uri 'self';
   ${isProduction ? 'upgrade-insecure-requests true;' : ''}
