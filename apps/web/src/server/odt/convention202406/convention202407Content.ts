@@ -9,7 +9,9 @@ export const convention202407Content = ({
   subventionFormation,
   subventionIngenierie,
   subventionTotal,
-  subventionIngenierieWords,
+  dotationsIngenieries,
+  dotationIngenierieGlobal,
+  dotationIngenierieGlobalWords,
 }: MembreBeneficiaireDataForConventionPostProcessed) => `<?xml version="1.0" encoding="UTF-8"?>
 <office:document-content xmlns:officeooo="http://openoffice.org/2009/office"
   xmlns:css3t="http://www.w3.org/TR/css3-text/"
@@ -1858,7 +1860,7 @@ Montant de la participation financière<text:bookmark-end text:name="_Toc1625302
       <text:span text:style-name="T60"> : </text:span>
     </text:h>
     ${
-      subventionIngenierie.toNumber()
+      dotationsIngenieries && dotationIngenierieGlobal
         ? `
       <text:h text:style-name="P79" text:outline-level="4">
         <text:bookmark-start text:name="_Toc162530251"/>
@@ -1867,17 +1869,12 @@ Montant de la participation financière<text:bookmark-end text:name="_Toc1625302
       </text:h>
       <text:p text:style-name="P16">Au titre de l’exercice 2024, l’ANCT contribue financièrement à l’action :</text:p>
 
-      ${demandesDeSubvention
+      ${dotationsIngenieries
         .map(
-          ({
-            nomAction,
-            budgetGlobalActionWords,
-            subventionDemandee,
-            pourcentage,
-          }) =>
+          ({ nomAction, montant, montantGlobal, pourcentage }) =>
             `<text:list text:style-name="WWNum23">
               <text:list-item>
-                <text:p text:style-name="P16">${nomAction} à hauteur de ${subventionDemandee.toString()} euros ce qui représente ${pourcentage.toFixed(2, 0)} % du budget prévisionnel du projet dont le budget global s’élève à ${budgetGlobalActionWords} euros TTC</text:p>
+                <text:p text:style-name="P16">${nomAction} à hauteur de ${montant.toString()} euros ce qui représente ${pourcentage} % du budget prévisionnel du projet dont le budget global s’élève à ${montantGlobal} euros TTC</text:p>
               </text:list-item>
             </text:list>`,
         )
@@ -1885,7 +1882,7 @@ Montant de la participation financière<text:bookmark-end text:name="_Toc1625302
 
       <text:p text:style-name="P16"/>
       <text:p text:style-name="P48">
-        <text:span text:style-name="T18">Au titre de l’exercice 2024 de l’ANCT, la contribution financière globale de l’ANCT en ingénierie de projet s’élève ainsi à ${subventionIngenierieWords} (${subventionIngenierie.toString()}) euros TTC.</text:span>
+        <text:span text:style-name="T18">Au titre de l’exercice 2024 de l’ANCT, la contribution financière de l’ANCT en ingénierie de projet s’élève ainsi à ${dotationIngenierieGlobalWords} (${dotationIngenierieGlobal.toString()}) euros TTC.</text:span>
       </text:p>
       <text:p text:style-name="P16"/>
       <text:p text:style-name="P16">L’ANCT se réserve le droit de réévaluer ce montant par la voie d’un avenant, notamment si le bénéficiaire n’est pas en mesure de justifier de l’emploi de la subvention conformément à la présente convention.</text:p>
@@ -2366,14 +2363,7 @@ ${
   </draw:frame>
   </text:p>
   <text:p text:style-name="P122">La subvention reçue par le bénéficiaire ne peut en aucun cas être transférée à un autre organisme hormis dans le cadre de prestation de service avec devis associé. </text:p>
-  <text:p text:style-name="P122">Dans le cadre où plusieurs membres de la gouvernance sont destinataires des fonds d’ingénierie, une convention par organisme bénéficiaire doit être établie avec l’ANCT. </text:p>
-  <text:p text:style-name="P56"/>
-  <text:p text:style-name="P56">Article 2 : Co-financement d’ETP pour la fonction publique</text:p>
-  <text:p text:style-name="P122">Les coûts de personnels titulaires de la fonction publique ne sont pas éligibles à la présente subvention.</text:p>
-  <text:p text:style-name="P31">
-  <text:soft-page-break/>
-  </text:p>
-  `
+  <text:p text:style-name="P122">Dans le cadre où plusieurs membres de la gouvernance sont destinataires des fonds d’ingénierie, une convention par organisme bénéficiaire doit être établie avec l’ANCT. </text:p>`
     : ''
 }
 ${

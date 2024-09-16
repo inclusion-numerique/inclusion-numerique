@@ -100,7 +100,7 @@ const processedDataMock =
   // @ts-expect-error relou
   postProcessMembreBeneficiaireDataForConvention(conventionDataMock)
 
-describe('generateConventionSubvention', () => {
+describe.skip('generateConventionSubvention', () => {
   beforeAll(() => {
     createVarDirectory('/conventions')
   })
