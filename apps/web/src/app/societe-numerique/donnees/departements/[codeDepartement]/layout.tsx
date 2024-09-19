@@ -22,6 +22,7 @@ const DepartementDataLayout = async ({
         departement={departement}
         departementOptions={departementOptions}
         displayBreadcrumb={false}
+        targetPrefix="/societe-numerique"
       >
         {children}
       </Dashboard>
