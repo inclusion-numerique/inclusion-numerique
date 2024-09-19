@@ -9,6 +9,7 @@ const DepartementSwitcher = ({
   departementOptions,
   currentCodeDepartement,
   target,
+  targetPrefix = '',
   className,
   label: labelProperty = 'Département sélectionné',
   style,
@@ -17,6 +18,7 @@ const DepartementSwitcher = ({
   departementOptions: OptionTuples
   currentCodeDepartement?: string
   target: 'donnees' | 'gouvernances' | 'administration'
+  targetPrefix?: string
   className?: string
   style?: CSSProperties
   label?: string
@@ -33,10 +35,10 @@ const DepartementSwitcher = ({
     }
 
     if (codeDepartement === 'national') {
-      return router.push(`/${target}/national`)
+      return router.push(`${targetPrefix}/${target}/national`)
     }
 
-    router.push(`/${target}/departements/${codeDepartement}`)
+    router.push(`${targetPrefix}/${target}/departements/${codeDepartement}`)
   }
 
   return (

@@ -5,9 +5,11 @@ import styles from '@app/web/components/Dashboard/DashboardHeader.module.css'
 import { OptionTuples } from '@app/web/utils/options'
 
 const DashboardHeader = ({
+  targetPrefix,
   departementOptions,
   currentCodeDepartement,
 }: {
+  targetPrefix?: string
   departementOptions: OptionTuples
   currentCodeDepartement?: string
 }) => (
@@ -30,6 +32,7 @@ const DashboardHeader = ({
       departementOptions={departementOptions}
       currentCodeDepartement={currentCodeDepartement}
       target="donnees"
+      targetPrefix={targetPrefix}
     />
   </div>
 )

@@ -12,10 +12,12 @@ const Dashboard = ({
   departement,
   national,
   children,
+  targetPrefix,
 }: PropsWithChildren<
   {
     displayBreadcrumb?: boolean
     departementOptions: OptionTuples
+    targetPrefix?: string
   } & (
     | { departement: { code: string; nom: string }; national?: undefined }
     | {
@@ -42,6 +44,7 @@ const Dashboard = ({
           />
         )}
         <DashboardHeader
+          targetPrefix={targetPrefix}
           currentCodeDepartement={national ? 'national' : departement.code}
           departementOptions={departementOptions}
         />

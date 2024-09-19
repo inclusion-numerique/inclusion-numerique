@@ -15,6 +15,7 @@ const NationalDataLayout = async ({ children }: PropsWithChildren) => {
         national
         departementOptions={departementOptions}
         displayBreadcrumb={false}
+        targetPrefix="/societe-numerique"
       >
         {children}
       </Dashboard>
