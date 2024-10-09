@@ -143,6 +143,39 @@ const GouvernanceCardCtas = ({
           ) : null)}
       </div>
 
+      {canEdit && isExistingGouvernance ? (
+        <div
+          className={classNames(
+            styles.cardCtaContainer,
+            firstCtaClassName,
+            'fr-mt-2w',
+          )}
+        >
+          <div className="fr-flex-grow-1">
+            <Badge small severity="new">
+              À compléter avant le 31/10/2024
+            </Badge>
+            <h6 className="fr-mb-0">
+              {gouvernance.feuillesDeRoute.length} feuille de route en attente
+              de document
+            </h6>
+          </div>
+
+          <Button
+            linkProps={{
+              href: `${modifierGouvernancePath(
+                { codeDepartement: gouvernance.departement.code },
+                gouvernance.id,
+              )}#feuilles-de-route-et-porteurs`,
+            }}
+            iconId="fr-icon-add-line"
+            iconPosition="right"
+          >
+            Déposer mes documents
+          </Button>
+        </div>
+      ) : null}
+
       {/* On montre uniquement les besoins en ingénierie si ils ont déjà été créés car ils ne sont plus nécéssaires */}
       {isV2 && canEdit && hasCompletedBesoins && (
         <>
