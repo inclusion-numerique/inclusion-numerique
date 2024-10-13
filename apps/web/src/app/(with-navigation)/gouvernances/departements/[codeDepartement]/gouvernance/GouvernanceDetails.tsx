@@ -44,6 +44,7 @@ import { getDemandesDeSubventionsForGouvernance } from '@app/web/gouvernance/gou
 import DemandeDeSubventionDetailsCard from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/DemandeDeSubventionDetailsCard'
 import { getStatutDemandesSubvention } from '@app/web/gouvernance/statutDemandesSubvention'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
+import { getDownloadUrl } from '@app/web/utils/getDownloadUrl'
 import styles from './GouvernanceDetails.module.css'
 
 const GouvernanceDetails = ({
@@ -431,6 +432,7 @@ const GouvernanceDetails = ({
                     perimetreDepartement,
                     perimetreEpcis,
                     perimetreRegion,
+                    relationPieceJointe,
                   },
                   index,
                 ) => {
@@ -480,6 +482,34 @@ const GouvernanceDetails = ({
                                   : typeContratLabels[typeContrat]}
                               </>
                             ) : null}
+                            {relationPieceJointe === null ? (
+                              <>
+                                <br />
+                                <Notice
+                                  className="fr-mt-5v"
+                                  title="Document en cours d’élaboration"
+                                />
+                              </>
+                            ) : (
+                              <div className="fr-btns-group fr-mt-8v fr-mb-0 fr-btns-group--icon-left">
+                                <Button
+                                  linkProps={{
+                                    href: getDownloadUrl(
+                                      relationPieceJointe.key,
+                                    ),
+                                  }}
+                                  iconId="fr-icon-file-download-line"
+                                  iconPosition="left"
+                                  className="fr-btn--secondary fr-my-0"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    className="fr-btn--sm"
+                                  />
+                                  Télécharger la feuille de route
+                                </Button>
+                              </div>
+                            )}
                           </>
                         }
                       />

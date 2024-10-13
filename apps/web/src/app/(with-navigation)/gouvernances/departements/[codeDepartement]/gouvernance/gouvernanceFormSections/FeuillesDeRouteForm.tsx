@@ -9,6 +9,9 @@ import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import { ReplaceUrlToAnchor } from '@app/ui/hooks/useReplaceUrlToAnchor'
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
+import Badge from '@codegouvfr/react-dsfr/Badge'
+import FileFormField from '@app/ui/components/Form/FileFormField'
+import { formatByteSize } from '@app/ui/utils/formatByteSize'
 import { gouvernanceFormSections } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceFormSections'
 import GouvernanceFormSectionCard from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceFormSections/GouvernanceFormSectionCard'
 import type { MembreOptions } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/getMembresOptions'
@@ -28,6 +31,8 @@ import {
   typeContratOptions,
 } from '@app/web/gouvernance/gouvernanceWordingsAndOptions'
 import { Option } from '@app/web/utils/options'
+import styles from '../GouvernanceForm.module.css'
+import { supprimerUnePieceJointeAction } from './supprimerUnePieceJointeAction'
 
 const defaultValues = {
   perimetreEpciCodes: [],
@@ -158,10 +163,18 @@ const FeuillesDeRouteForm = ({
     <GouvernanceFormSectionCard
       {...gouvernanceFormSections.feuillesDeRouteEtPorteurs}
     >
-      {/* eslint-disable-next-line no-return-assign */}
       {feuilleDeRouteFields.map(
         (
-          { _formKey, nom, porteur: fieldPorteur, perimetreScope, typeContrat },
+          {
+            _formKey,
+            nom,
+            porteur,
+            perimetreScope,
+            typeContrat,
+            // @ts-expect-error ???
+            relationPieceJointe,
+            id,
+          },
           index,
         ) =>
           editingFeuilleDeRoute === index ? null : (
@@ -173,7 +186,7 @@ const FeuillesDeRouteForm = ({
                     value={
                       <>
                         Porteur&nbsp;:{' '}
-                        {fieldPorteur?.nom ?? 'Portée par la préfecture'}
+                        {porteur?.nom ?? 'Portée par la préfecture'}
                         <br />
                         Périmètre géographique&nbsp;:{' '}
                         {perimetreFeuilleDeRouteLabels[perimetreScope]}
@@ -211,6 +224,68 @@ const FeuillesDeRouteForm = ({
                   />
                 </span>
               </div>
+              {relationPieceJointe === null ? (
+                <div className="fr-mt-2w">
+                  <Badge small severity="new">
+                    En attente de document
+                  </Badge>
+                  <FileFormField
+                    accept=".pdf"
+                    control={control}
+                    path="pieceJointeFeuilleDeRouteFile"
+                    className="fr-mb-8v"
+                    error={errors.pieceJointeFeuilleDeRouteKey?.message}
+                    info={
+                      <>
+                        Taille maximale : {formatByteSize(40_000_000)}. Format
+                        supporté : PDF.
+                        <br />
+                        Un modèle de feuille de route est disponible sur{' '}
+                        <a
+                          href="https://lesbases.anct.gouv.fr/ressources/comment-financer-les-feuilles-de-routes"
+                          rel="external noopener noreferrer"
+                          target="_blank"
+                        >
+                          La Base France Numérique Ensemble
+                        </a>
+                        .
+                      </>
+                    }
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`fr-flex fr-justify-content-space-between fr-align-items-center fr-mt-2w ${styles.cadre}`}
+                >
+                  <span>
+                    <span
+                      aria-hidden="true"
+                      className="fr-icon-file-download-line fr-btn--sm"
+                    />
+                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                    {relationPieceJointe.name}
+                  </span>
+                  <span>
+                    <Button
+                      className="fr-ml-1w"
+                      type="button"
+                      priority="tertiary no outline"
+                      disabled={disabled}
+                      size="small"
+                      iconId="fr-icon-delete-bin-line"
+                      title="Supprimer"
+                      onClick={async () => {
+                        await supprimerUnePieceJointeAction(
+                          id as string,
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+                          relationPieceJointe.key,
+                        )
+                        window.location.reload()
+                      }}
+                    />
+                  </span>
+                </div>
+              )}
               <hr className="fr-separator-8v" />
             </div>
           ),

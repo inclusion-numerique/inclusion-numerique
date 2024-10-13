@@ -151,6 +151,7 @@ export const gouvernanceListSelect = {
           creation: 'asc',
         },
       },
+      pieceJointe: true,
     },
   },
 
@@ -203,6 +204,13 @@ export const gouvernanceSelect = {
       contratPreexistant: true,
       typeContrat: true,
       typeContratAutreDescription: true,
+
+      relationPieceJointe: {
+        select: {
+          key: true,
+          name: true,
+        },
+      },
 
       membres: {
         select: {

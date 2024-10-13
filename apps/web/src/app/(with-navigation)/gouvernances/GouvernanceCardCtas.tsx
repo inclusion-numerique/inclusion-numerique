@@ -71,6 +71,11 @@ const GouvernanceCardCtas = ({
     isExistingGouvernance &&
     getStatutDemandesSubvention(gouvernance) === 'Finalisé'
 
+  const feuillesDeRouteSansPieceJointe =
+    gouvernance?.feuillesDeRoute.filter(
+      (feuilleDeRoute) => feuilleDeRoute.pieceJointe === null,
+    ) || []
+
   return (
     <>
       <div className={classNames(styles.cardCtaContainer, firstCtaClassName)}>
@@ -156,8 +161,9 @@ const GouvernanceCardCtas = ({
               À compléter avant le 31/10/2024
             </Badge>
             <h6 className="fr-mb-0">
-              {gouvernance.feuillesDeRoute.length} feuille de route en attente
-              de document
+              {feuillesDeRouteSansPieceJointe.length} feuille
+              {feuillesDeRouteSansPieceJointe.length > 1 ? 's' : ''} de route en
+              attente de document
             </h6>
           </div>
 
