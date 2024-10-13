@@ -55,6 +55,7 @@ export const getGouvernanceFormDefaultValues = (
       perimetreDepartement,
       perimetreRegion,
       perimetreEpcis,
+      relationPieceJointe,
       membres: membresFeuilleDeRoute,
     }) => {
       const membrePorteur = membresFeuilleDeRoute.find(
@@ -81,6 +82,7 @@ export const getGouvernanceFormDefaultValues = (
               : undefined,
 
         perimetreEpciCodes: perimetreEpcis.map(({ epci }) => epci.code),
+        relationPieceJointe,
       }
     },
   )

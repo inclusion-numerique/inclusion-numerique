@@ -272,6 +272,7 @@ export const updateFeuillesDeRoute = async (
   membreIdForCode: Map<string, string>,
   gouvernance: GouvernanceForForm,
   transaction: Prisma.TransactionClient,
+  pieceJointeFeuilleDeRouteKey: string,
 ): Promise<void> => {
   for (const feuilleToUpdate of feuillesDeRouteToUpdate) {
     const porteurMembreId = feuilleToUpdate.porteur
@@ -294,6 +295,7 @@ export const updateFeuillesDeRoute = async (
     await transaction.feuilleDeRoute.update({
       where: { id: feuilleToUpdate.id },
       data: {
+        pieceJointe: pieceJointeFeuilleDeRouteKey,
         nom: feuilleToUpdate.nom,
         contratPreexistant: feuilleToUpdate.contratPreexistant === 'oui',
         typeContrat: feuilleToUpdate.typeContrat,

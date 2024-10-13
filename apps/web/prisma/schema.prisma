@@ -187,6 +187,7 @@ model Upload {
   image Image?
 
   pieceJointeBudgetSubvention DemandeDeSubvention? @relation("piece_jointe_budget_subvention")
+  pieceJointeFeuilleDeRoute   FeuilleDeRoute? @relation("piece_jointe_feuille_de_route")
 
   @@map("uploads")
 }
@@ -1071,6 +1072,9 @@ model FeuilleDeRoute {
 
   perimetreEpcis       PerimetreEpciFeuilleDeRoute[]
   demandesDeSubvention DemandeDeSubvention[]
+
+  pieceJointe            String?  @unique @map("piece_jointe")
+  relationPieceJointe    Upload?  @relation(name: "piece_jointe_feuille_de_route", fields: [pieceJointe], references: [key])
 
   @@map("feuille_de_route")
 }

@@ -68,6 +68,7 @@ export const gouvernanceRouter = router({
         sousPrefetReferentEmail,
         sousPrefetReferentPrenom,
         sousPrefetReferentNom,
+        pieceJointeFeuilleDeRouteKey,
       } = input
 
       const { gouvernance, membresFormData } =
@@ -226,6 +227,7 @@ export const gouvernanceRouter = router({
             membreIdForCode,
             gouvernance,
             transaction,
+            pieceJointeFeuilleDeRouteKey,
           )
 
           // Update gouvernance details

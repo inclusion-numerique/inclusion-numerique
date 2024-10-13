@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation'
 import classNames from 'classnames'
 import { useReplaceUrlToAnchor } from '@app/ui/hooks/useReplaceUrlToAnchor'
 import { createToast } from '@app/ui/toast/createToast'
+import { useScrollToError } from '@app/ui/hooks/useScrollToError'
+import * as Sentry from '@sentry/nextjs'
 import { gouvernanceFormSections } from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceFormSections'
 import CoporteursForm from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceFormSections/CoporteursForm'
 import GouvernanceFormSectionCard from '@app/web/app/(with-navigation)/gouvernances/departements/[codeDepartement]/gouvernance/gouvernanceFormSections/GouvernanceFormSectionCard'
@@ -29,6 +31,7 @@ import { gouvernanceHomePath } from '@app/web/app/(with-navigation)/gouvernances
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { trpc } from '@app/web/trpc'
 import RedAsterisk from '@app/web/ui/RedAsterisk'
+import { useFileUpload } from '@app/web/hooks/useFileUpload'
 
 const scrollToRef = (ref: RefObject<HTMLElement>) => {
   ref.current?.scrollIntoView({
@@ -102,9 +105,63 @@ const GouvernanceForm = ({
     errors.recruteursCoordinateurs,
   ])
 
+  // File upload hooks for storage
+  const fileUpload = useFileUpload({})
+  // Upload model creation mutation
+  const createUpload = trpc.upload.create.useMutation()
+  const scrollToError = useScrollToError({ errors })
+
   const onSubmit = async (data: GouvernanceData) => {
+    let uploadKey = data.pieceJointeFeuilleDeRouteKey
+    if (uploadKey !== defaultValues.pieceJointeFeuilleDeRouteKey) {
+      try {
+        // Upload file and get uploaded file key
+        const uploaded = await fileUpload.upload(
+          data.pieceJointeFeuilleDeRouteFile as File,
+        )
+
+        if (!uploaded || 'error' in uploaded) {
+          form.setError('pieceJointeFeuilleDeRouteFile', {
+            message: 'Une erreur est survenue lors de l’envoi du fichier',
+          })
+          createToast({
+            priority: 'error',
+            message:
+              'Une erreur est survenue lors de l’envoi de votre pièce jointe de la feuille de route',
+          })
+          setTimeout(scrollToError.trigger, 50)
+          // Upload failed, error will be displayed from hooks states
+          return
+        }
+
+        // Create upload model
+        const uploadModel = await createUpload.mutateAsync({
+          file: uploaded,
+        })
+
+        // Reset upload input
+        uploadKey = uploadModel.key
+        setTimeout(() => {
+          form.setValue('pieceJointeFeuilleDeRouteFile', null)
+          form.setValue('pieceJointeFeuilleDeRouteKey', uploadModel.key, {
+            shouldValidate: true,
+          })
+        }, 0)
+      } catch (error) {
+        Sentry.captureException(error)
+        createToast({
+          priority: 'error',
+          message:
+            'Une erreur est survenue lors de l’envoi de votre pièce jointe de la feuille de route',
+        })
+      }
+    }
+
     try {
-      await mutation.mutateAsync(data)
+      await mutation.mutateAsync({
+        ...data,
+        pieceJointeFeuilleDeRouteKey: uploadKey,
+      })
       router.refresh()
       createToast({
         priority: 'success',
@@ -138,6 +195,13 @@ const GouvernanceForm = ({
     control,
     name: 'membres',
     keyName: '_formKey',
+  })
+
+  form.watch((data, { name }) => {
+    // If file changed, we reset the file key waiting for upload in submit logic
+    if (name === 'pieceJointeFeuilleDeRouteFile') {
+      form.setValue('pieceJointeFeuilleDeRouteKey', '__upload-pending__')
+    }
   })
 
   return (

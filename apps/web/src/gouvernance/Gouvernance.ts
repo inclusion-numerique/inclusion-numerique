@@ -137,6 +137,11 @@ const feuillesDeRouteEtPorteursConstraints = {
   feuillesDeRoute: z.array(FeuilleDeRouteValidation).min(1, {
     message: 'Veuillez renseigner au moins une feuille de route',
   }),
+  // Only used in client for upload operation
+  pieceJointeFeuilleDeRouteFile: z.any(),
+  pieceJointeFeuilleDeRouteKey: z.string({
+    required_error: 'Veuillez joindre la feuille de route',
+  }),
 }
 
 export const SiretInfoValidation = z.object({

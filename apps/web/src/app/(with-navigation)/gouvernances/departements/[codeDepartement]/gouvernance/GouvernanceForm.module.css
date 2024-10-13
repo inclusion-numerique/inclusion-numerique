@@ -1,13 +1,20 @@
 .sectionTitle {
-    /* Used for anchor navigation offset */
+  /* Used for anchor navigation offset */
 
-    &::before {
-        content: '';
-        display: block;
-        position: relative;
-        pointer-events: none;
-        width: 0;
-        height: 4em;
-        margin-top: -4em
-    }
+  &::before {
+    content: '';
+    display: block;
+    position: relative;
+    pointer-events: none;
+    width: 0;
+    height: 4em;
+    margin-top: -4em;
+  }
+}
+
+.cadre {
+  border-radius: 0.3rem;
+  border: 1px solid var(--border-default-grey);
+  color: var(--text-action-high-blue-france);
+  padding: 0.5rem;
 }
