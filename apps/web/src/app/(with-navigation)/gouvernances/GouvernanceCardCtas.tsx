@@ -148,7 +148,9 @@ const GouvernanceCardCtas = ({
           ) : null)}
       </div>
 
-      {canEdit && isExistingGouvernance ? (
+      {canEdit &&
+      isExistingGouvernance &&
+      feuillesDeRouteSansPieceJointe.length > 0 ? (
         <div
           className={classNames(
             styles.cardCtaContainer,

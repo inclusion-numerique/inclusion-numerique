@@ -138,6 +138,7 @@ describe('gouvernanceRouter', () => {
             },
           },
         ],
+        pieceJointeFeuilleDeRouteValidation: [],
         recruteursCoordinateurs: [
           { nom: 'Ca recrute dur', siret: '13002603200081' },
           { nom: 'Autre Entreprise', siret: '13002603200073' },

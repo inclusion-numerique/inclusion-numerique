@@ -232,9 +232,14 @@ const FeuillesDeRouteForm = ({
                   <FileFormField
                     accept=".pdf"
                     control={control}
-                    path="pieceJointeFeuilleDeRouteFile"
+                    path={`pieceJointeFeuilleDeRouteValidation.${index}.file.value`}
                     className="fr-mb-8v"
-                    error={errors.pieceJointeFeuilleDeRouteKey?.message}
+                    error={
+                      errors.pieceJointeFeuilleDeRouteValidation
+                        ? errors.pieceJointeFeuilleDeRouteValidation[index]?.key
+                            ?.message
+                        : ''
+                    }
                     info={
                       <>
                         Taille maximale : {formatByteSize(40_000_000)}. Format
