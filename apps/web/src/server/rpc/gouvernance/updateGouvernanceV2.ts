@@ -272,8 +272,10 @@ export const updateFeuillesDeRoute = async (
   membreIdForCode: Map<string, string>,
   gouvernance: GouvernanceForForm,
   transaction: Prisma.TransactionClient,
-  pieceJointeFeuilleDeRouteKey: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pieceJointeFeuilleDeRoute: { key?: string | undefined; file?: any }[],
 ): Promise<void> => {
+  let index = 0
   for (const feuilleToUpdate of feuillesDeRouteToUpdate) {
     const porteurMembreId = feuilleToUpdate.porteur
       ? membreIdForCode.get(feuilleToUpdate.porteur.code)
@@ -295,7 +297,7 @@ export const updateFeuillesDeRoute = async (
     await transaction.feuilleDeRoute.update({
       where: { id: feuilleToUpdate.id },
       data: {
-        pieceJointe: pieceJointeFeuilleDeRouteKey,
+        pieceJointe: pieceJointeFeuilleDeRoute[index].key,
         nom: feuilleToUpdate.nom,
         contratPreexistant: feuilleToUpdate.contratPreexistant === 'oui',
         typeContrat: feuilleToUpdate.typeContrat,
@@ -343,5 +345,6 @@ export const updateFeuillesDeRoute = async (
         },
       },
     })
+    index += 1
   }
 }
