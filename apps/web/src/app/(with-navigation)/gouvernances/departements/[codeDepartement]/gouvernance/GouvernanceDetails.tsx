@@ -482,7 +482,8 @@ const GouvernanceDetails = ({
                                   : typeContratLabels[typeContrat]}
                               </>
                             ) : null}
-                            {relationPieceJointe === null ? (
+                            {publicView ? null : relationPieceJointe ===
+                              null ? (
                               <>
                                 <br />
                                 <Notice
