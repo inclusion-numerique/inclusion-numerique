@@ -224,7 +224,47 @@ const FeuillesDeRouteForm = ({
                   />
                 </span>
               </div>
-              {relationPieceJointe === null ? (
+              {relationPieceJointe ? (
+                <div
+                  className={`fr-flex fr-justify-content-space-between fr-align-items-center fr-mt-2w ${styles.cadre}`}
+                >
+                  <span>
+                    <span
+                      aria-hidden="true"
+                      className="fr-icon-file-download-line fr-btn--sm"
+                    />
+                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                    {relationPieceJointe.name}
+                  </span>
+                  <input
+                    type="hidden"
+                    id={`pieceJointeFeuilleDeRouteValidationKey${index}`}
+                    value={
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                      relationPieceJointe.key
+                    }
+                  />
+                  <span>
+                    <Button
+                      className="fr-ml-1w"
+                      type="button"
+                      priority="tertiary no outline"
+                      disabled={disabled}
+                      size="small"
+                      iconId="fr-icon-delete-bin-line"
+                      title="Supprimer"
+                      onClick={async () => {
+                        await supprimerUnePieceJointeAction(
+                          id as string,
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+                          relationPieceJointe.key,
+                        )
+                        window.location.reload()
+                      }}
+                    />
+                  </span>
+                </div>
+              ) : (
                 <div className="fr-mt-2w">
                   <Badge small severity="new">
                     En attente de document
@@ -257,38 +297,6 @@ const FeuillesDeRouteForm = ({
                       </>
                     }
                   />
-                </div>
-              ) : (
-                <div
-                  className={`fr-flex fr-justify-content-space-between fr-align-items-center fr-mt-2w ${styles.cadre}`}
-                >
-                  <span>
-                    <span
-                      aria-hidden="true"
-                      className="fr-icon-file-download-line fr-btn--sm"
-                    />
-                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-                    {relationPieceJointe.name}
-                  </span>
-                  <span>
-                    <Button
-                      className="fr-ml-1w"
-                      type="button"
-                      priority="tertiary no outline"
-                      disabled={disabled}
-                      size="small"
-                      iconId="fr-icon-delete-bin-line"
-                      title="Supprimer"
-                      onClick={async () => {
-                        await supprimerUnePieceJointeAction(
-                          id as string,
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-                          relationPieceJointe.key,
-                        )
-                        window.location.reload()
-                      }}
-                    />
-                  </span>
                 </div>
               )}
               <hr className="fr-separator-8v" />

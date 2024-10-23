@@ -112,77 +112,92 @@ const GouvernanceForm = ({
   const scrollToError = useScrollToError({ errors })
 
   const onSubmit = async (data: GouvernanceData) => {
-    const pieceJointeFeuilleDeRouteUpdated =
-      data.pieceJointeFeuilleDeRouteValidation
+    const pieceJointeFeuilleDeRouteUpdated = []
 
-    for (
-      let index = 0;
-      index < data.pieceJointeFeuilleDeRouteValidation.length;
-      index += 1
-    ) {
-      const uploadKey = data.pieceJointeFeuilleDeRouteValidation[index].key
-      const hasUploadKey =
-        defaultValues.pieceJointeFeuilleDeRouteValidation?.find(
-          (pieceJointeFeuilleDeRoute) =>
-            pieceJointeFeuilleDeRoute?.key === uploadKey,
-        )
-
+    for (let index = 0; index < data.feuillesDeRoute.length; index += 1) {
       if (
-        !hasUploadKey &&
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        data.pieceJointeFeuilleDeRouteValidation[index].file.value !== undefined
+        data.pieceJointeFeuilleDeRouteValidation &&
+        data.pieceJointeFeuilleDeRouteValidation[index]
       ) {
-        try {
-          // Upload file and get uploaded file key
-          // eslint-disable-next-line no-await-in-loop
-          const uploaded = await fileUpload.upload(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            data.pieceJointeFeuilleDeRouteValidation[index].file.value as File,
+        pieceJointeFeuilleDeRouteUpdated.push(
+          data.pieceJointeFeuilleDeRouteValidation[index],
+        )
+        const uploadKey = data.pieceJointeFeuilleDeRouteValidation[index]?.key
+        const hasUploadKey =
+          defaultValues.pieceJointeFeuilleDeRouteValidation?.find(
+            (pieceJointeFeuilleDeRoute) =>
+              pieceJointeFeuilleDeRoute?.key === uploadKey,
           )
 
-          if (!uploaded || 'error' in uploaded) {
-            form.setError(`pieceJointeFeuilleDeRouteValidation.${index}.file`, {
-              message: 'Une erreur est survenue lors de l’envoi du fichier',
+        if (
+          !hasUploadKey &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          data.pieceJointeFeuilleDeRouteValidation[index]?.file.value !==
+            undefined
+        ) {
+          try {
+            // Upload file and get uploaded file key
+            // eslint-disable-next-line no-await-in-loop
+            const uploaded = await fileUpload.upload(
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, prettier/prettier
+              data.pieceJointeFeuilleDeRouteValidation[index]?.file.value as File,
+            )
+
+            if (!uploaded || 'error' in uploaded) {
+              form.setError(
+                `pieceJointeFeuilleDeRouteValidation.${index}.file`,
+                {
+                  message: 'Une erreur est survenue lors de l’envoi du fichier',
+                },
+              )
+              createToast({
+                priority: 'error',
+                message:
+                  'Une erreur est survenue lors de l’envoi de votre pièce jointe de la feuille de route',
+              })
+              setTimeout(scrollToError.trigger, 50)
+              // Upload failed, error will be displayed from hooks states
+              return
+            }
+
+            // Create upload model
+            // eslint-disable-next-line no-await-in-loop
+            const uploadModel = await createUpload.mutateAsync({
+              file: uploaded,
             })
+
+            // Reset upload input
+            // @ts-expect-error ???
+            pieceJointeFeuilleDeRouteUpdated[index].key = uploadModel.key
+            setTimeout(() => {
+              form.setValue(
+                `pieceJointeFeuilleDeRouteValidation.${index}.file`,
+                null,
+              )
+              form.setValue(
+                `pieceJointeFeuilleDeRouteValidation.${index}.key`,
+                uploadModel.key,
+                {
+                  shouldValidate: true,
+                },
+              )
+            }, 0)
+          } catch (error) {
+            Sentry.captureException(error)
             createToast({
               priority: 'error',
               message:
                 'Une erreur est survenue lors de l’envoi de votre pièce jointe de la feuille de route',
             })
-            setTimeout(scrollToError.trigger, 50)
-            // Upload failed, error will be displayed from hooks states
-            return
           }
-
-          // Create upload model
-          // eslint-disable-next-line no-await-in-loop
-          const uploadModel = await createUpload.mutateAsync({
-            file: uploaded,
-          })
-
-          // Reset upload input
-          pieceJointeFeuilleDeRouteUpdated[index].key = uploadModel.key
-          setTimeout(() => {
-            form.setValue(
-              `pieceJointeFeuilleDeRouteValidation.${index}.file`,
-              null,
-            )
-            form.setValue(
-              `pieceJointeFeuilleDeRouteValidation.${index}.key`,
-              uploadModel.key,
-              {
-                shouldValidate: true,
-              },
-            )
-          }, 0)
-        } catch (error) {
-          Sentry.captureException(error)
-          createToast({
-            priority: 'error',
-            message:
-              'Une erreur est survenue lors de l’envoi de votre pièce jointe de la feuille de route',
-          })
         }
+      } else {
+        pieceJointeFeuilleDeRouteUpdated.push({
+          file: '',
+          key: document.querySelector<HTMLInputElement>(
+            `#pieceJointeFeuilleDeRouteValidationKey${index}`,
+          )?.value,
+        })
       }
     }
 

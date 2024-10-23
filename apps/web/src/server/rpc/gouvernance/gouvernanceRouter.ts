@@ -227,6 +227,7 @@ export const gouvernanceRouter = router({
             membreIdForCode,
             gouvernance,
             transaction,
+            // @ts-expect-error géré par le champ hidden pieceJointeFeuilleDeRouteValidationKey
             pieceJointeFeuilleDeRouteValidation,
           )
 
