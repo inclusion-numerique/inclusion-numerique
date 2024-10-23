@@ -99,6 +99,7 @@ const FeuillesDeRouteForm = ({
       typeContrat: item.typeContrat,
       typeContratAutreDescription: item.typeContratAutreDescription,
       perimetreScope: item.perimetreScope,
+      pasDePorteur: item.pasDePorteur,
     })
 
     setEditingFeuilleDeRoute(index)

@@ -198,6 +198,7 @@ describe('getGouvernanceFormDefaultValues', () => {
           id: '0c3ffe6d-ba4c-47e8-8352-b783895917d2',
           nom: '1000 bornes',
           perimetreEpciCodes: ['200046977', '200066587'],
+          pasDePorteur: false,
           perimetreScope: 'epci',
           porteur: {
             code: 'epci###200066587###00052d98-f3c2-4478-9cee-6e9758cedc41',

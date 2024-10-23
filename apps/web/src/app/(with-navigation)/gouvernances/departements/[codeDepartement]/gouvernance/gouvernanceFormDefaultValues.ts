@@ -73,6 +73,7 @@ export const getGouvernanceFormDefaultValues = (
         typeContrat,
         typeContratAutreDescription,
         porteur,
+        pasDePorteur: !porteur?.nom,
         perimetreScope: perimetreRegion
           ? 'region'
           : perimetreDepartement
