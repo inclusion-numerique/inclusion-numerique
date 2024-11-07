@@ -12,6 +12,7 @@ const normalizeFilename = (value: string) =>
     .replaceAll('·', '')
     .replaceAll(/ +/g, ' ')
     .replaceAll(' ', '-')
+    .replaceAll('’', "'")
     .trim()
 
 export const telechargerConvention = async (
