@@ -1721,7 +1721,7 @@ Article 1 : Objet de la convention<text:bookmark-end text:name="_Toc162530244"/>
                 <text:p text:style-name="P16">${nomAction}</text:p>
               </text:list-item>
               <text:list-item>
-                <text:p text:style-name="P16">${feuilleDeRoute.nom}. Cette action repose sur le(s) actions suivante(s) : ${besoins.map((besoin) => besoinSubventionLabel[besoin]).join(', ')}</text:p>
+                <text:p text:style-name="P16">${feuilleDeRoute.nom.replaceAll('&', '&amp;')}. Cette action repose sur le(s) actions suivante(s) : ${besoins.map((besoin) => besoinSubventionLabel[besoin]).join(', ')}</text:p>
               </text:list-item>
               <text:list-item>
                 <text:p text:style-name="P16">${contexte.replaceAll('&nbsp;', ' ')}</text:p>
