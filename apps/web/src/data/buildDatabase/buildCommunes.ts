@@ -73,7 +73,9 @@ export const buildCommunes = async ({
 
     // We ignore departementCode for communes that are not registered in geo api (e.g. La Terre Adélie) code 984
     const codeDepartement =
-      commune.codeDepartement === '984' ? null : commune.codeDepartement
+      commune.codeDepartement === '984' || commune.codeDepartement === '978'
+        ? null
+        : commune.codeDepartement
 
     if (codeDepartement && !departements.codes.has(codeDepartement)) {
       console.error('Missing departement', commune)
