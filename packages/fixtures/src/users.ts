@@ -176,15 +176,6 @@ export const users = [
     emailVerified: new Date(),
   },
   {
-    id: '20647872-c1e3-42b3-a86a-a68090002d42',
-    firstName: 'Benjamin',
-    lastName: 'Morali',
-    name: 'Benjamin Morali',
-    email: 'benjamin.morali@beta.gouv.fr',
-    role: 'Administrator',
-    emailVerified: new Date(),
-  },
-  {
     id: '97c14d38-d42f-442e-9a80-880536a40c30',
     firstName: 'Ornella',
     lastName: 'Ourfi',
