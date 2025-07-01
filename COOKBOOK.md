@@ -265,7 +265,7 @@ const AddTodoForm = () => {
         <InputFormField
           control={form.control}
           path="description"
-          label="Description de la tâche"
+          label="Description de la tâche"e
           disabled={form.formState.isSubmitting}
           asterisk
           info={descriptionInfo}

@@ -8,6 +8,10 @@
     text-decoration: none;
     background: none;
     text-align: left;
+
+    &::after {
+        content: '';
+        display: none;}
 }
 
 .iconContainer {
@@ -27,6 +31,8 @@
 }
 
 .content {
+    flex-grow: 1;
+
     h3 {
         font-size: 22px;
         line-height: 28px;

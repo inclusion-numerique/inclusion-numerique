@@ -1,9 +1,9 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { NextRequest } from 'next/server'
+import { sessionTokenFromRequestCookies } from '@app/web/security/authentication'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { s3 } from '@app/web/server/s3/s3'
-import { sessionTokenFromRequestCookies } from '@app/web/security/authentication'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { checkGouvernanceScopeWriteAccess } from '@app/web/app/(with-navigation)/gouvernances/checkGouvernanceScopeWriteAccess'
 

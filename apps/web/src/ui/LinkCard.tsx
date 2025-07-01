@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import classNames from 'classnames'
+import type { HTMLAttributeAnchorTarget } from 'react'
 import styles from './LinkCard.module.css'
 
 const LinkCard = ({
@@ -7,13 +8,15 @@ const LinkCard = ({
   title,
   href,
   icon,
+  target,
 }: {
   href: string
   title: string
   text: string
   icon?: string
+  target?: HTMLAttributeAnchorTarget
 }) => (
-  <Link href={href} prefetch={false} className={styles.card}>
+  <Link href={href} target={target} prefetch={false} className={styles.card}>
     {!!icon && (
       <div className={styles.iconContainer}>
         <span className={classNames(styles.icon, icon, 'fr-icon--lg')} />
@@ -24,7 +27,11 @@ const LinkCard = ({
       <p>{text}</p>
     </div>
     <div className={styles.arrowContainer}>
-      <span className="fr-icon-arrow-right-line" />
+      {target === '_blank' ? (
+        <span className="fr-icon-external-link-line" />
+      ) : (
+        <span className="fr-icon-arrow-right-line" />
+      )}
     </div>
   </Link>
 )

@@ -5,7 +5,6 @@ import { getSessionUser } from '@app/web/auth/getSessionUser'
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import { signinErrorMessage } from '@app/web/app/(public)/(authentication)/authenticationErrorMessage'
 import LinkCard from '@app/web/ui/LinkCard'
-import MonCompteProSigninButton from '@app/web/app/(public)/(authentication)/connexion/MonCompteProSigninButton'
 import { EmailSigninForm } from '@app/web/app/(public)/(authentication)/connexion/EmailSigninForm'
 import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
 import BackLink from '@app/web/components/BackLink'
@@ -69,7 +68,8 @@ const SigninPage = async ({
           <LinkCard
             title="Vous travaillez en préfecture"
             text="Accéder au tableau de bord des données de l’Inclusion Numérique."
-            href="/connexion?role=prefecture"
+            href="https://mon.inclusion-numerique.anct.gouv.fr/connexion"
+            target="_blank"
           />
           <LinkCard
             title="Vous êtes une collectivité ou un acteur territorial"
@@ -80,37 +80,7 @@ const SigninPage = async ({
       </>
     )
   }
-  if (role === 'prefecture') {
-    return (
-      <>
-        <Breadcrumbs
-          parents={[
-            {
-              label: 'Connexion',
-              linkProps: { href: '/connexion' },
-            },
-          ]}
-          currentPage="Préfecture"
-        />
-        <AuthCard className="fr-mt-12v">
-          <h4>Pour accéder au tableau de bord des préfectures</h4>
-          {error ? (
-            <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
-              <p>{signinErrorMessage(error)}</p>
-            </div>
-          ) : null}
-          <h5>Se connecter avec MonComptePro</h5>
-          <p className="fr-text--sm">
-            Professionnel du privé ou du public&nbsp;: MonComptePro vous
-            identifie et vous donne accès aux démarches et services de l’État.
-          </p>
-          <div className="fr-connect-group fr-mb-10v">
-            <MonCompteProSigninButton callbackUrl={callbackUrl} />
-          </div>
-        </AuthCard>
-      </>
-    )
-  }
+
   return (
     <>
       <Breadcrumbs
@@ -132,15 +102,7 @@ const SigninPage = async ({
             <p>{signinErrorMessage(error)}</p>
           </div>
         ) : null}
-        <h5>Se connecter avec MonComptePro</h5>
-        <p className="fr-text--sm">
-          Professionnel du privé ou du public&nbsp;: MonComptePro vous identifie
-          et vous donne accès aux démarches et services de l’État.
-        </p>
-        <div className="fr-connect-group fr-mb-10v">
-          <MonCompteProSigninButton callbackUrl={callbackUrl} />
-        </div>
-        <p className="fr-hr-or fr-mt-6v">ou</p>
+        <hr />
         <h5>Se connecter avec son email</h5>
         <EmailSigninForm callbackUrl={callbackUrl} />
         <hr className="fr-mt-6v" />
