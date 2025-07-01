@@ -229,7 +229,7 @@ jobs:
     steps:
       - checkout
       - skip/skip_unchanged:
-          paths: pnpm-lock.yaml
+          paths: pnpm-lock.yaml .circleci/config.yml
       - restore_dependencies_cache
       - run:
           name: 'Fetch dependencies'
