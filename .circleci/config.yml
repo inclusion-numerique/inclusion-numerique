@@ -115,9 +115,11 @@ workflows:
             - build_web
             - test_packages
             - test_web
-            - test_web_integration
+#            integration tests are disabled as data features are deprecated and not working anymore
+#           - test_web_integration
             - test_components
-            - test_web_e2e
+#            e2e tests are disabled as data features are deprecated and not working anymore
+#            - test_web_e2e
       - chromatic:
           requires:
             - lint_web
@@ -125,9 +127,11 @@ workflows:
             - build_web
             - test_packages
             - test_web
-            - test_web_integration
+#            integration tests are disabled as data features are deprecated and not working anymore
+#          - test_web_integration
             - test_components
-            - test_web_e2e
+#            e2e tests are disabled as data features are deprecated and not working anymore
+#            - test_web_e2e
 
   manual_backup_main_database:
     when:
