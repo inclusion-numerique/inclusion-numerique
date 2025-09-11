@@ -58,7 +58,7 @@
     "@trpc/react-query": "next",
     "@trpc/server": "next",
     "aws-crt": "^1.21.2",
-    "axios": "^1.6.8",
+    "axios": "^1.12.0",
     "classnames": "^2.5.1",
     "client-only": "^0.0.1",
     "cookie": "^0.6.0",
